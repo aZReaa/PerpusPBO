@@ -117,41 +117,39 @@
                             data-member="{{ loan.user.nama_lengkap|lower }}"
                             data-book="{{ loan.buku.judul|lower }}"
                             data-class="{{ loan.user.kelas|lower }}"
-                            data-due-date="{{ loan.tanggal_kembali_rencana.strftime('%Y-%m-%d') }}">
-                            <td>{{ loan.id }}</td>
-                            <td>
+                            data-due-date="{{ loan.tanggal_kembali_rencana.strftime('%Y-%m-%d') }}">                            <td data-label="ID">{{ loan.id }}</td>
+                            <td data-label="Member">
                                 <div class="member-info">
                                     <strong>{{ loan.user.nama_lengkap }}</strong>
                                     <span class="class-badge">{{ loan.user.kelas }}</span>
                                 </div>
                             </td>
-                            <td>
+                            <td data-label="Buku">
                                 <div class="book-info">
                                     <strong>{{ loan.buku.judul }}</strong>
                                     <small>{{ loan.buku.penulis }}</small>
                                 </div>
                             </td>
-                            <td>{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
-                            <td>
+                            <td data-label="Tgl Pinjam">{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
+                            <td data-label="Batas Kembali">
                                 <span class="due-date" data-due="{{ loan.tanggal_kembali_rencana.strftime('%Y-%m-%d') }}">
                                     {{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}
                                 </span>
                             </td>
-                            <td>
+                            <td data-label="Tgl Kembali">
                                 {% if loan.tanggal_kembali_aktual %}
                                     {{ loan.tanggal_kembali_aktual.strftime('%d/%m/%Y') }}
                                 {% else %}
                                     -
                                 {% endif %}
-                            </td>                            <td>
+                            </td>                            <td data-label="Status">
                                 {% if loan.status == 'dipinjam' %}
                                     <span class="status-badge status-active">📖 Dipinjam</span>
                                 {% elif loan.status == 'dikembalikan' %}
                                     <span class="status-badge status-returned">✅ Dikembalikan</span>
                                 {% elif loan.status == 'menunggu_konfirmasi' %}
-                                    <span class="status-badge status-pending">⏳ Menunggu Konfirmasi</span>
-                                {% endif %}
-                            </td>                            <td>
+                                    <span class="status-badge status-pending">⏳ Menunggu Konfirmasi</span>                                {% endif %}
+                            </td>                            <td data-label="Denda">
                                 {% if loan.denda > 0 %}
                                     <div class="fine-management">
                                         <span class="fine-amount">💰 Rp {{ "{:,}".format(loan.denda) }}</span>
@@ -186,9 +184,8 @@
                                         </a>
                                     {% else %}
                                         -
-                                    {% endif %}
-                                {% endif %}
-                            </td>                            <td>
+                                    {% endif %}                                {% endif %}
+                            </td>                            <td data-label="Aksi">
                                 {% if loan.status == 'dipinjam' %}
                                     <div class="btn-group">
                                         <a href="{{ url_for('admin_return_book', id=loan.id) }}" 

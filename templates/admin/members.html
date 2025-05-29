@@ -68,8 +68,7 @@
                     data-nama="{{ member.nama_lengkap|lower }}" 
                     data-username="{{ member.username|lower }}" 
                     data-email="{{ member.email|lower }}"
-                    data-kelas="{{ member.kelas or '' }}">
-                    <td>
+                    data-kelas="{{ member.kelas or '' }}">                    <td data-label="Member Info">
                         <div class="user-info">
                             <div class="user-avatar-small">
                                 {{ member.nama_lengkap[0]|upper }}
@@ -80,16 +79,16 @@
                             </div>
                         </div>
                     </td>
-                    <td>{{ member.email }}</td>
-                    <td>
+                    <td data-label="Email">{{ member.email }}</td>
+                    <td data-label="Kelas">
                         {% if member.kelas %}
                             <span class="badge badge-info">{{ member.kelas }}</span>
                         {% else %}
                             <span class="badge badge-secondary">-</span>
                         {% endif %}
                     </td>
-                    <td>{{ member.created_at.strftime('%d/%m/%Y') }}</td>
-                    <td>
+                    <td data-label="Terdaftar">{{ member.created_at.strftime('%d/%m/%Y') }}</td>
+                    <td data-label="Aksi">
                         <div class="action-buttons">
                             <a href="{{ url_for('admin_edit_member', id=member.id) }}" 
                                class="btn btn-sm btn-warning" 

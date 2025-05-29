@@ -3,8 +3,7 @@
 {% block title %}Peminjaman Saya - Perpustakaan Sekolah{% endblock %}
 
 {% block extra_css %}
-<style>
-    .loans-header-member {
+<style>    .loans-header-member {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -13,23 +12,59 @@
         padding: 20px;
         border-radius: var(--border-radius-md);
         box-shadow: var(--card-shadow);
+        flex-wrap: wrap;
+        gap: 15px;
     }
     .loans-header-member h1 {
         color: var(--primary-blue);
         font-size: 1.8rem;
         margin: 0;
     }
-
-    .loans-table-container-member {
+    
+    /* Mobile loans header */
+    @media (max-width: 768px) {
+        .loans-header-member {
+            flex-direction: column;
+            text-align: center;
+            padding: 15px;
+        }
+        .loans-header-member h1 {
+            font-size: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .loans-header-member {
+            padding: 12px;
+        }
+        .loans-header-member h1 {
+            font-size: 1.3rem;
+        }
+    }    .loans-table-container-member {
         background-color: var(--white-bg);
         padding: 25px;
         border-radius: var(--border-radius-md);
         box-shadow: var(--card-shadow);
-        overflow-x: auto; /* For responsive table */
+        overflow-x: auto;
     }
+    
+    /* Mobile table container */
+    @media (max-width: 768px) {
+        .loans-table-container-member {
+            padding: 20px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .loans-table-container-member {
+            padding: 15px;
+            border-radius: 6px;
+        }
+    }
+    
     .loans-list-table {
         width: 100%;
-        min-width: 700px; /* Ensure table has some width before scrolling */
+        min-width: 700px;
         border-collapse: collapse;
     }
     .loans-list-table th, .loans-list-table td {
@@ -37,6 +72,7 @@
         text-align: left;
         border-bottom: 1px solid #EAEAEA;
         font-size: 0.95rem;
+        vertical-align: middle;
     }
     .loans-list-table thead th {
         background-color: var(--light-blue-bg);
@@ -44,32 +80,130 @@
         color: var(--primary-blue);
         font-size: 0.9rem;
         white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 10;
     }
-    .book-title-cell {
+    
+    /* Mobile table adjustments */
+    @media (max-width: 768px) {
+        .loans-list-table {
+            min-width: 600px;
+        }
+        .loans-list-table th, .loans-list-table td {
+            padding: 8px 6px;
+            font-size: 0.85rem;
+        }
+        .loans-list-table thead th {
+            font-size: 0.8rem;
+        }
+        
+        /* Hide less important columns on mobile */
+        .loans-list-table th:nth-child(3),
+        .loans-list-table td:nth-child(3),
+        .loans-list-table th:nth-child(6),
+        .loans-list-table td:nth-child(6) {
+            display: none;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        /* Card-style layout for very small screens */
+        .loans-list-table,
+        .loans-list-table thead,
+        .loans-list-table tbody,
+        .loans-list-table th,
+        .loans-list-table td,
+        .loans-list-table tr {
+            display: block;
+        }
+        
+        .loans-list-table thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+        
+        .loans-list-table tr {
+            border: 1px solid #ddd;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background: var(--white-bg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .loans-list-table td {
+            border: none;
+            position: relative;
+            padding: 8px 8px 8px 45%;
+            text-align: left;
+            white-space: normal;
+        }
+        
+        .loans-list-table td:before {
+            content: attr(data-label) ": ";
+            position: absolute;
+            left: 6px;
+            width: 40%;
+            padding-right: 10px;
+            white-space: nowrap;
+            font-weight: 600;
+            color: var(--primary-blue);
+            font-size: 0.8rem;
+        }
+        
+        .loans-list-table {
+            min-width: auto;
+        }
+    }    .book-title-cell {
         font-weight: 500;
+        max-width: 200px;
     }
     .book-title-cell small {
         display: block;
         color: var(--text-light);
         font-size: 0.85rem;
+        margin-top: 4px;
     }
+    
+    /* Mobile book title cell */
+    @media (max-width: 768px) {
+        .book-title-cell {
+            max-width: 150px;
+        }
+        .book-title-cell small {
+            font-size: 0.8rem;
+        }
+    }
+    
     .loan-status-badge {
         padding: 5px 12px;
         border-radius: 15px;
         font-size: 0.85rem;
         font-weight: 500;
         display: inline-block;
+        white-space: nowrap;
     }
     .loan-status-badge.dipinjam {
-        background-color: #DEEBFF; /* Light blue */
+        background-color: #DEEBFF;
         color: #0747A6;
     }
     .loan-status-badge.dikembalikan {
-        background-color: #E6F7F0; /* Light green */
+        background-color: #E6F7F0;
         color: #00875A;
     }
+    
+    /* Mobile status badge */
+    @media (max-width: 480px) {
+        .loan-status-badge {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+        }
+    }
+    
     .fine-amount-loan {
-        color: #DE350B; /* Red for fines */
+        color: #DE350B;
         font-weight: 500;
     }
     .date-cell.overdue {
@@ -77,11 +211,9 @@
         font-weight: 500;
     }
     .date-cell.due-today {
-        color: #FF8B00; /* Orange for due today */
+        color: #FF8B00;
         font-weight: 500;
-    }
-
-    .no-loans-message {
+    }    .no-loans-message {
         text-align: center;
         padding: 40px 20px;
         background-color: var(--white-bg);
@@ -92,10 +224,41 @@
         font-size: 3rem;
         color: var(--text-light);
         margin-bottom: 15px;
+        display: block;
     }
     .no-loans-message h3 {
         margin-bottom: 10px;
         font-size: 1.3rem;
+        color: var(--text-dark);
+    }
+    .no-loans-message p {
+        color: var(--text-light);
+        margin-bottom: 20px;
+    }
+    
+    /* Mobile no loans message */
+    @media (max-width: 768px) {
+        .no-loans-message {
+            padding: 30px 15px;
+        }
+        .no-loans-message .icon {
+            font-size: 2.5rem;
+        }
+        .no-loans-message h3 {
+            font-size: 1.2rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .no-loans-message {
+            padding: 20px 10px;
+        }
+        .no-loans-message .icon {
+            font-size: 2rem;
+        }
+        .no-loans-message h3 {
+            font-size: 1.1rem;
+        }
     }
 </style>
 {% endblock %}
@@ -119,27 +282,26 @@
                 <th>Denda</th>
             </tr>
         </thead>
-        <tbody>
-            {% for loan in loans %}
+        <tbody>            {% for loan in loans %}
             <tr>
-                <td class="book-title-cell">
+                <td class="book-title-cell" data-label="Buku">
                     {{ loan.buku.judul }}
                     <small>{{ loan.buku.pengarang }}</small>
                 </td>
-                <td>{{ loan.tanggal_pinjam.strftime('%d %b %Y') }}</td>
+                <td data-label="Tgl Pinjam">{{ loan.tanggal_pinjam.strftime('%d %b %Y') }}</td>
                 <td class="date-cell 
                     {% if loan.status == 'dipinjam' and loan.tanggal_kembali_rencana.date() < today %}overdue{% endif %}
-                    {% if loan.status == 'dipinjam' and loan.tanggal_kembali_rencana.date() == today %}due-today{% endif %}">
+                    {% if loan.status == 'dipinjam' and loan.tanggal_kembali_rencana.date() == today %}due-today{% endif %}" data-label="Batas Kembali">
                     {{ loan.tanggal_kembali_rencana.strftime('%d %b %Y') }}
                 </td>
-                <td>
+                <td data-label="Tgl Kembali Aktual">
                     {% if loan.tanggal_kembali_aktual %}
                         {{ loan.tanggal_kembali_aktual.strftime('%d %b %Y') }}
                     {% else %}
                         -
                     {% endif %}
                 </td>
-                <td>
+                <td data-label="Status">
                     {% if loan.status == 'dipinjam' %}
                         <span class="loan-status-badge dipinjam">Dipinjam</span>
                     {% elif loan.status == 'dikembalikan' %}
@@ -148,7 +310,7 @@
                         <span class="loan-status-badge">{{ loan.status|capitalize }}</span>
                     {% endif %}
                 </td>
-                <td>
+                <td data-label="Denda">
                     {% if loan.denda > 0 %}
                         <span class="fine-amount-loan">Rp {{ "{:,.0f}".format(loan.denda).replace(",", ".") }}</span>
                     {% else %}

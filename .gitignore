@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Flask
+instance/
+.env
+.flask_env
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads (for development - in production these should be stored in cloud storage)
+static/uploads/books/*
+static/uploads/profiles/*
+!static/uploads/books/.gitkeep
+!static/uploads/profiles/.gitkeep
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.production

@@ -78,47 +78,50 @@
             </tr>
         </thead>
         <tbody>
-            {% for loan in loans_with_fines %}
-            <tr class="fine-row">
-                <td>{{ loan.id }}</td>
-                <td>
-                    <div class="member-info">
-                        <strong>{{ loan.user.nama_lengkap }}</strong>
-                        <span class="class-badge">{{ loan.user.kelas }}</span>
+            {% for loan in loans_with_fines %}            <tr class="fine-row">
+                <td data-label="ID">{{ loan.id }}</td>
+                <td data-label="Member">
+                    <div class="user-info">
+                        <div class="user-avatar-small">{{ loan.user.nama_lengkap[0] }}</div>
+                        <div class="user-details">
+                            <strong>{{ loan.user.nama_lengkap }}</strong>
+                            <small>{{ loan.user.kelas }}</small>
+                        </div>
                     </div>
                 </td>
-                <td>
+                <td data-label="Buku">
                     <div class="book-info">
                         <strong>{{ loan.buku.judul }}</strong>
                         <small>{{ loan.buku.pengarang }}</small>
                     </div>
                 </td>
-                <td>{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
-                <td>{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}</td>
-                <td>
+                <td data-label="Tgl Pinjam">{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
+                <td data-label="Batas Kembali">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}</td>
+                <td data-label="Status">
                     {% if loan.status == 'dipinjam' %}
-                        <span class="status-badge status-active">📖 Dipinjam</span>
+                        <span class="badge badge-info">📖 Dipinjam</span>
                     {% else %}
-                        <span class="status-badge status-returned">✅ Dikembalikan</span>
+                        <span class="badge badge-success">✅ Dikembalikan</span>
                     {% endif %}
-                </td>                <td>
+                </td>
+                <td data-label="Hari Terlambat">
                     {% if loan.status == 'dipinjam' %}
                         {% set days_late = (today - loan.tanggal_kembali_rencana.date()).days %}
                         {% if days_late > 0 %}
-                            <span class="text-danger">{{ days_late }} hari</span>
+                            <span class="badge badge-danger">{{ days_late }} hari</span>
                         {% else %}
-                            <span class="text-success">Belum terlambat</span>
+                            <span class="badge badge-success">Belum terlambat</span>
                         {% endif %}
                     {% else %}
                         {% if loan.tanggal_kembali_aktual and loan.tanggal_kembali_aktual > loan.tanggal_kembali_rencana %}
                             {% set days_late = (loan.tanggal_kembali_aktual.date() - loan.tanggal_kembali_rencana.date()).days %}
-                            <span class="text-warning">{{ days_late }} hari</span>
+                            <span class="badge badge-warning">{{ days_late }} hari</span>
                         {% else %}
-                            <span class="text-success">Tepat waktu</span>
+                            <span class="badge badge-success">Tepat waktu</span>
                         {% endif %}
                     {% endif %}
                 </td>
-                <td>
+                <td data-label="Denda">
                     <div class="fine-display">
                         <span class="fine-amount">Rp {{ "{:,}".format(loan.denda) }}</span>
                         <div class="fine-edit-inline" id="fine-edit-{{ loan.id }}" style="display: none;">
@@ -132,19 +135,19 @@
                         </div>
                     </div>
                 </td>
-                <td>
-                    <div class="btn-group">
-                        <button class="btn btn-xs btn-warning" onclick="toggleFineEdit({{ loan.id }})">
+                <td data-label="Aksi">
+                    <div class="action-buttons">
+                        <button class="btn btn-sm btn-warning" onclick="toggleFineEdit({{ loan.id }})">
                             ✏️ Edit
                         </button>
                         <a href="{{ url_for('admin_delete_fine', id=loan.id) }}" 
-                           class="btn btn-xs btn-danger"
+                           class="btn btn-sm btn-danger"
                            onclick="return confirm('Hapus denda ini?')">
                             🗑️ Hapus
                         </a>
                         {% if loan.status == 'dipinjam' %}
                             <a href="{{ url_for('admin_calculate_fine', id=loan.id) }}" 
-                               class="btn btn-xs btn-info"
+                               class="btn btn-sm btn-info"
                                onclick="return confirm('Hitung ulang denda?')">
                                 🧮 Hitung Ulang
                             </a>

@@ -2,33 +2,110 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Perpustakaan Sekolah</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Login - Perpustakaan Digital Sekolah</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>    <div class="login-container-modern">
-        <div class="login-background"></div>        <div class="login-card-modern">
+    <style>
+        /* Enhanced mobile login styles */
+        .login-container-modern {
+            background-attachment: fixed;
+        }
+        
+        .login-card-modern {
+            animation: slideInUp 0.6s ease-out;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .form-group-modern {
+            position: relative;
+        }
+        
+        .input-container input::placeholder {
+            color: transparent;
+        }
+        
+        .input-container input:focus::placeholder {
+            color: #999;
+        }
+        
+        /* Additional mobile improvements */
+        @media (max-width: 480px) {
+            .login-background {
+                background-attachment: scroll;
+            }
             
+            .login-container-modern {
+                padding: 1rem 0.8rem;
+            }
+            
+            .alert {
+                margin-bottom: 1rem;
+                padding: 0.8rem 1rem;
+                border-radius: 8px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .login-container-modern {
+                padding: 0.5rem;
+            }
+            
+            .alert {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container-modern">
+        <div class="login-background"></div>
+        
+        <div class="login-card-modern">
+            <!-- Enhanced Flash Messages -->
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
-                    <div class="alert alert-error">
-                        {% for message in messages %}
-                            <p>{{ message }}</p>
-                        {% endfor %}
+                    <div class="alert alert-error" style="margin-bottom: 1.5rem; padding: 1rem; background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; border-radius: 12px; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.2rem;">⚠️</span>
+                        <div>
+                            {% for message in messages %}
+                                <p style="margin: 0; font-weight: 500;">{{ message }}</p>
+                            {% endfor %}
+                        </div>
                     </div>
                 {% endif %}
             {% endwith %}
-              <div class="login-header">
+            
+            <div class="login-header">
                 <div class="login-icon">📚</div>
-                <h3>Selamat Datang</h3>
-                <p>Masuk ke Sistem Perpustakaan</p>
+                <h3>Perpustakaan Digital</h3>
+                <p>Masuk ke Sistem Perpustakaan Sekolah</p>
             </div>
             
-            <form method="POST" class="login-form">
+            <form method="POST" class="login-form" novalidate>
                 <div class="form-group-modern">
                     <div class="input-container">
                         <div class="input-icon">👤</div>
-                        <input type="text" id="username" name="username" placeholder="Masukkan username" required>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            placeholder="Masukkan username" 
+                            required 
+                            autocomplete="username"
+                            autocapitalize="none"
+                            spellcheck="false">
                         <label for="username">Username</label>
                     </div>
                 </div>
@@ -36,23 +113,107 @@
                 <div class="form-group-modern">
                     <div class="input-container">
                         <div class="input-icon">🔒</div>
-                        <input type="password" id="password" name="password" placeholder="Masukkan password" required>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="Masukkan password" 
+                            required 
+                            autocomplete="current-password">
                         <label for="password">Password</label>
                     </div>
                 </div>
                 
                 <button type="submit" class="btn-login-modern">
-                    <span class="btn-text">Masuk</span>
+                    <span class="btn-text">Masuk ke Sistem</span>
                     <div class="btn-icon">→</div>
                 </button>
             </form>
-              <div class="login-footer-modern">
-                <a href="{{ url_for('index') }}" class="back-link">
-                    <span class="back-icon">←</span>
-                    Kembali ke Beranda
-                </a>
+            
+       
+            
+            <div class="login-footer-modern">
+                <div style="text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e9ecef; color: #6c757d; font-size: 0.9rem;">
+                    <p style="margin: 0;">© 2025 Perpustakaan Digital Sekolah</p>
+                    <p style="margin: 0.3rem 0 0 0; font-size: 0.8rem;">Sistem Manajemen Perpustakaan Modern</p>
+                </div>
             </div>
         </div>
     </div>
+    
+    <script>
+        // Enhanced form interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.input-container input');
+            const form = document.querySelector('.login-form');
+            const submitBtn = document.querySelector('.btn-login-modern');
+            
+            // Input focus animations
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentNode.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentNode.classList.remove('focused');
+                    }
+                });
+                
+                // Check if input has value on load
+                if (input.value) {
+                    input.parentNode.classList.add('focused');
+                }
+            });
+            
+            // Form submission with loading state
+            form.addEventListener('submit', function(e) {
+                submitBtn.innerHTML = '<span class="btn-text">⏳ Memproses...</span>';
+                submitBtn.disabled = true;
+                
+                // Re-enable button after 5 seconds as fallback
+                setTimeout(() => {
+                    submitBtn.innerHTML = '<span class="btn-text">Masuk ke Sistem</span><div class="btn-icon">→</div>';
+                    submitBtn.disabled = false;
+                }, 5000);
+            });
+            
+            // Demo account quick fill
+            const demoButtons = document.querySelectorAll('[data-demo]');
+            demoButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const demo = this.dataset.demo;
+                    if (demo === 'admin') {
+                        document.getElementById('username').value = 'admin';
+                        document.getElementById('password').value = 'admin123';
+                    } else if (demo === 'member') {
+                        document.getElementById('username').value = 'member';
+                        document.getElementById('password').value = 'member123';
+                    }
+                    // Trigger focus events to show labels
+                    inputs.forEach(input => {
+                        if (input.value) {
+                            input.parentNode.classList.add('focused');
+                        }
+                    });
+                });
+            });
+            
+            // Prevent form zoom on iOS
+            const viewportMeta = document.querySelector('meta[name="viewport"]');
+            if (viewportMeta && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                inputs.forEach(input => {
+                    input.addEventListener('focus', function() {
+                        viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+                    });
+                    
+                    input.addEventListener('blur', function() {
+                        viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>

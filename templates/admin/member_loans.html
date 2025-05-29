@@ -58,53 +58,52 @@
                 </tr>
             </thead>
             <tbody>
-                {% for loan in loans %}
-                <tr class="loan-row {{ 'active' if loan.status == 'dipinjam' else 'returned' }}">
-                    <td>
+                {% for loan in loans %}                <tr class="loan-row {{ 'active' if loan.status == 'dipinjam' else 'returned' }}">
+                    <td data-label="Buku">
                         <div class="book-info">
                             <strong>{{ loan.buku.judul }}</strong>
                             <small>{{ loan.buku.pengarang }}</small>
                         </div>
                     </td>
-                    <td>{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
-                    <td>
+                    <td data-label="Tanggal Pinjam">{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
+                    <td data-label="Batas Kembali">
                         {% if loan.status == 'dipinjam' %}
                             {% set days_left = (loan.tanggal_kembali_rencana.date() - (now() if now else loan.tanggal_pinjam.date())|date()).days %}
                             {% if days_left < 0 %}
-                                <span class="due-date overdue">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }} ⚠️</span>
+                                <span class="badge badge-danger">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }} ⚠️</span>
                             {% elif days_left == 0 %}
-                                <span class="due-date today">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }} 🔔</span>
+                                <span class="badge badge-warning">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }} 🔔</span>
                             {% elif days_left <= 2 %}
-                                <span class="due-date soon">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }} 📅</span>
+                                <span class="badge badge-info">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }} 📅</span>
                             {% else %}
-                                <span class="due-date normal">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}</span>
+                                <span class="badge badge-secondary">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}</span>
                             {% endif %}
                         {% else %}
                             {{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}
                         {% endif %}
                     </td>
-                    <td>
+                    <td data-label="Tanggal Kembali">
                         {% if loan.tanggal_kembali_aktual %}
                             {{ loan.tanggal_kembali_aktual.strftime('%d/%m/%Y') }}
                         {% else %}
-                            <span class="not-returned">Belum dikembalikan</span>
+                            <span class="badge badge-warning">Belum dikembalikan</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td data-label="Status">
                         {% if loan.status == 'dipinjam' %}
-                            <span class="status-badge active">📖 Dipinjam</span>
+                            <span class="badge badge-info">📖 Dipinjam</span>
                         {% else %}
-                            <span class="status-badge returned">✅ Dikembalikan</span>
+                            <span class="badge badge-success">✅ Dikembalikan</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td data-label="Denda">
                         {% if loan.denda > 0 %}
-                            <span class="fine-amount">Rp {{ "{:,}".format(loan.denda) }}</span>
+                            <span class="badge badge-danger">Rp {{ "{:,}".format(loan.denda) }}</span>
                         {% else %}
-                            <span class="no-fine">-</span>
+                            <span class="badge badge-secondary">-</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td data-label="Aksi">
                         {% if loan.status == 'dipinjam' %}
                             <a href="{{ url_for('admin_return_book', id=loan.id) }}" 
                                class="btn btn-sm btn-success"
@@ -112,7 +111,7 @@
                                 ✅ Kembalikan
                             </a>
                         {% else %}
-                            <span class="text-muted">-</span>
+                            <span class="badge badge-secondary">-</span>
                         {% endif %}
                     </td>
                 </tr>

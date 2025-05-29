@@ -42,20 +42,29 @@
         }
         a:hover {
             color: var(--primary-blue-dark);
-        }
-
-        .container-member {
+        }        .container-member {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             flex-grow: 1;
         }
-
-        /* Basic Button Style */
+        
+        /* Mobile-first responsive design */
+        @media (max-width: 768px) {
+            .container-member {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container-member {
+                padding: 10px;
+            }
+        }        /* Basic Button Style */
         .btn-member {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: var(--border-radius-md);
             background-color: var(--primary-blue);
             color: var(--text-on-primary);
@@ -63,30 +72,62 @@
             text-align: center;
             border: none;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            text-decoration: none;
+            min-height: 44px; /* Touch-friendly minimum size */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .btn-member:hover {
             background-color: var(--primary-blue-dark);
             color: var(--text-on-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(93, 120, 255, 0.3);
         }
         .btn-member-secondary {
             background-color: var(--white-bg);
             color: var(--primary-blue);
-            border: 1px solid var(--primary-blue);
+            border: 2px solid var(--primary-blue);
         }
         .btn-member-secondary:hover {
             background-color: var(--light-blue-bg);
         }
         
-        /* Basic Card Style */
+        /* Mobile button adjustments */
+        @media (max-width: 768px) {
+            .btn-member {
+                padding: 14px 20px;
+                font-size: 1rem;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+          /* Basic Card Style */
         .card-member {
             background-color: var(--white-bg);
             border-radius: var(--border-radius-md);
             box-shadow: var(--card-shadow);
             padding: 20px;
+            margin-bottom: 20px;
         }
-
-        /* Flash Messages */
+        
+        /* Mobile card adjustments */
+        @media (max-width: 768px) {
+            .card-member {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card-member {
+                padding: 12px;
+                border-radius: 6px;
+            }
+        }        /* Flash Messages */
         .flash-messages-member {
             margin-bottom: 20px;
         }
@@ -112,6 +153,60 @@
             border: 1px solid #B3D4FF;
         }
         .flash-alert p { margin: 0; }
+
+        /* Touch-friendly enhancements */
+        @media (hover: none) and (pointer: coarse) {
+            /* Remove hover effects on touch devices */
+            .btn-member:hover,
+            .card-member:hover {
+                transform: none;
+            }
+            
+            /* Increase touch targets */
+            .btn-member {
+                min-height: 44px;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            /* Better touch feedback */
+            .btn-member:active {
+                transform: scale(0.98);
+                opacity: 0.8;
+            }
+            
+            /* Improve form inputs for touch */
+            input, select, textarea {
+                -webkit-appearance: none;
+                font-size: 16px; /* Prevent iOS zoom */
+            }
+            
+            /* Touch-friendly links */
+            a {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                -webkit-tap-highlight-color: transparent;
+            }
+        }
+        
+        /* Smooth scrolling for better mobile experience */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Prevent horizontal scroll on mobile */
+        body {
+            overflow-x: hidden;
+        }
+        
+        /* Better focus indicators for accessibility */
+        .btn-member:focus,
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
 
     </style>
     {% block extra_css %}{% endblock %}

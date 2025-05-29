@@ -10,6 +10,26 @@
     }
     .main-footer-member p {
         margin: 0;
+        line-height: 1.4;
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .main-footer-member {
+            padding: 12px 15px;
+            font-size: 0.85rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .main-footer-member {
+            padding: 10px 12px;
+            font-size: 0.8rem;
+        }
+        
+        .main-footer-member p {
+            word-break: break-word;
+        }
     }
 </style>
 

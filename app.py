@@ -8,8 +8,17 @@ from datetime import datetime, timedelta
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///perpustakaan.db'
+
+# Configuration for production and development
+if os.environ.get('DATABASE_URL'):
+    # Production configuration
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'fallback-secret-key')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+else:
+    # Development configuration
+    app.config['SECRET_KEY'] = 'your-secret-key-here'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///perpustakaan.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # File upload configuration
@@ -23,6 +32,41 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 # Make sure upload directories exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(PROFILE_FOLDER, exist_ok=True)
+
+# Predefined class options for consistency
+KELAS_OPTIONS = {
+    'Kelas X': [
+        ('X-IPA-1', 'X IPA 1'),
+        ('X-IPA-2', 'X IPA 2'),
+        ('X-IPA-3', 'X IPA 3'),
+        ('X-IPS-1', 'X IPS 1'),
+        ('X-IPS-2', 'X IPS 2'),
+        ('X-IPS-3', 'X IPS 3'),
+    ],
+    'Kelas XI': [
+        ('XI-IPA-1', 'XI IPA 1'),
+        ('XI-IPA-2', 'XI IPA 2'),
+        ('XI-IPA-3', 'XI IPA 3'),
+        ('XI-IPS-1', 'XI IPS 1'),
+        ('XI-IPS-2', 'XI IPS 2'),
+        ('XI-IPS-3', 'XI IPS 3'),
+    ],
+    'Kelas XII': [
+        ('XII-IPA-1', 'XII IPA 1'),
+        ('XII-IPA-2', 'XII IPA 2'),
+        ('XII-IPA-3', 'XII IPA 3'),
+        ('XII-IPS-1', 'XII IPS 1'),
+        ('XII-IPS-2', 'XII IPS 2'),
+        ('XII-IPS-3', 'XII IPS 3'),
+    ]
+}
+
+def get_kelas_options():
+    """Return flattened list of all class options for validation"""
+    options = []
+    for group_name, group_options in KELAS_OPTIONS.items():
+        options.extend([option[0] for option in group_options])
+    return options
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -117,9 +161,20 @@ class Peminjaman(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+@app.context_processor
+def inject_kelas_options():
+    """Make KELAS_OPTIONS available to all templates"""
+    return dict(KELAS_OPTIONS=KELAS_OPTIONS)
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Redirect to login since this is the main entry point
+    if current_user.is_authenticated:
+        if current_user.role == 'admin':
+            return redirect(url_for('admin_dashboard'))
+        else:
+            return redirect(url_for('member_dashboard'))
+    return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

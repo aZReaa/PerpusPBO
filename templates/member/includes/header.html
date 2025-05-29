@@ -1,20 +1,51 @@
-<style>
-    .main-header-member {
+<style>    .main-header-member {
         background: linear-gradient(90deg, var(--primary-blue, #5D78FF) 0%, var(--primary-purple, #7B5AFF) 100%);
         color: var(--text-on-primary);
         padding: 0 20px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        height: 70px;
+        min-height: 70px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
     }
-
-    .header-logo-member a {
+    
+    /* Mobile header adjustments */
+    @media (max-width: 768px) {
+        .main-header-member {
+            padding: 0 15px;
+            min-height: 60px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .main-header-member {
+            padding: 0 10px;
+            min-height: 56px;
+        }
+    }    .header-logo-member a {
         color: var(--text-on-primary);
         font-size: 1.5rem;
         font-weight: 600;
         text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* Mobile logo adjustments */
+    @media (max-width: 768px) {
+        .header-logo-member a {
+            font-size: 1.3rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .header-logo-member a {
+            font-size: 1.1rem;
+        }
     }
 
     .header-nav-member ul {
@@ -88,32 +119,39 @@
     .logout-btn-member:hover {
         background-color: rgba(255, 255, 255, 0.2);
         color: var(--text-on-primary);
-    }
-
-    .mobile-nav-toggle {
-        display: none; /* Hidden by default, shown in media query */
+    }    .mobile-nav-toggle {
+        display: none;
         background: none;
         border: none;
         color: var(--text-on-primary);
         font-size: 1.8rem;
         cursor: pointer;
+        padding: 8px;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+        min-height: 44px;
+        min-width: 44px;
+        align-items: center;
+        justify-content: center;
     }
-
-    @media (max-width: 992px) {
+    
+    .mobile-nav-toggle:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }    @media (max-width: 992px) {
         .header-nav-member {
-            display: none; /* Hide nav by default on smaller screens */
+            display: none;
             position: absolute;
-            top: 70px; /* Below header */
+            top: 100%;
             left: 0;
             right: 0;
-            background-color: var(--primary-blue-dark); /* Solid background for dropdown */
+            background: linear-gradient(90deg, var(--primary-blue-dark, #4A60E0) 0%, var(--primary-purple, #7B5AFF) 100%);
             flex-direction: column;
             padding: 10px 0;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             z-index: 1000;
         }
         .header-nav-member.active {
-            display: flex; /* Show when active */
+            display: flex;
         }
         .header-nav-member ul {
             flex-direction: column;
@@ -121,36 +159,55 @@
             gap: 0;
         }
         .header-nav-member ul li a {
-            padding: 15px 20px;
+            padding: 16px 20px;
             width: 100%;
             border-radius: 0;
             justify-content: flex-start;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .header-nav-member ul li:last-child a {
+            border-bottom: none;
         }
         .header-nav-member ul li a:hover,
         .header-nav-member ul li a.active {
             background-color: var(--primary-purple);
         }
         .mobile-nav-toggle {
-            display: block;
+            display: flex;
         }
         .header-user-info-member {
-            font-size: 0.8rem; /* Slightly smaller on mobile */
-            gap: 10px;
-        }
-        .header-user-info-member span:nth-child(2) { /* Hide class info on smaller screens if too crowded */
-            /* display: none; */
+            font-size: 0.85rem;
+            gap: 8px;
         }
     }
-     @media (max-width: 600px) {
+    
+    @media (max-width: 768px) {
+        .header-user-info-member {
+            gap: 6px;
+        }
+        .header-user-info-member span:not(.logout-btn-member) {
+            display: none;
+        }
+        .logout-btn-member {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
         .header-logo-member a {
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
-        .header-user-info-member span {
-            display: none; /* Hide user name and class */
+        .header-profile-photo {
+            width: 30px;
+            height: 30px;
+            font-size: 1rem;
         }
-         .header-user-info-member .logout-btn-member { /* Ensure logout is always visible */
-             display: inline-block !important;
-         }
+        .logout-btn-member {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+        }
     }
 </style>
 
@@ -166,8 +223,14 @@
             <li><a href="{{ url_for('member_loans') }}" class="{% if request.endpoint == 'member_loans' %}active{% endif %}">📖 Peminjaman Saya</a></li>
             <li><a href="{{ url_for('member_profile') }}" class="{% if request.endpoint == 'member_profile' %}active{% endif %}">👤 Profil</a></li>
         </ul>
-    </nav>
-    <div class="header-user-info-member">
+    </nav>    <div class="header-user-info-member">
+        <div class="header-profile-photo">
+            {% if current_user.profile_photo %}
+                <img src="{{ url_for('static', filename=current_user.profile_photo) }}" alt="Profile Photo">
+            {% else %}
+                {{ current_user.nama_lengkap[0].upper() }}
+            {% endif %}
+        </div>
         <span>👋 Halo, {{ current_user.nama_lengkap }}</span>
         <span>🎯 {{ current_user.kelas }}</span>
         <a href="{{ url_for('logout') }}" class="logout-btn-member">🚪 Logout</a>

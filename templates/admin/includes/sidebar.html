@@ -1,9 +1,36 @@
 <!-- Admin Sidebar Component -->
 <div class="sidebar">
+    <div class="sidebar-header">
+        <h3>📋 Admin Panel</h3>
+        <button class="sidebar-toggle-close" onclick="toggleSidebar()">✕</button>
+    </div>
     <ul class="sidebar-menu">
-        <li><a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}active{% endif %}">📊 Dashboard</a></li>
-        <li><a href="{{ url_for('admin_members') }}" class="{% if request.endpoint in ['admin_members', 'admin_add_member', 'admin_edit_member'] %}active{% endif %}">👥 Kelola Member</a></li>
-        <li><a href="{{ url_for('admin_books') }}" class="{% if request.endpoint in ['admin_books', 'admin_add_book', 'admin_edit_book'] %}active{% endif %}">📚 Kelola Buku</a></li>
-        <li><a href="{{ url_for('admin_loans') }}" class="{% if request.endpoint in ['admin_loans', 'admin_process_loan', 'admin_confirm_loan'] %}active{% endif %}">📖 Kelola Peminjaman</a></li>
+        <li>
+            <a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('admin_members') }}" class="{% if request.endpoint in ['admin_members', 'admin_add_member', 'admin_edit_member'] %}active{% endif %}">
+                <span class="menu-icon">👥</span>
+                <span class="menu-text">Kelola Member</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('admin_books') }}" class="{% if request.endpoint in ['admin_books', 'admin_add_book', 'admin_edit_book'] %}active{% endif %}">
+                <span class="menu-icon">📚</span>
+                <span class="menu-text">Kelola Buku</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('admin_loans') }}" class="{% if request.endpoint in ['admin_loans', 'admin_process_loan', 'admin_confirm_loan'] %}active{% endif %}">
+                <span class="menu-icon">📖</span>
+                <span class="menu-text">Kelola Peminjaman</span>
+            </a>
+        </li>
     </ul>
 </div>
+
+<!-- Mobile Sidebar Overlay -->
+<div class="sidebar-overlay" onclick="closeSidebar()"></div>

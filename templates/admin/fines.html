@@ -89,41 +89,43 @@
                     </thead>
                     <tbody>
                         {% for loan in fines %}
-                        {% set days_late = ((loan.tanggal_kembali_aktual or now) - loan.tanggal_kembali_rencana).days %}
-                        <tr>
-                            <td>{{ loan.id }}</td>
-                            <td>
-                                <div class="member-info">
-                                    <strong>{{ loan.user.nama_lengkap }}</strong><br>
-                                    <small>{{ loan.user.kelas }} - {{ loan.user.username }}</small>
+                        {% set days_late = ((loan.tanggal_kembali_aktual or now) - loan.tanggal_kembali_rencana).days %}                        <tr>
+                            <td data-label="ID">{{ loan.id }}</td>
+                            <td data-label="Member">
+                                <div class="user-info">
+                                    <div class="user-avatar-small">{{ loan.user.nama_lengkap[0] }}</div>
+                                    <div class="user-details">
+                                        <strong>{{ loan.user.nama_lengkap }}</strong>
+                                        <small>{{ loan.user.kelas }} - {{ loan.user.username }}</small>
+                                    </div>
                                 </div>
                             </td>
-                            <td>
+                            <td data-label="Buku">
                                 <div class="book-info">
                                     <strong>{{ loan.buku.judul }}</strong><br>
                                     <small>{{ loan.buku.pengarang }}</small>
                                 </div>
                             </td>
-                            <td>{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
-                            <td>{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}</td>
-                            <td>
+                            <td data-label="Tgl Pinjam">{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
+                            <td data-label="Batas Kembali">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}</td>
+                            <td data-label="Tgl Kembali">
                                 {% if loan.tanggal_kembali_aktual %}
                                     {{ loan.tanggal_kembali_aktual.strftime('%d/%m/%Y') }}
                                 {% else %}
-                                    <span class="text-warning">Belum dikembalikan</span>
+                                    <span class="badge badge-warning">Belum dikembalikan</span>
                                 {% endif %}
                             </td>
-                            <td>
-                                <span class="days-late">{{ days_late }} hari</span>
+                            <td data-label="Hari Terlambat">
+                                <span class="badge badge-danger">{{ days_late }} hari</span>
                             </td>
-                            <td>
+                            <td data-label="Denda">
                                 <span class="fine-amount">Rp {{ "{:,}".format(loan.denda) }}</span>
                             </td>
-                            <td>
+                            <td data-label="Status">
                                 {% if loan.status == 'dikembalikan' %}
-                                    <span class="status-returned">Selesai</span>
+                                    <span class="badge badge-success">✅ Selesai</span>
                                 {% else %}
-                                    <span class="status-overdue">Aktif</span>
+                                    <span class="badge badge-danger">⚠️ Aktif</span>
                                 {% endif %}
                             </td>
                         </tr>

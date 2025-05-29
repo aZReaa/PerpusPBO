@@ -98,9 +98,9 @@
         align-items: center;
         gap: 8px;
     }
-    
-    .form-group-edit {
+      .form-group-edit {
         margin-bottom: 20px;
+        position: relative;
     }
     
     .form-group-edit label {
@@ -108,29 +108,123 @@
         font-weight: 600;
         color: var(--text-dark);
         margin-bottom: 8px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
     
-    .form-group-edit input {
+    .form-group-edit label::before {
+        content: '';
+        width: 4px;
+        height: 4px;
+        background-color: var(--primary-blue);
+        border-radius: 50%;
+    }
+      .form-group-edit input,
+    .form-group-edit select {
         width: 100%;
         padding: 12px 15px;
         border: 2px solid #E0E7FF;
         border-radius: var(--border-radius-sm);
         font-size: 1rem;
-        transition: border-color 0.3s ease;
+        transition: all 0.3s ease;
         background-color: #FAFBFF;
+        font-family: inherit;
     }
     
-    .form-group-edit input:focus {
+    .form-group-edit select {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 20px;
+        padding-right: 45px;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+    
+    .form-group-edit input:focus,
+    .form-group-edit select:focus {
         outline: none;
         border-color: var(--primary-blue);
         background-color: var(--white-bg);
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-1px);
     }
-      .password-help {
-        font-size: 0.9rem;
+    
+    .form-group-edit select:hover {
+        border-color: var(--primary-purple);
+    }
+    
+    .form-group-edit select optgroup {
+        font-weight: 700;
+        background-color: #F8F9FA;
+        color: var(--primary-blue);
+        font-style: normal;
+        padding: 8px 5px;
+    }
+    
+    .form-group-edit select option {
+        padding: 8px 15px;
+        background-color: var(--white-bg);
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+      .form-group-edit select option:hover {
+        background-color: var(--light-blue-bg);
+    }
+    
+    /* Form validation styling */
+    .form-group-edit input:valid,
+    .form-group-edit select:valid {
+        border-color: #28A745;
+    }
+    
+    .form-group-edit input:invalid:not(:placeholder-shown),
+    .form-group-edit select:invalid:not([value=""]) {
+        border-color: #DC3545;
+    }
+    
+    /* Required field indicator */
+    .form-group-edit label[for="username"]::after,
+    .form-group-edit label[for="nama_lengkap"]::after {
+        content: ' *';
+        color: #DC3545;
+        font-weight: bold;
+    }
+    
+    /* Enhanced form sections */
+    .form-section {
+        background-color: rgba(248, 249, 250, 0.5);
+        padding: 20px;
+        border-radius: var(--border-radius-md);
+        border-left: 4px solid var(--primary-blue);
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-section:hover {
+        background-color: rgba(248, 249, 250, 0.8);
+        border-left-color: var(--primary-purple);
+    }    .password-help {
+        font-size: 0.85rem;
         color: var(--text-light);
-        margin-top: 5px;
+        margin-top: 8px;
+        padding: 8px 12px;
+        background-color: rgba(102, 126, 234, 0.05);
+        border-radius: var(--border-radius-sm);
+        border-left: 3px solid var(--primary-blue);
         font-style: italic;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .password-help::before {
+        content: '💡';
+        font-size: 1rem;
     }
     
     .alert {
@@ -167,73 +261,277 @@
         content: '✅';
         font-size: 1.1rem;
     }
-    
-    .form-actions {
+      .form-actions {
         display: flex;
         gap: 15px;
         justify-content: space-between;
         margin-top: 30px;
         padding-top: 25px;
-        border-top: 1px solid #E0E7FF;
+        border-top: 2px solid #E0E7FF;
+        background: linear-gradient(135deg, rgba(248, 249, 250, 0.3) 0%, rgba(240, 244, 255, 0.3) 100%);
+        border-radius: var(--border-radius-md);
+        padding: 20px;
     }
     
     .btn-save {
         background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
         color: var(--text-on-primary);
-        padding: 12px 30px;
+        padding: 14px 32px;
         border: none;
-        border-radius: 25px;
+        border-radius: 30px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        font-size: 1rem;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-save::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s;
+    }
+    
+    .btn-save:hover::before {
+        left: 100%;
     }
     
     .btn-save:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
     }
     
     .btn-cancel {
-        background-color: #6C757D;
+        background: linear-gradient(135deg, #6C757D 0%, #5A6268 100%);
         color: var(--text-on-primary);
-        padding: 12px 25px;
+        padding: 14px 28px;
         border: none;
-        border-radius: 25px;
+        border-radius: 30px;
         font-weight: 600;
         text-decoration: none;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        font-size: 1rem;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
     }
     
     .btn-cancel:hover {
-        background-color: #545B62;
-        transform: translateY(-2px);
+        background: linear-gradient(135deg, #5A6268 0%, #495057 100%);
+        transform: translateY(-3px);
         text-decoration: none;
         color: var(--text-on-primary);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
     }
-    
-    @media (max-width: 600px) {
+      /* Mobile responsiveness */
+    @media (max-width: 768px) {
         .edit-profile-page {
-            margin: 0 10px;
+            margin: 0 15px;
+            max-width: none;
+        }
+        
+        .edit-profile-header {
+            padding: 20px 15px;
+        }
+        
+        .edit-profile-header h1 {
+            font-size: 1.5rem;
         }
         
         .edit-profile-form {
-            padding: 20px;
+            padding: 25px 20px;
+        }
+        
+        .current-photo {
+            width: 100px;
+            height: 100px;
+            font-size: 3rem;
+        }
+        
+        .profile-photo-section {
+            padding: 15px;
+        }
+        
+        .form-section {
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-section h3 {
+            font-size: 1.1rem;
+        }
+        
+        .form-group-edit {
+            margin-bottom: 18px;
+        }
+        
+        .form-group-edit input,
+        .form-group-edit select {
+            padding: 14px 16px;
+            font-size: 16px; /* Prevent iOS zoom */
+            -webkit-appearance: none;
+            border-radius: 8px;
+        }
+        
+        .form-group-edit select {
+            background-size: 18px;
+            padding-right: 40px;
         }
         
         .form-actions {
             flex-direction: column;
+            gap: 12px;
+            padding: 15px;
         }
         
         .btn-save, .btn-cancel {
             width: 100%;
             justify-content: center;
+            padding: 16px 24px;
+            font-size: 1rem;
+            min-height: 44px; /* Touch-friendly */
+        }
+        
+        .photo-upload-label {
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .password-help {
+            font-size: 0.8rem;
+            padding: 10px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .edit-profile-page {
+            margin: 0 10px;
+        }
+        
+        .edit-profile-header {
+            padding: 15px 10px;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .edit-profile-header h1 {
+            font-size: 1.3rem;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .edit-profile-form {
+            padding: 20px 15px;
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .current-photo {
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+        }
+        
+        .profile-photo-section {
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .form-section {
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .form-section h3 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+        
+        .form-group-edit {
+            margin-bottom: 15px;
+        }
+        
+        .form-group-edit label {
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+        
+        .form-group-edit input,
+        .form-group-edit select {
+            padding: 12px 14px;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+        
+        .form-actions {
+            padding: 12px;
+            gap: 10px;
+        }
+        
+        .btn-save, .btn-cancel {
+            padding: 14px 20px;
+            font-size: 0.95rem;
+            border-radius: 25px;
+        }
+        
+        .photo-upload-label {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+        
+        .alert {
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+        
+        .password-help {
+            font-size: 0.75rem;
+            padding: 8px;
+        }
+    }
+    
+    @media (max-width: 360px) {
+        .edit-profile-page {
+            margin: 0 5px;
+        }
+        
+        .edit-profile-header,
+        .edit-profile-form {
+            padding: 15px 10px;
+        }
+        
+        .current-photo {
+            width: 70px;
+            height: 70px;
+            font-size: 2rem;
+        }
+        
+        .form-section {
+            padding: 10px;
+        }
+        
+        .form-group-edit input,
+        .form-group-edit select {
+            padding: 10px 12px;
+        }
+        
+        .btn-save, .btn-cancel {
+            padding: 12px 16px;
+            font-size: 0.9rem;
         }
     }
 </style>
@@ -279,32 +577,61 @@
             <!-- Basic Information -->
             <div class="form-section">
                 <h3>👤 Informasi Dasar</h3>
-                
-                <div class="form-group-edit">
+                  <div class="form-group-edit">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" value="{{ current_user.username }}" required>
+                    <input type="text" id="username" name="username" value="{{ current_user.username }}" required 
+                           minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" 
+                           title="Username hanya boleh mengandung huruf, angka, dan underscore">
                 </div>
                 
                 <div class="form-group-edit">
                     <label for="nama_lengkap">Nama Lengkap</label>
-                    <input type="text" id="nama_lengkap" name="nama_lengkap" value="{{ current_user.nama_lengkap }}" required>
-                </div>
-                
-                <div class="form-group-edit">
+                    <input type="text" id="nama_lengkap" name="nama_lengkap" value="{{ current_user.nama_lengkap }}" required 
+                           minlength="2" maxlength="100" 
+                           title="Nama lengkap minimal 2 karakter">
+                </div><div class="form-group-edit">
                     <label for="kelas">Kelas</label>
-                    <input type="text" id="kelas" name="kelas" value="{{ current_user.kelas or '' }}" placeholder="Contoh: XII IPA 1">
+                    <select id="kelas" name="kelas">
+                        <option value="">Pilih Kelas</option>
+                        <optgroup label="Kelas X">
+                            <option value="X-IPA-1" {{ 'selected' if current_user.kelas == 'X-IPA-1' }}>X IPA 1</option>
+                            <option value="X-IPA-2" {{ 'selected' if current_user.kelas == 'X-IPA-2' }}>X IPA 2</option>
+                            <option value="X-IPA-3" {{ 'selected' if current_user.kelas == 'X-IPA-3' }}>X IPA 3</option>
+                            <option value="X-IPS-1" {{ 'selected' if current_user.kelas == 'X-IPS-1' }}>X IPS 1</option>
+                            <option value="X-IPS-2" {{ 'selected' if current_user.kelas == 'X-IPS-2' }}>X IPS 2</option>
+                            <option value="X-IPS-3" {{ 'selected' if current_user.kelas == 'X-IPS-3' }}>X IPS 3</option>
+                        </optgroup>
+                        <optgroup label="Kelas XI">
+                            <option value="XI-IPA-1" {{ 'selected' if current_user.kelas == 'XI-IPA-1' }}>XI IPA 1</option>
+                            <option value="XI-IPA-2" {{ 'selected' if current_user.kelas == 'XI-IPA-2' }}>XI IPA 2</option>
+                            <option value="XI-IPA-3" {{ 'selected' if current_user.kelas == 'XI-IPA-3' }}>XI IPA 3</option>
+                            <option value="XI-IPS-1" {{ 'selected' if current_user.kelas == 'XI-IPS-1' }}>XI IPS 1</option>
+                            <option value="XI-IPS-2" {{ 'selected' if current_user.kelas == 'XI-IPS-2' }}>XI IPS 2</option>
+                            <option value="XI-IPS-3" {{ 'selected' if current_user.kelas == 'XI-IPS-3' }}>XI IPS 3</option>
+                        </optgroup>
+                        <optgroup label="Kelas XII">
+                            <option value="XII-IPA-1" {{ 'selected' if current_user.kelas == 'XII-IPA-1' }}>XII IPA 1</option>
+                            <option value="XII-IPA-2" {{ 'selected' if current_user.kelas == 'XII-IPA-2' }}>XII IPA 2</option>
+                            <option value="XII-IPA-3" {{ 'selected' if current_user.kelas == 'XII-IPA-3' }}>XII IPA 3</option>
+                            <option value="XII-IPS-1" {{ 'selected' if current_user.kelas == 'XII-IPS-1' }}>XII IPS 1</option>
+                            <option value="XII-IPS-2" {{ 'selected' if current_user.kelas == 'XII-IPS-2' }}>XII IPS 2</option>
+                            <option value="XII-IPS-3" {{ 'selected' if current_user.kelas == 'XII-IPS-3' }}>XII IPS 3</option>
+                        </optgroup>
+                    </select>
                 </div>
             </div>
             
             <!-- Security Section -->
             <div class="form-section">
                 <h3>🔒 Keamanan</h3>
-                
-                <div class="form-group-edit">
+                  <div class="form-group-edit">
                     <label for="password">Password Baru</label>
-                    <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah">
+                    <input type="password" id="password" name="password" 
+                           placeholder="Kosongkan jika tidak ingin mengubah"
+                           minlength="6" maxlength="50"
+                           title="Password minimal 6 karakter">
                     <div class="password-help">
-                        Kosongkan jika tidak ingin mengubah password
+                        Kosongkan jika tidak ingin mengubah password. Minimal 6 karakter jika diisi.
                     </div>
                 </div>
             </div>
@@ -327,6 +654,21 @@
 document.getElementById('profile_photo').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
+        // Check file size (16MB limit)
+        if (file.size > 16 * 1024 * 1024) {
+            alert('Ukuran file terlalu besar! Maksimal 16MB.');
+            this.value = '';
+            return;
+        }
+        
+        // Check file type
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Format file tidak didukung! Gunakan JPG, PNG, atau GIF.');
+            this.value = '';
+            return;
+        }
+        
         const reader = new FileReader();
         reader.onload = function(e) {
             const currentPhoto = document.querySelector('.current-photo');
@@ -334,6 +676,67 @@ document.getElementById('profile_photo').addEventListener('change', function(e) 
         };
         reader.readAsDataURL(file);
     }
+});
+
+// Form validation feedback
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const inputs = form.querySelectorAll('input[required], select[required]');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                validateField(this);
+            }
+        });
+    });
+    
+    function validateField(field) {
+        const formGroup = field.closest('.form-group-edit');
+        let errorMsg = formGroup.querySelector('.error-message');
+        
+        if (field.checkValidity()) {
+            field.style.borderColor = '#28A745';
+            if (errorMsg) errorMsg.remove();
+        } else {
+            field.style.borderColor = '#DC3545';
+            
+            if (!errorMsg) {
+                errorMsg = document.createElement('div');
+                errorMsg.className = 'error-message';
+                errorMsg.style.cssText = `
+                    color: #DC3545;
+                    font-size: 0.85rem;
+                    margin-top: 5px;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                `;
+                formGroup.appendChild(errorMsg);
+            }
+            
+            errorMsg.innerHTML = `⚠️ ${field.validationMessage}`;
+        }
+    }
+    
+    // Form submission with loading state
+    form.addEventListener('submit', function(e) {
+        const submitBtn = form.querySelector('.btn-save');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '⏳ Menyimpan...';
+        submitBtn.disabled = true;
+        
+        // Re-enable button after 3 seconds as fallback
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 3000);
+    });
 });
 </script>
 {% endblock %}
