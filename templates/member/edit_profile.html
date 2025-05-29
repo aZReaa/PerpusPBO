@@ -1,0 +1,339 @@
+{% extends "member/base.html" %}
+
+{% block title %}Edit Profil - Perpustakaan Sekolah{% endblock %}
+
+{% block extra_css %}
+<style>
+    .edit-profile-page {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .edit-profile-header {
+        background-color: var(--primary-blue);
+        color: var(--text-on-primary);
+        padding: 25px;
+        border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+        text-align: center;
+    }
+    
+    .edit-profile-header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .edit-profile-form {
+        background-color: var(--white-bg);
+        padding: 30px;
+        border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+        box-shadow: var(--card-shadow);
+    }
+    
+    .profile-photo-section {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: var(--light-blue-bg);
+        border-radius: var(--border-radius-md);
+    }
+    
+    .current-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.5rem;
+        background-color: var(--primary-purple);
+        color: var(--text-on-primary);
+        border: 4px solid var(--white-bg);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .current-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .photo-upload-label {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+        color: var(--text-on-primary);
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+    
+    .photo-upload-label:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .photo-upload-input {
+        display: none;
+    }
+    
+    .form-section {
+        margin-bottom: 25px;
+    }
+    
+    .form-section h3 {
+        color: var(--primary-blue);
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--light-blue-bg);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-group-edit {
+        margin-bottom: 20px;
+    }
+    
+    .form-group-edit label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+    
+    .form-group-edit input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #E0E7FF;
+        border-radius: var(--border-radius-sm);
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        background-color: #FAFBFF;
+    }
+    
+    .form-group-edit input:focus {
+        outline: none;
+        border-color: var(--primary-blue);
+        background-color: var(--white-bg);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+      .password-help {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin-top: 5px;
+        font-style: italic;
+    }
+    
+    .alert {
+        padding: 12px 15px;
+        border-radius: var(--border-radius-sm);
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+    
+    .alert-error {
+        background-color: #FFEBEE;
+        border: 1px solid #FFCDD2;
+        color: #C62828;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .alert-error::before {
+        content: '⚠️';
+        font-size: 1.1rem;
+    }
+    
+    .alert-success {
+        background-color: #E8F5E8;
+        border: 1px solid #C8E6C9;
+        color: #2E7D32;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .alert-success::before {
+        content: '✅';
+        font-size: 1.1rem;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: space-between;
+        margin-top: 30px;
+        padding-top: 25px;
+        border-top: 1px solid #E0E7FF;
+    }
+    
+    .btn-save {
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+        color: var(--text-on-primary);
+        padding: 12px 30px;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .btn-cancel {
+        background-color: #6C757D;
+        color: var(--text-on-primary);
+        padding: 12px 25px;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-cancel:hover {
+        background-color: #545B62;
+        transform: translateY(-2px);
+        text-decoration: none;
+        color: var(--text-on-primary);
+    }
+    
+    @media (max-width: 600px) {
+        .edit-profile-page {
+            margin: 0 10px;
+        }
+        
+        .edit-profile-form {
+            padding: 20px;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .btn-save, .btn-cancel {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-profile-page">
+    <div class="edit-profile-header">
+        <h1>✏️ Edit Profil</h1>
+    </div>
+    
+    <div class="edit-profile-form">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages" style="margin-bottom: 20px;">
+                    {% for message in messages %}
+                        <div class="alert alert-error">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" enctype="multipart/form-data">
+            <!-- Profile Photo Section -->
+            <div class="profile-photo-section">
+                <div class="current-photo">
+                    {% if current_user.profile_photo %}
+                        <img src="{{ url_for('static', filename=current_user.profile_photo) }}" alt="Profile Photo">
+                    {% else %}
+                        <span>{{ current_user.nama_lengkap[0]|upper if current_user.nama_lengkap else 'U' }}</span>
+                    {% endif %}
+                </div>
+                <label for="profile_photo" class="photo-upload-label">
+                    📷 Ubah Foto Profil
+                </label>
+                <input type="file" id="profile_photo" name="profile_photo" class="photo-upload-input" accept="image/*">
+                <p style="margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
+                    Format: JPG, PNG, GIF (Max: 16MB)
+                </p>
+            </div>
+            
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h3>👤 Informasi Dasar</h3>
+                
+                <div class="form-group-edit">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="{{ current_user.username }}" required>
+                </div>
+                
+                <div class="form-group-edit">
+                    <label for="nama_lengkap">Nama Lengkap</label>
+                    <input type="text" id="nama_lengkap" name="nama_lengkap" value="{{ current_user.nama_lengkap }}" required>
+                </div>
+                
+                <div class="form-group-edit">
+                    <label for="kelas">Kelas</label>
+                    <input type="text" id="kelas" name="kelas" value="{{ current_user.kelas or '' }}" placeholder="Contoh: XII IPA 1">
+                </div>
+            </div>
+            
+            <!-- Security Section -->
+            <div class="form-section">
+                <h3>🔒 Keamanan</h3>
+                
+                <div class="form-group-edit">
+                    <label for="password">Password Baru</label>
+                    <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah">
+                    <div class="password-help">
+                        Kosongkan jika tidak ingin mengubah password
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a href="{{ url_for('member_profile') }}" class="btn-cancel">
+                    ↩️ Batal
+                </a>
+                <button type="submit" class="btn-save">
+                    💾 Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Preview uploaded photo
+document.getElementById('profile_photo').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const currentPhoto = document.querySelector('.current-photo');
+            currentPhoto.innerHTML = `<img src="${e.target.result}" alt="Profile Photo Preview">`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}

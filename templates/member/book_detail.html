@@ -1,0 +1,269 @@
+{% extends "member/base.html" %}
+
+{% block title %}{{ book.judul }} - Detail Buku{% endblock %}
+
+{% block extra_css %}
+<style>
+    .book-detail-page {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .breadcrumb-member {
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
+    .breadcrumb-member a {
+        color: var(--primary-blue);
+        text-decoration: none;
+    }
+    .breadcrumb-member a:hover {
+        text-decoration: underline;
+    }
+    .breadcrumb-member span.separator {
+        margin: 0 8px;
+        color: var(--text-light);
+    }
+    .breadcrumb-member span.current {
+        color: var(--text-dark);
+        font-weight: 500;
+    }
+
+    .book-detail-card-member {
+        background-color: var(--white-bg);
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+    }
+
+    .book-detail-header {
+        background-color: var(--primary-blue); /* Header part of the card blue */
+        color: var(--text-on-primary);
+        padding: 25px;
+        text-align: center;
+    }
+    .book-detail-header h1 {
+        margin: 0 0 10px 0;
+        font-size: 2rem;
+    }
+    .book-detail-header .author {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .book-detail-content {
+        display: flex;
+        gap: 30px;
+        padding: 25px;
+    }
+    .book-cover-detail-wrapper {
+        flex-shrink: 0;
+        width: 250px; /* Fixed width for cover */
+    }
+    .book-cover-detail-wrapper img {
+        width: 100%;
+        height: auto;
+        border-radius: var(--border-radius-md);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .book-cover-detail-wrapper .no-cover-detail {
+        width: 100%;
+        aspect-ratio: 3/4;
+        background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--border-radius-md);
+        font-size: 1rem;
+        color: var(--text-light);
+    }
+    .no-cover-detail .icon { font-size: 3rem; margin-bottom: 10px; }
+
+
+    .book-meta-info {
+        flex-grow: 1;
+    }
+    .book-meta-info h2 { /* Section titles like "Detail Buku" */
+        font-size: 1.5rem;
+        color: var(--primary-blue);
+        margin-bottom: 15px;
+        border-bottom: 2px solid var(--light-blue-bg);
+        padding-bottom: 10px;
+    }
+    .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    .meta-item-detail {
+        font-size: 0.95rem;
+    }
+    .meta-item-detail strong {
+        display: block;
+        color: var(--text-light);
+        font-weight: 500;
+        margin-bottom: 3px;
+    }
+    .meta-item-detail span {
+        color: var(--text-dark);
+    }
+    .category-tag-detail {
+        background-color: var(--primary-purple);
+        color: var(--text-on-primary);
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        display: inline-block;
+    }
+
+    .book-description-detail p {
+        line-height: 1.7;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+    }
+
+    .book-actions-detail {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    .book-actions-detail .stock-status {
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding: 10px;
+        border-radius: var(--border-radius-md);
+        width: 100%;
+        text-align: center;
+    }
+    .stock-status.available { background-color: #E6F7F0; color: #00875A; }
+    .stock-status.borrowed { background-color: #DEEBFF; color: #0747A6; } /* Light blue for borrowed */
+    .stock-status.unavailable { background-color: #FFEBEB; color: #DE350B; }
+
+    .book-actions-detail .btn-member {
+        width: 100%; /* Make button full width */
+        padding: 12px 20px;
+        font-size: 1.1rem;
+    }
+
+    .loan-rules-detail {
+        margin-top: 30px;
+        background-color: var(--light-blue-bg);
+        padding: 20px;
+        border-radius: var(--border-radius-md);
+    }
+    .loan-rules-detail h3 {
+        color: var(--primary-blue);
+        margin-bottom: 15px;
+    }
+    .loan-rules-detail ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    .loan-rules-detail ul li {
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        padding-left: 20px;
+        position: relative;
+    }
+    .loan-rules-detail ul li::before {
+        content: '🔹';
+        position: absolute;
+        left: 0;
+        color: var(--primary-purple);
+    }
+
+    @media (max-width: 768px) {
+        .book-detail-content {
+            flex-direction: column;
+        }
+        .book-cover-detail-wrapper {
+            width: 100%;
+            max-width: 300px; /* Limit cover size on mobile */
+            margin: 0 auto 20px auto;
+        }
+        .book-detail-header h1 { font-size: 1.6rem; }
+        .book-detail-header .author { font-size: 1rem; }
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="book-detail-page">
+    <div class="breadcrumb-member">
+        <a href="{{ url_for('member_books') }}">📚 Daftar Buku</a>
+        <span class="separator">›</span>
+        <span class="current">Detail Buku</span>
+    </div>
+
+    <div class="book-detail-card-member">
+        <div class="book-detail-header">
+            <h1>{{ book.judul }}</h1>
+            <p class="author">oleh {{ book.pengarang }}</p>
+        </div>
+
+        <div class="book-detail-content">
+            <div class="book-cover-detail-wrapper">
+                {% if book.gambar %}
+                    <img src="{{ url_for('static', filename=book.gambar) }}" alt="Cover {{ book.judul }}">
+                {% else %}
+                    <div class="no-cover-detail">
+                        <span class="icon">📚</span>
+                        <span>Tidak ada cover</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="book-meta-info">
+                <h2>📋 Detail Buku</h2>
+                <div class="meta-grid">
+                    <div class="meta-item-detail"><strong>Pengarang:</strong> <span>{{ book.pengarang }}</span></div>
+                    <div class="meta-item-detail"><strong>Penerbit:</strong> <span>{{ book.penerbit }}</span></div>
+                    <div class="meta-item-detail"><strong>Tahun Terbit:</strong> <span>{{ book.tahun_terbit }}</span></div>
+                    <div class="meta-item-detail"><strong>ISBN:</strong> <span>{{ book.isbn }}</span></div>
+                    <div class="meta-item-detail"><strong>Kategori:</strong> <span class="category-tag-detail">{{ book.kategori }}</span></div>
+                    <div class="meta-item-detail"><strong>Stok Tersedia:</strong> <span>{{ book.stok }}</span></div>
+                </div>
+
+                {% if book.deskripsi %}
+                <h2>📄 Deskripsi</h2>
+                <div class="book-description-detail">
+                    <p>{{ book.deskripsi }}</p>
+                </div>
+                {% endif %}
+
+                <div class="book-actions-detail">
+                    {% if already_borrowed %}
+                        <div class="stock-status borrowed">✔️ Anda sudah meminjam buku ini.</div>
+                    {% elif book.stok > 0 %}
+                         <div class="stock-status available">✅ Stok Tersedia!</div>
+                        <a href="{{ url_for('member_borrow_book', id=book.id) }}"
+                           class="btn-member"
+                           onclick="return confirm('Yakin ingin meminjam buku "{{ book.judul }}"?\n\nKetentuan:\n• Masa pinjam: 7 hari\n• Denda: Rp 1.000/hari\n• Maks: 3 buku/member')">
+                           📖 Pinjam Buku Ini
+                        </a>
+                    {% else %}
+                        <div class="stock-status unavailable">❌ Maaf, stok buku ini sedang habis.</div>
+                        <button class="btn-member btn-disabled-member" disabled>📖 Pinjam Buku Ini</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loan-rules-detail card-member" style="margin-top: 25px;">
+        <h3>ℹ️ Informasi Peminjaman</h3>
+        <ul>
+            <li>Masa peminjaman standar adalah <strong>7 hari</strong>.</li>
+            <li>Keterlambatan pengembalian dikenakan denda <strong>Rp 1.000 per hari</strong>.</li>
+            <li>Setiap anggota dapat meminjam maksimal <strong>3 buku</strong> secara bersamaan.</li>
+            <li>Untuk perpanjangan, silakan hubungi pustakawan sebelum tanggal jatuh tempo.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

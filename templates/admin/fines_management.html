@@ -1,0 +1,194 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manajemen Denda{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>💰 Manajemen Denda</h1>
+    <div class="header-actions">
+        <a href="{{ url_for('admin_loans') }}" class="btn btn-secondary">🔙 Kembali ke Kelola Peminjaman</a>
+        <a href="{{ url_for('admin_fines') }}" class="btn btn-info">📊 Laporan Denda</a>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<!-- Fine Statistics -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+            <h3>Rp {{ "{:,}".format(total_fines) }}</h3>
+            <p>Total Denda</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-info">
+            <h3>{{ fined_loans_count }}</h3>
+            <p>Peminjaman Berdenda</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info">
+            <h3>{{ members_with_fines }}</h3>
+            <p>Member Berdenda</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-info">
+            <h3>{{ overdue_without_fines }}</h3>
+            <p>Terlambat Belum Dihitung</p>
+        </div>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <h3>📋 Daftar Peminjaman dengan Denda</h3>
+        <div class="table-actions">
+            <button class="btn btn-warning" onclick="calculateAllOverdueFines()">
+                🧮 Hitung Semua Denda Terlambat
+            </button>
+        </div>
+    </div>
+    
+    <table id="fines-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Member</th>
+                <th>Buku</th>
+                <th>Tgl Pinjam</th>
+                <th>Batas Kembali</th>
+                <th>Status</th>
+                <th>Hari Terlambat</th>
+                <th>Denda</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans_with_fines %}
+            <tr class="fine-row">
+                <td>{{ loan.id }}</td>
+                <td>
+                    <div class="member-info">
+                        <strong>{{ loan.user.nama_lengkap }}</strong>
+                        <span class="class-badge">{{ loan.user.kelas }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="book-info">
+                        <strong>{{ loan.buku.judul }}</strong>
+                        <small>{{ loan.buku.pengarang }}</small>
+                    </div>
+                </td>
+                <td>{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
+                <td>{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}</td>
+                <td>
+                    {% if loan.status == 'dipinjam' %}
+                        <span class="status-badge status-active">📖 Dipinjam</span>
+                    {% else %}
+                        <span class="status-badge status-returned">✅ Dikembalikan</span>
+                    {% endif %}
+                </td>                <td>
+                    {% if loan.status == 'dipinjam' %}
+                        {% set days_late = (today - loan.tanggal_kembali_rencana.date()).days %}
+                        {% if days_late > 0 %}
+                            <span class="text-danger">{{ days_late }} hari</span>
+                        {% else %}
+                            <span class="text-success">Belum terlambat</span>
+                        {% endif %}
+                    {% else %}
+                        {% if loan.tanggal_kembali_aktual and loan.tanggal_kembali_aktual > loan.tanggal_kembali_rencana %}
+                            {% set days_late = (loan.tanggal_kembali_aktual.date() - loan.tanggal_kembali_rencana.date()).days %}
+                            <span class="text-warning">{{ days_late }} hari</span>
+                        {% else %}
+                            <span class="text-success">Tepat waktu</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="fine-display">
+                        <span class="fine-amount">Rp {{ "{:,}".format(loan.denda) }}</span>
+                        <div class="fine-edit-inline" id="fine-edit-{{ loan.id }}" style="display: none;">
+                            <form action="{{ url_for('admin_edit_fine', id=loan.id) }}" method="POST" style="display: flex; gap: 0.25rem;">
+                                <input type="number" name="denda" value="{{ loan.denda }}" 
+                                       class="fine-input" min="0" required>
+                                <button type="submit" class="btn btn-xs btn-primary">💾</button>
+                                <button type="button" class="btn btn-xs btn-secondary" 
+                                        onclick="toggleFineEdit({{ loan.id }})">❌</button>
+                            </form>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-xs btn-warning" onclick="toggleFineEdit({{ loan.id }})">
+                            ✏️ Edit
+                        </button>
+                        <a href="{{ url_for('admin_delete_fine', id=loan.id) }}" 
+                           class="btn btn-xs btn-danger"
+                           onclick="return confirm('Hapus denda ini?')">
+                            🗑️ Hapus
+                        </a>
+                        {% if loan.status == 'dipinjam' %}
+                            <a href="{{ url_for('admin_calculate_fine', id=loan.id) }}" 
+                               class="btn btn-xs btn-info"
+                               onclick="return confirm('Hitung ulang denda?')">
+                                🧮 Hitung Ulang
+                            </a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function toggleFineEdit(loanId) {
+    const editDiv = document.getElementById('fine-edit-' + loanId);
+    if (editDiv.style.display === 'none') {
+        editDiv.style.display = 'block';
+    } else {
+        editDiv.style.display = 'none';
+    }
+}
+
+function calculateAllOverdueFines() {
+    if (confirm('Hitung denda untuk semua peminjaman yang terlambat? Ini akan memperbarui denda secara otomatis.')) {
+        fetch('/admin/loans/calculate_all_fines', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error);
+        });
+    }
+}
+</script>
+
+{% endblock %}

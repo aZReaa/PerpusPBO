@@ -1,0 +1,146 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Tambah Member{% endblock %}
+
+{% block content %}
+    <div class="content-header">
+        <h1>➕ Tambah Member Baru</h1>
+        <a href="{{ url_for('admin_members') }}" class="btn btn-secondary">← Kembali ke Daftar Member</a>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-error">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="form-container">
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2>👤 Informasi Member</h2>
+                        <p>Silakan isi semua data member dengan lengkap dan benar</p>
+                    </div>
+
+                    <form method="POST" class="member-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="nama_lengkap">Nama Lengkap <span class="required">*</span></label>
+                                <input type="text" id="nama_lengkap" name="nama_lengkap" required
+                                       placeholder="Masukkan nama lengkap">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="kelas">Kelas <span class="required">*</span></label>
+                                <select id="kelas" name="kelas" required>
+                                    <option value="">Pilih Kelas</option>
+                                    <optgroup label="Kelas X">
+                                        <option value="X-IPA-1">X IPA 1</option>
+                                        <option value="X-IPA-2">X IPA 2</option>
+                                        <option value="X-IPA-3">X IPA 3</option>
+                                        <option value="X-IPS-1">X IPS 1</option>
+                                        <option value="X-IPS-2">X IPS 2</option>
+                                        <option value="X-IPS-3">X IPS 3</option>
+                                    </optgroup>
+                                    <optgroup label="Kelas XI">
+                                        <option value="XI-IPA-1">XI IPA 1</option>
+                                        <option value="XI-IPA-2">XI IPA 2</option>
+                                        <option value="XI-IPA-3">XI IPA 3</option>
+                                        <option value="XI-IPS-1">XI IPS 1</option>
+                                        <option value="XI-IPS-2">XI IPS 2</option>
+                                        <option value="XI-IPS-3">XI IPS 3</option>
+                                    </optgroup>
+                                    <optgroup label="Kelas XII">
+                                        <option value="XII-IPA-1">XII IPA 1</option>
+                                        <option value="XII-IPA-2">XII IPA 2</option>
+                                        <option value="XII-IPA-3">XII IPA 3</option>
+                                        <option value="XII-IPS-1">XII IPS 1</option>
+                                        <option value="XII-IPS-2">XII IPS 2</option>
+                                        <option value="XII-IPS-3">XII IPS 3</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="username">Username <span class="required">*</span></label>
+                                <input type="text" id="username" name="username" required
+                                       placeholder="Masukkan username (NIS atau nama panggilan)"
+                                       pattern="[a-zA-Z0-9_]+" 
+                                       title="Username hanya boleh mengandung huruf, angka, dan underscore">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" required
+                                       placeholder="Masukkan alamat email">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password <span class="required">*</span></label>
+                            <input type="password" id="password" name="password" required
+                                   placeholder="Masukkan password (minimal 6 karakter)"
+                                   minlength="6">
+                            <small class="form-text">Password minimal 6 karakter untuk keamanan akun</small>
+                        </div>
+
+                        <div class="form-info">
+                            <div class="info-box">
+                                <h4>ℹ️ Informasi Penting</h4>
+                                <ul>
+                                    <li>Pastikan data yang dimasukkan sudah benar</li>
+                                    <li>Username akan digunakan untuk login</li>
+                                    <li>Email harus valid untuk notifikasi peminjaman</li>
+                                    <li>Password harus aman dan mudah diingat member</li>
+                                    <li>Member baru dapat langsung meminjam buku setelah terdaftar</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                ✅ Tambah Member
+                            </button>
+                            <a href="{{ url_for('admin_members') }}" class="btn btn-secondary">
+                                ❌ Batal
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-generate username suggestion
+        document.getElementById('nama_lengkap').addEventListener('input', function() {
+            const namaLengkap = this.value;
+            const username = namaLengkap.toLowerCase()
+                .replace(/\s+/g, '_')
+                .replace(/[^a-z0-9_]/g, '');
+            
+            if (username && !document.getElementById('username').value) {
+                document.getElementById('username').placeholder = `Saran: ${username}`;
+            }
+        });
+
+        // Auto-generate email suggestion
+        document.getElementById('username').addEventListener('input', function() {
+            const username = this.value;
+            const emailField = document.getElementById('email');
+            
+                        if (username && !emailField.value) {
+                emailField.placeholder = `Saran: ${username}@student.school.id`;
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block extra_js %}
+    <!-- Additional JS if needed -->
+{% endblock %}

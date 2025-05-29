@@ -1,0 +1,11 @@
+<!-- Admin Header Component -->
+<nav class="navbar">
+    <div class="nav-container">
+        <h2>🛠️ Dashboard Admin</h2>
+        <div class="nav-links">
+            <span class="admin-greeting">👋 Halo, {{ current_user.nama_lengkap }}</span>
+            <span class="admin-role">⚡ Administrator</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">🚪 Logout</a>
+        </div>
+    </div>
+</nav>

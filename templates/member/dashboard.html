@@ -1,0 +1,205 @@
+{% extends "member/base.html" %}
+
+{% block title %}Dashboard Member - Perpustakaan Sekolah{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header-member {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        background-color: var(--white-bg);
+        padding: 20px;
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--card-shadow);
+    }
+    .dashboard-header-member h1 {
+        color: var(--primary-blue);
+        font-size: 1.8rem;
+        margin: 0;
+    }
+    .member-class-badge {
+        background-color: var(--primary-purple);
+        color: var(--text-on-primary);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .stats-grid-member {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    .stat-card-member {
+        background-color: var(--white-bg);
+        padding: 25px;
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--card-shadow);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        border-left: 5px solid var(--primary-blue); /* Accent line */
+    }
+    .stat-card-member.warning { border-left-color: #FFAB00; /* Amber */ }
+    .stat-card-member.danger { border-left-color: #DE350B; /* Red */ }
+
+    .stat-icon-member {
+        font-size: 2.5rem;
+        color: var(--primary-blue);
+        background-color: var(--light-blue-bg);
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .stat-card-member.warning .stat-icon-member { color: #FFAB00; background-color: #FFF0CC; }
+    .stat-card-member.danger .stat-icon-member { color: #DE350B; background-color: #FFEBEB; }
+    
+    .stat-info-member h3 {
+        font-size: 1.8rem;
+        margin: 0 0 5px 0;
+        color: var(--text-dark);
+    }
+    .stat-info-member p {
+        font-size: 0.95rem;
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    .dashboard-section {
+        background-color: var(--white-bg);
+        padding: 25px;
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--card-shadow);
+        margin-bottom: 30px;
+    }
+    .dashboard-section h2 {
+        font-size: 1.5rem;
+        color: var(--primary-blue);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--light-blue-bg);
+    }
+
+    .loans-table-member {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .loans-table-member th, .loans-table-member td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #EAEAEA;
+    }
+    .loans-table-member th {
+        background-color: var(--light-blue-bg);
+        font-weight: 600;
+        color: var(--primary-blue);
+        font-size: 0.9rem;
+    }
+    .loans-table-member td {
+        font-size: 0.95rem;
+    }
+    .status-badge-member {
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .status-badge-member.late { background-color: #FFEBEB; color: #DE350B; }
+    .status-badge-member.active { background-color: #E6F7F0; color: #00875A; }
+
+    .no-data-message {
+        text-align: center;
+        padding: 20px;
+        color: var(--text-light);
+    }
+    .no-data-message .icon { font-size: 2rem; margin-bottom: 10px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header-member">
+    <h1>📊 Dashboard Member</h1>
+    <span class="member-class-badge">🎯 {{ current_user.kelas }}</span>
+</div>
+
+<div class="stats-grid-member">
+    <div class="stat-card-member">
+        <div class="stat-icon-member">📖</div>
+        <div class="stat-info-member">
+            <h3>{{ peminjaman_aktif|length }}</h3>
+            <p>Buku Sedang Dipinjam</p>
+        </div>
+    </div>
+    
+    {% if due_soon_count > 0 %}
+    <div class="stat-card-member warning">
+        <div class="stat-icon-member">⏰</div>
+        <div class="stat-info-member">
+            <h3>{{ due_soon_count }}</h3>
+            <p>Hampir Jatuh Tempo</p>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if total_denda > 0 %}
+    <div class="stat-card-member danger">
+        <div class="stat-icon-member">💰</div>
+        <div class="stat-info-member">
+            <h3>Rp {{ total_denda }}</h3>
+            <p>Denda Tertunggak</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="dashboard-section current-loans-section">
+    <h2>📖 Buku Sedang Dipinjam Saat Ini</h2>
+    {% if peminjaman_aktif %}
+    <div style="overflow-x: auto;">
+        <table class="loans-table-member">
+            <thead>
+                <tr>
+                    <th>Judul Buku</th>
+                    <th>Pengarang</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Batas Kembali</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pinjam in peminjaman_aktif %}
+                <tr>
+                    <td>{{ pinjam.buku.judul }}</td>
+                    <td>{{ pinjam.buku.pengarang }}</td>
+                    <td>{{ pinjam.tanggal_pinjam.strftime('%d %b %Y') }}</td>
+                    <td>{{ pinjam.tanggal_kembali_rencana.strftime('%d %b %Y') }}</td>
+                    <td>
+                        {% if pinjam.tanggal_kembali_rencana.date() < today %}
+                            <span class="status-badge-member late">Terlambat</span>
+                        {% else %}
+                            <span class="status-badge-member active">Aktif</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="no-data-message">
+        <div class="icon">📚</div>
+        <p>Anda tidak memiliki buku yang sedang dipinjam.</p>
+        <a href="{{ url_for('member_books') }}" class="btn-member">Cari Buku Sekarang</a>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}

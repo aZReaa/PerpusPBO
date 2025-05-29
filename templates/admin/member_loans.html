@@ -1,0 +1,205 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Riwayat Peminjaman - {{ member.nama_lengkap }}{% endblock %}
+
+{% block content %}
+    <div class="content-header">
+        <h1>📚 Riwayat Peminjaman</h1>
+        <a href="{{ url_for('admin_members') }}" class="btn btn-secondary">← Kembali ke Daftar Member</a>
+    </div>
+
+    <!-- Member Info -->
+    <div class="member-info-card">
+        <div class="member-details">
+            <h2>👤 {{ member.nama_lengkap }}</h2>
+            <div class="member-meta">
+                <span class="badge">📧 {{ member.email }}</span>
+                <span class="badge">🎓 {{ member.kelas or 'Tidak ada kelas' }}</span>
+                <span class="badge">📅 Bergabung: {{ member.created_at.strftime('%d/%m/%Y') }}</span>
+            </div>        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-info">
+                    <h3>{{ loans|length }}</h3>
+                    <p>Total Peminjaman</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📖</div>
+                <div class="stat-info">
+                    <h3>{{ loans|selectattr('status', 'equalto', 'dipinjam')|list|length }}</h3>
+                    <p>Sedang Dipinjam</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚨</div>
+                <div class="stat-info">
+                    <h3>{{ loans|selectattr('denda', 'greaterthan', 0)|list|length }}</h3>
+                    <p>Pernah Terlambat</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if loans %}
+    <!-- Loans Table -->
+    <div class="table-container">
+        <table class="loans-table">
+            <thead>
+                <tr>
+                    <th>Buku</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Batas Kembali</th>
+                    <th>Tanggal Kembali</th>
+                    <th>Status</th>
+                    <th>Denda</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in loans %}
+                <tr class="loan-row {{ 'active' if loan.status == 'dipinjam' else 'returned' }}">
+                    <td>
+                        <div class="book-info">
+                            <strong>{{ loan.buku.judul }}</strong>
+                            <small>{{ loan.buku.pengarang }}</small>
+                        </div>
+                    </td>
+                    <td>{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
+                    <td>
+                        {% if loan.status == 'dipinjam' %}
+                            {% set days_left = (loan.tanggal_kembali_rencana.date() - (now() if now else loan.tanggal_pinjam.date())|date()).days %}
+                            {% if days_left < 0 %}
+                                <span class="due-date overdue">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }} ⚠️</span>
+                            {% elif days_left == 0 %}
+                                <span class="due-date today">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }} 🔔</span>
+                            {% elif days_left <= 2 %}
+                                <span class="due-date soon">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }} 📅</span>
+                            {% else %}
+                                <span class="due-date normal">{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}</span>
+                            {% endif %}
+                        {% else %}
+                            {{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if loan.tanggal_kembali_aktual %}
+                            {{ loan.tanggal_kembali_aktual.strftime('%d/%m/%Y') }}
+                        {% else %}
+                            <span class="not-returned">Belum dikembalikan</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if loan.status == 'dipinjam' %}
+                            <span class="status-badge active">📖 Dipinjam</span>
+                        {% else %}
+                            <span class="status-badge returned">✅ Dikembalikan</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if loan.denda > 0 %}
+                            <span class="fine-amount">Rp {{ "{:,}".format(loan.denda) }}</span>
+                        {% else %}
+                            <span class="no-fine">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if loan.status == 'dipinjam' %}
+                            <a href="{{ url_for('admin_return_book', id=loan.id) }}" 
+                               class="btn btn-sm btn-success"
+                               onclick="return confirm('Konfirmasi pengembalian buku {{ loan.buku.judul }}?')">
+                                ✅ Kembalikan
+                            </a>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-section">
+        <h3>🚀 Aksi Cepat</h3>
+        <div class="action-buttons">
+            <a href="{{ url_for('admin_process_loan') }}?user_id={{ member.id }}" class="btn btn-primary">
+                📖 Tambah Peminjaman Baru
+            </a>            <a href="{{ url_for('admin_edit_member', id=member.id) }}" class="btn btn-warning">
+                ✏️ Edit Data Member
+            </a>
+            {% if loans|selectattr('status', 'equalto', 'dipinjam')|list|length == 0 %}
+            <button class="btn btn-danger delete-member-btn" 
+                    data-member-id="{{ member.id }}" 
+                    data-member-name="{{ member.nama_lengkap }}">
+                🗑️ Hapus Member
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    {% else %}
+    <!-- No Loans -->
+    <div class="no-data">
+        <h3>📚 Belum Ada Peminjaman</h3>
+        <p>Member ini belum pernah meminjam buku.</p>
+        <a href="{{ url_for('admin_process_loan') }}?user_id={{ member.id }}" class="btn btn-primary">
+            📖 Buat Peminjaman Pertama
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>⚠️ Konfirmasi Hapus Member</h3>
+            <p>Apakah Anda yakin ingin menghapus member <strong id="memberName"></strong>?</p>
+            <p class="warning-text">⚠️ Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data peminjaman member tersebut.</p>
+            <div class="modal-actions">
+                <button onclick="closeDeleteModal()" class="btn btn-secondary">Batal</button>
+                <button onclick="confirmDelete()" class="btn btn-danger">🗑️ Hapus</button>
+            </div>
+        </div>
+    </div>    <script>
+        // Delete member functionality
+        let memberToDelete = null;
+
+        // Add event listener for delete buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-member-btn');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const memberId = this.getAttribute('data-member-id');
+                    const memberName = this.getAttribute('data-member-name');
+                    deleteMember(memberId, memberName);
+                });
+            });
+        });
+
+        function deleteMember(memberId, memberName) {
+            memberToDelete = memberId;
+            document.getElementById('memberName').textContent = memberName;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            memberToDelete = null;
+        }
+
+        function confirmDelete() {
+            if (memberToDelete) {
+                window.location.href = `/admin/members/delete/${memberToDelete}`;
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+    </script>
+{% endblock %}

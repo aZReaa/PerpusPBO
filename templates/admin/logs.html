@@ -1,0 +1,276 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Log Aktivitas{% endblock %}
+
+{% block content %}
+    <div class="content-header">
+        <h1>📋 Log Aktivitas Perpustakaan</h1>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="refreshLogs()">🔄 Refresh</button>
+            <button class="btn btn-primary" onclick="exportLogs()">📥 Export Log</button>
+        </div>
+            </div>
+
+            <!-- Activity Summary -->
+            <div class="activity-summary">
+                <h2>📊 Ringkasan Aktivitas Hari Ini</h2>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-icon">📖</div>
+                        <div class="summary-info">
+                            <h3 id="today-loans">-</h3>
+                            <p>Peminjaman Hari Ini</p>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-icon">📚</div>
+                        <div class="summary-info">
+                            <h3 id="today-returns">-</h3>
+                            <p>Pengembalian Hari Ini</p>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-icon">👥</div>
+                        <div class="summary-info">
+                            <h3 id="active-members">{{ recent_loans|selectattr('status', 'equalto', 'dipinjam')|list|length }}</h3>
+                            <p>Member Aktif</p>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="summary-icon">⚠️</div>
+                        <div class="summary-info">
+                            <h3 id="overdue-count">-</h3>
+                            <p>Keterlambatan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Options -->
+            <div class="log-filters">
+                <h3>🔍 Filter Aktivitas</h3>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="filter-type">Jenis Aktivitas:</label>
+                        <select id="filter-type" onchange="filterLogs()">
+                            <option value="all">Semua Aktivitas</option>
+                            <option value="borrow">Peminjaman</option>
+                            <option value="return">Pengembalian</option>
+                            <option value="overdue">Keterlambatan</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-date">Tanggal:</label>
+                        <select id="filter-date" onchange="filterLogs()">
+                            <option value="today">Hari Ini</option>
+                            <option value="week">7 Hari Terakhir</option>
+                            <option value="month">30 Hari Terakhir</option>
+                            <option value="all">Semua Waktu</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filter-member">Member:</label>
+                        <input type="text" id="filter-member" placeholder="Cari nama member..." onkeyup="filterLogs()">
+                    </div>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Activity Timeline -->
+            <div class="activity-timeline">
+                <h2>⏱️ Timeline Aktivitas Terkini</h2>
+                <div class="timeline-container">
+                    {% for loan in recent_loans %}
+                    <div class="timeline-item" data-type="{{ loan.status }}" data-date="{{ loan.tanggal_pinjam.strftime('%Y-%m-%d') }}">
+                        <div class="timeline-marker 
+                            {% if loan.status == 'dipinjam' %}marker-borrow
+                            {% elif loan.status == 'dikembalikan' and loan.denda > 0 %}marker-late
+                            {% elif loan.status == 'dikembalikan' %}marker-return
+                            {% endif %}">
+                            {% if loan.status == 'dipinjam' %}📖
+                            {% elif loan.status == 'dikembalikan' and loan.denda > 0 %}⚠️
+                            {% elif loan.status == 'dikembalikan' %}✅
+                            {% endif %}
+                        </div>
+                        
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h4>
+                                    {% if loan.status == 'dipinjam' %}
+                                        📖 Peminjaman Baru
+                                    {% elif loan.status == 'dikembalikan' and loan.denda > 0 %}
+                                        ⚠️ Pengembalian Terlambat
+                                    {% elif loan.status == 'dikembalikan' %}
+                                        ✅ Pengembalian Tepat Waktu
+                                    {% endif %}
+                                </h4>
+                                <span class="timeline-time">
+                                    {% if loan.status == 'dipinjam' %}
+                                        {{ loan.tanggal_pinjam.strftime('%d/%m/%Y %H:%M') }}
+                                    {% else %}
+                                        {{ loan.tanggal_kembali_aktual.strftime('%d/%m/%Y %H:%M') if loan.tanggal_kembali_aktual else '-' }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="timeline-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Member:</span>
+                                    <span class="detail-value">{{ loan.user.nama_lengkap }} ({{ loan.user.kelas }})</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Buku:</span>
+                                    <span class="detail-value">{{ loan.buku.judul }} - {{ loan.buku.pengarang }}</span>
+                                </div>
+                                {% if loan.status == 'dikembalikan' and loan.denda > 0 %}
+                                <div class="detail-row">
+                                    <span class="detail-label">Denda:</span>
+                                    <span class="detail-value fine-amount">Rp {{ "{:,}".format(loan.denda) }}</span>
+                                </div>
+                                {% endif %}
+                                {% if loan.status == 'dipinjam' %}
+                                <div class="detail-row">
+                                    <span class="detail-label">Batas Kembali:</span>
+                                    <span class="detail-value 
+                                        {% if loan.tanggal_kembali_rencana < loan.tanggal_pinjam %}text-danger{% endif %}">
+                                        {{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}
+                                    </span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if not recent_loans %}
+            <div class="no-data">
+                <h3>📋 Belum Ada Aktivitas</h3>
+                <p>Belum ada aktivitas peminjaman yang tercatat.</p>
+                <div class="info-box">
+                    <h4>ℹ️ Yang Dicatat dalam Log:</h4>
+                    <ul>
+                        <li>📖 Semua aktivitas peminjaman buku</li>
+                        <li>📚 Semua aktivitas pengembalian buku</li>
+                        <li>⚠️ Kasus keterlambatan dan denda</li>
+                        <li>👥 Aktivitas member (login, registrasi)</li>
+                        <li>📊 Perubahan data buku dan member</li>
+                    </ul>
+                </div>
+                <div class="action-buttons">
+                    <a href="{{ url_for('admin_process_loan') }}" class="btn btn-primary">📖 Proses Peminjaman Pertama</a>
+                    <a href="{{ url_for('admin_add_member') }}" class="btn btn-secondary">👥 Tambah Member</a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- System Status -->
+            <div class="system-status">
+                <h2>⚙️ Status Sistem</h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="status-indicator status-online"></span>
+                        <span class="status-label">Database</span>
+                        <span class="status-value">Online</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-indicator status-online"></span>
+                        <span class="status-label">Aplikasi</span>
+                        <span class="status-value">Berjalan Normal</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-indicator status-online"></span>
+                        <span class="status-label">Log System</span>
+                        <span class="status-value">Aktif</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-indicator status-warning"></span>
+                        <span class="status-label">Backup</span>
+                        <span class="status-value">Manual</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function refreshLogs() {
+            location.reload();
+        }
+
+        function exportLogs() {
+            alert('Fitur export log akan segera tersedia!');
+        }
+
+        function filterLogs() {
+            const type = document.getElementById('filter-type').value;
+            const date = document.getElementById('filter-date').value;
+            const member = document.getElementById('filter-member').value.toLowerCase();
+            
+            const items = document.querySelectorAll('.timeline-item');
+            
+            items.forEach(item => {
+                let show = true;
+                
+                // Filter by type
+                if (type !== 'all') {
+                    const itemType = item.getAttribute('data-type');
+                    if (type === 'borrow' && itemType !== 'dipinjam') show = false;
+                    if (type === 'return' && itemType !== 'dikembalikan') show = false;
+                    if (type === 'overdue' && !item.querySelector('.marker-late')) show = false;
+                }
+                
+                // Filter by member name
+                if (member && !item.textContent.toLowerCase().includes(member)) {
+                    show = false;
+                }
+                
+                // Filter by date (simplified - in real implementation would parse dates)
+                // This is a placeholder for date filtering logic
+                
+                item.style.display = show ? 'flex' : 'none';
+            });
+        }
+
+        // Calculate today's statistics
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const items = document.querySelectorAll('.timeline-item');
+            
+            let todayLoans = 0;
+            let todayReturns = 0;
+            let overdueCount = 0;
+            
+            items.forEach(item => {
+                const itemDate = item.getAttribute('data-date');
+                if (itemDate === today) {
+                    if (item.querySelector('.marker-borrow')) todayLoans++;
+                    if (item.querySelector('.marker-return, .marker-late')) todayReturns++;
+                }
+                if (item.querySelector('.marker-late')) overdueCount++;
+            });
+            
+            document.getElementById('today-loans').textContent = todayLoans;
+            document.getElementById('today-returns').textContent = todayReturns;
+            document.getElementById('overdue-count').textContent = overdueCount;
+                });
+
+        // Auto-refresh every 5 minutes
+        setInterval(refreshLogs, 300000);
+    </script>
+{% endblock %}

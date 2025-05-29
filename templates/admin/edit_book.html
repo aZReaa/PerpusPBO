@@ -1,0 +1,101 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Edit Buku{% endblock %}
+
+{% block content %}
+            <div class="content-header">
+                <h1>Edit Buku</h1>
+                <a href="{{ url_for('admin_books') }}" class="btn btn-secondary">Kembali</a>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-error">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="form-container">
+                <form method="POST" enctype="multipart/form-data" class="book-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="judul">Judul Buku:</label>
+                            <input type="text" id="judul" name="judul" value="{{ book.judul }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pengarang">Pengarang:</label>
+                            <input type="text" id="pengarang" name="pengarang" value="{{ book.pengarang }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="penerbit">Penerbit:</label>
+                            <input type="text" id="penerbit" name="penerbit" value="{{ book.penerbit }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tahun_terbit">Tahun Terbit:</label>
+                            <input type="number" id="tahun_terbit" name="tahun_terbit" 
+                                   value="{{ book.tahun_terbit }}" min="1900" max="2025" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="isbn">ISBN:</label>
+                            <input type="text" id="isbn" name="isbn" value="{{ book.isbn }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="kategori">Kategori:</label>
+                            <select id="kategori" name="kategori" required>
+                                <option value="">Pilih Kategori</option>
+                                <option value="Fiksi" {% if book.kategori == 'Fiksi' %}selected{% endif %}>Fiksi</option>
+                                <option value="Non-Fiksi" {% if book.kategori == 'Non-Fiksi' %}selected{% endif %}>Non-Fiksi</option>
+                                <option value="Sains" {% if book.kategori == 'Sains' %}selected{% endif %}>Sains</option>
+                                <option value="Sejarah" {% if book.kategori == 'Sejarah' %}selected{% endif %}>Sejarah</option>
+                                <option value="Biografi" {% if book.kategori == 'Biografi' %}selected{% endif %}>Biografi</option>
+                                <option value="Teknologi" {% if book.kategori == 'Teknologi' %}selected{% endif %}>Teknologi</option>
+                                <option value="Pendidikan" {% if book.kategori == 'Pendidikan' %}selected{% endif %}>Pendidikan</option>
+                                <option value="Agama" {% if book.kategori == 'Agama' %}selected{% endif %}>Agama</option>
+                                <option value="Lainnya" {% if book.kategori == 'Lainnya' %}selected{% endif %}>Lainnya</option>
+                            </select>
+                        </div>
+                    </div>                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="stok">Stok:</label>
+                            <input type="number" id="stok" name="stok" value="{{ book.stok }}" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gambar">Gambar Cover (Opsional):</label>
+                            <input type="file" id="gambar" name="gambar" accept="image/*">
+                            <small class="form-help">Format: PNG, JPG, JPEG, GIF. Maksimal 16MB.</small>
+                            {% if book.gambar %}
+                                <div class="current-image">
+                                    <p>Gambar saat ini:</p>
+                                    <img src="{{ url_for('static', filename=book.gambar) }}" alt="Cover {{ book.judul }}" style="max-width: 100px; max-height: 150px;">
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deskripsi">Deskripsi:</label>
+                        <textarea id="deskripsi" name="deskripsi" rows="4" 
+                                  placeholder="Deskripsi singkat tentang buku...">{{ book.deskripsi or '' }}</textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Buku</button>
+                        <a href="{{ url_for('admin_books') }}" class="btn btn-secondary">Batal</a>
+                    </div>
+                </form>
+            </div>        </div>
+    </div>
+{% endblock %}

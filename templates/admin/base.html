@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard{% endblock %} - Perpustakaan Sekolah</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-dashboard.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        {% include 'admin/includes/header.html' %}
+
+        <div class="content-wrapper">
+            <div class="dashboard-container">
+                <!-- Sidebar -->
+                {% include 'admin/includes/sidebar.html' %}
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+
+            <!-- Footer -->
+            {% include 'admin/includes/footer.html' %}
+        </div>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

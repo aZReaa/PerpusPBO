@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perpustakaan Digital - Sekolah Modern</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+</head>
+<body class="homepage">
+    <!-- Modern Navigation -->
+    <nav class="navbar-modern">
+        <div class="nav-container-modern">
+            <div class="brand">
+                <div class="brand-icon">📚</div>
+                <span class="brand-text">Perpustakaan Digital</span>
+            </div>
+            <div class="nav-actions">
+                <a href="{{ url_for('login') }}" class="btn-nav-login">
+                    <span class="login-icon">🔐</span>
+                    <span>Masuk</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Gradient Background -->
+    <section class="hero-modern">
+        <div class="hero-background">
+            <div class="hero-gradient"></div>
+            <div class="hero-pattern"></div>
+        </div>
+        <div class="hero-content-modern">
+            <div class="hero-badge">
+                <span class="badge-icon">✨</span>
+                <span>Sistem Perpustakaan Terdepan</span>
+            </div>
+            <h1 class="hero-title">
+                Perpustakaan Digital
+                <span class="hero-highlight">Masa Depan</span>
+            </h1>
+            <p class="hero-description">
+                Kelola perpustakaan dengan teknologi modern. Akses katalog, pinjam buku, 
+                dan pantau aktivitas dengan mudah dalam satu platform terintegrasi.
+            </p>
+            <div class="hero-actions">
+                <a href="{{ url_for('login') }}" class="btn-hero-primary">
+                    <span class="btn-text">Mulai Sekarang</span>
+                    <span class="btn-arrow">→</span>
+                </a>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Koleksi Buku</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-number">200+</div>
+                        <div class="stat-label">Member Aktif</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-modern">
+        <div class="container-modern">
+            <div class="section-header">
+                <div class="section-badge">
+                    <span class="badge-icon">🚀</span>
+                    <span>Fitur Unggulan</span>
+                </div>
+                <h2 class="section-title">Solusi Perpustakaan Lengkap</h2>
+                <p class="section-description">
+                    Platform all-in-one untuk mengelola semua aspek perpustakaan modern
+                </p>
+            </div>
+            
+            <div class="features-grid-modern">
+                <div class="feature-card-modern">
+                    <div class="feature-icon">
+                        <span class="icon-bg">📚</span>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Katalog Digital</h3>
+                        <p>Jelajahi ribuan koleksi buku dengan sistem pencarian canggih dan filter kategori yang intuitif</p>
+                        <div class="feature-highlights">
+                            <span class="highlight-item">✓ Pencarian Advanced</span>
+                            <span class="highlight-item">✓ Filter Kategori</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card-modern">
+                    <div class="feature-icon">
+                        <span class="icon-bg">🔄</span>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Peminjaman Otomatis</h3>
+                        <p>Sistem peminjaman dan pengembalian otomatis dengan notifikasi real-time dan reminder cerdas</p>
+                        <div class="feature-highlights">
+                            <span class="highlight-item">✓ Notifikasi Real-time</span>
+                            <span class="highlight-item">✓ Auto Reminder</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card-modern">
+                    <div class="feature-icon">
+                        <span class="icon-bg">📊</span>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Dashboard Analitik</h3>
+                        <p>Pantau aktivitas perpustakaan dengan dashboard interaktif dan laporan mendalam yang mudah dipahami</p>
+                        <div class="feature-highlights">
+                            <span class="highlight-item">✓ Laporan Detail</span>
+                            <span class="highlight-item">✓ Grafik Interaktif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card-modern">
+                    <div class="feature-icon">
+                        <span class="icon-bg">⚙️</span>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Manajemen Terpusat</h3>
+                        <p>Kelola seluruh aspek perpustakaan dari satu dashboard admin yang powerful dan user-friendly</p>
+                        <div class="feature-highlights">
+                            <span class="highlight-item">✓ Panel Admin</span>
+                            <span class="highlight-item">✓ User Management</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-modern">
+        <div class="cta-background">
+            <div class="cta-gradient"></div>
+        </div>
+        <div class="cta-content">
+            <div class="cta-icon">🎯</div>
+            <h2 class="cta-title">Siap Memulai Perjalanan Digital?</h2>
+            <p class="cta-description">
+                Bergabunglah dengan revolusi perpustakaan digital dan rasakan pengalaman mengelola buku yang tak terlupakan
+            </p>
+            <a href="{{ url_for('login') }}" class="btn-cta">
+                <span class="btn-text">Akses Sekarang</span>
+                <span class="btn-icon">🚀</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-modern">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="brand">
+                    <div class="brand-icon">📚</div>
+                    <span class="brand-text">Perpustakaan Digital</span>
+                </div>
+                <p class="footer-description">
+                    Sistem manajemen perpustakaan modern untuk institusi pendidikan masa depan
+                </p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Perpustakaan Digital. Dibuat dengan ❤️ untuk pendidikan Indonesia.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

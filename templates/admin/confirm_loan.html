@@ -1,0 +1,79 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Konfirmasi Peminjaman{% endblock %}
+
+{% block content %}
+            <div class="content-header">
+                <h1>Konfirmasi Peminjaman Baru</h1>
+                <a href="{{ url_for('admin_loans') }}" class="btn btn-secondary">Lihat Semua Peminjaman</a>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-error">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="form-container">
+                <form method="POST" class="loan-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user_id">Pilih Member:</label>
+                            <select id="user_id" name="user_id" required>
+                                <option value="">Pilih Member</option>
+                                {% for user in users %}
+                                    <option value="{{ user.id }}">{{ user.nama_lengkap }} ({{ user.kelas }}) - {{ user.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="buku_id">Pilih Buku:</label>
+                            <select id="buku_id" name="buku_id" required>
+                                <option value="">Pilih Buku</option>
+                                {% for book in books %}
+                                    <option value="{{ book.id }}">{{ book.judul }} - {{ book.pengarang }} (Stok: {{ book.stok }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="confirmation_required" value="yes">
+
+                    <div class="form-info">
+                        <div class="info-box">
+                            <h4>⏳ Konfirmasi Peminjaman</h4>
+                            <ul>
+                                <li>Buku akan <strong>menunggu konfirmasi</strong> administrator</li>
+                                <li>Stok buku <strong>belum berkurang</strong> hingga konfirmasi</li>
+                                <li>Batas waktu peminjaman: <strong>7 hari</strong> setelah konfirmasi</li>
+                                <li>Denda keterlambatan: <strong>Rp 1.000/hari</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Ajukan Peminjaman</button>
+                        <a href="{{ url_for('admin_loans') }}" class="btn btn-secondary">Batal</a>
+                    </div>
+                </form>
+            </div>
+
+            {% if not users %}
+            <div class="no-data">
+                <h3>Belum ada member terdaftar</h3>
+                <p>Tidak ada member yang dapat meminjam buku.</p>
+            </div>
+            {% elif not books %}
+            <div class="no-data">
+                <h3>Tidak ada buku tersedia</h3>
+                <p>Semua buku sedang dipinjam atau belum ada buku yang ditambahkan.</p>
+                <a href="{{ url_for('admin_add_book') }}" class="btn btn-primary">Tambah Buku Baru</a>
+            </div>
+            {% endif %}        </div>
+    </div>
+{% endblock %}

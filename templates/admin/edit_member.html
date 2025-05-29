@@ -1,0 +1,131 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Edit Member{% endblock %}
+
+{% block content %}
+    <div class="content-header">
+        <h1>✏️ Edit Member</h1>
+        <a href="{{ url_for('admin_members') }}" class="btn btn-secondary">← Kembali</a>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Compact Form -->
+    <div class="form-container">
+        <div class="form-card">
+            <div class="form-header">
+                <h2>📝 Edit: {{ member.nama_lengkap }}</h2>
+            </div>
+
+            <form method="POST" class="member-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="username">👤 Username</label>
+                        <input type="text" 
+                               id="username" 
+                               name="username" 
+                               value="{{ member.username }}" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">📧 Email</label>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               value="{{ member.email }}" 
+                               required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="nama_lengkap">📝 Nama Lengkap</label>
+                        <input type="text" 
+                               id="nama_lengkap" 
+                               name="nama_lengkap" 
+                               value="{{ member.nama_lengkap }}" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kelas">🎓 Kelas</label>
+                        <select id="kelas" name="kelas">
+                            <option value="">Pilih Kelas</option>
+                            <option value="X IPA 1" {{ 'selected' if member.kelas == 'X IPA 1' }}>X IPA 1</option>                            <option value="X IPA 2" {{ 'selected' if member.kelas == 'X IPA 2' }}>X IPA 2</option>
+                            <option value="X IPS 1" {{ 'selected' if member.kelas == 'X IPS 1' }}>X IPS 1</option>
+                            <option value="X IPS 2" {{ 'selected' if member.kelas == 'X IPS 2' }}>X IPS 2</option>
+                            <option value="XI IPA 1" {{ 'selected' if member.kelas == 'XI IPA 1' }}>XI IPA 1</option>
+                            <option value="XI IPA 2" {{ 'selected' if member.kelas == 'XI IPA 2' }}>XI IPA 2</option>
+                            <option value="XI IPS 1" {{ 'selected' if member.kelas == 'XI IPS 1' }}>XI IPS 1</option>
+                            <option value="XI IPS 2" {{ 'selected' if member.kelas == 'XI IPS 2' }}>XI IPS 2</option>
+                            <option value="XII IPA 1" {{ 'selected' if member.kelas == 'XII IPA 1' }}>XII IPA 1</option>
+                            <option value="XII IPA 2" {{ 'selected' if member.kelas == 'XII IPA 2' }}>XII IPA 2</option>
+                            <option value="XII IPS 1" {{ 'selected' if member.kelas == 'XII IPS 1' }}>XII IPS 1</option>
+                            <option value="XII IPS 2" {{ 'selected' if member.kelas == 'XII IPS 2' }}>XII IPS 2</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">🔐 Password Baru (Opsional)</label>
+                        <input type="password" 
+                               id="password" 
+                               name="password" 
+                               placeholder="Kosongkan jika tidak ingin mengubah">
+                        <small class="form-help">Minimal 6 karakter</small>
+                    </div>
+                </div>                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        💾 Simpan
+                    </button>
+                    <a href="{{ url_for('admin_members') }}" class="btn btn-secondary">
+                        ❌ Batal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Auto-generate email suggestion based on username
+        document.getElementById('username').addEventListener('input', function() {
+            const username = this.value;
+            const emailField = document.getElementById('email');
+            
+            // Only suggest if email field is empty or contains the old suggestion
+            if (username && (!emailField.value || emailField.value.includes('@student.school.id'))) {
+                emailField.placeholder = `Saran: ${username}@student.school.id`;
+            }
+        });
+
+        // Form validation
+        document.querySelector('.member-form').addEventListener('submit', function(e) {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const namaLengkap = document.getElementById('nama_lengkap').value;
+
+            if (username.length < 3) {
+                e.preventDefault();
+                alert('Username harus minimal 3 karakter!');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                e.preventDefault();
+                alert('Email tidak valid!');
+                return;
+            }
+
+            if (namaLengkap.length < 3) {
+                e.preventDefault();
+                alert('Nama lengkap harus minimal 3 karakter!');
+                return;
+            }        });
+    </script>
+{% endblock %}

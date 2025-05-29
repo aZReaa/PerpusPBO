@@ -1,0 +1,506 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Kelola Peminjaman{% endblock %}
+
+{% block content %}            <div class="content-header">
+                <h1>📖 Kelola Peminjaman</h1>                <div class="header-actions">
+                    <a href="{{ url_for('admin_process_loan') }}" class="btn btn-primary">⚡ Proses Peminjaman Baru</a>
+                    <a href="{{ url_for('admin_confirm_loan') }}" class="btn btn-secondary">⏳ Konfirmasi Peminjaman</a>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Loan Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-info">
+                        <h3>{{ loans|length }}</h3>
+                        <p>Total Peminjaman</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📖</div>
+                    <div class="stat-info">
+                        <h3>{{ loans|selectattr('status', 'equalto', 'dipinjam')|list|length }}</h3>
+                        <p>Aktif Dipinjam</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏰</div>
+                    <div class="stat-info">
+                        <h3 id="due-today-count">0</h3>
+                        <p>Jatuh Tempo Hari Ini</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-warning">
+                    <div class="stat-icon">🚨</div>
+                    <div class="stat-info">
+                        <h3 id="overdue-count">0</h3>
+                        <p>Terlambat</p>
+                    </div>
+                </div>
+            </div>            <!-- Search and Filter -->
+            <div class="search-filter-section-modern">
+                <div class="search-container-enhanced">
+                    <div class="search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" placeholder="Cari peminjaman... (nama member, judul buku, dll)" class="search-input-enhanced">
+                    </div>
+                </div>
+                
+                <div class="filter-container-enhanced">
+                    <h3 class="filter-title">📂 Filter Peminjaman</h3>
+                    <div class="filter-buttons-modern">
+                        <button class="filter-btn-modern active" data-filter="all">
+                            <span class="btn-icon">📋</span>
+                            <span class="btn-text">Semua</span>
+                            <span class="btn-count" id="count-all">{{ loans|length }}</span>
+                        </button>
+                        <button class="filter-btn-modern" data-filter="dipinjam">
+                            <span class="btn-icon">📖</span>
+                            <span class="btn-text">Dipinjam</span>
+                            <span class="btn-count" id="count-dipinjam">{{ loans|selectattr('status', 'equalto', 'dipinjam')|list|length }}</span>
+                        </button>
+                        <button class="filter-btn-modern" data-filter="dikembalikan">
+                            <span class="btn-icon">✅</span>
+                            <span class="btn-text">Dikembalikan</span>
+                            <span class="btn-count" id="count-dikembalikan">{{ loans|selectattr('status', 'equalto', 'dikembalikan')|list|length }}</span>
+                        </button>
+                        <button class="filter-btn-modern" data-filter="pending" style="background-color: #fffbea; border-color: #f6ad55;">
+                            <span class="btn-icon">⏳</span>
+                            <span class="btn-text">Menunggu</span>
+                            <span class="btn-count" id="count-pending">{{ loans|selectattr('status', 'equalto', 'menunggu_konfirmasi')|list|length }}</span>
+                        </button>
+                        <button class="filter-btn-modern" data-filter="due_today">
+                            <span class="btn-icon">⏰</span>
+                            <span class="btn-text">Jatuh Tempo</span>
+                            <span class="btn-count" id="count-due-today">0</span>
+                        </button>
+                        <button class="filter-btn-modern warning" data-filter="overdue">
+                            <span class="btn-icon">🚨</span>
+                            <span class="btn-text">Terlambat</span>
+                            <span class="btn-count" id="count-overdue">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="loans-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Member</th>
+                            <th>Buku</th>
+                            <th>Tgl Pinjam</th>
+                            <th>Batas Kembali</th>
+                            <th>Tgl Kembali</th>
+                            <th>Status</th>
+                            <th>Denda</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                {% for loan in loans %}
+                        <tr class="loan-row" 
+                            data-status="{{ loan.status }}"
+                            data-member="{{ loan.user.nama_lengkap|lower }}"
+                            data-book="{{ loan.buku.judul|lower }}"
+                            data-class="{{ loan.user.kelas|lower }}"
+                            data-due-date="{{ loan.tanggal_kembali_rencana.strftime('%Y-%m-%d') }}">
+                            <td>{{ loan.id }}</td>
+                            <td>
+                                <div class="member-info">
+                                    <strong>{{ loan.user.nama_lengkap }}</strong>
+                                    <span class="class-badge">{{ loan.user.kelas }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-info">
+                                    <strong>{{ loan.buku.judul }}</strong>
+                                    <small>{{ loan.buku.penulis }}</small>
+                                </div>
+                            </td>
+                            <td>{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                <span class="due-date" data-due="{{ loan.tanggal_kembali_rencana.strftime('%Y-%m-%d') }}">
+                                    {{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if loan.tanggal_kembali_aktual %}
+                                    {{ loan.tanggal_kembali_aktual.strftime('%d/%m/%Y') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>                            <td>
+                                {% if loan.status == 'dipinjam' %}
+                                    <span class="status-badge status-active">📖 Dipinjam</span>
+                                {% elif loan.status == 'dikembalikan' %}
+                                    <span class="status-badge status-returned">✅ Dikembalikan</span>
+                                {% elif loan.status == 'menunggu_konfirmasi' %}
+                                    <span class="status-badge status-pending">⏳ Menunggu Konfirmasi</span>
+                                {% endif %}
+                            </td>                            <td>
+                                {% if loan.denda > 0 %}
+                                    <div class="fine-management">
+                                        <span class="fine-amount">💰 Rp {{ "{:,}".format(loan.denda) }}</span>
+                                        <div class="fine-actions">
+                                            <button class="btn btn-xs btn-warning" onclick="toggleFineEdit({{ loan.id }})">
+                                                ✏️ Edit
+                                            </button>
+                                            <a href="{{ url_for('admin_delete_fine', id=loan.id) }}" 
+                                               class="btn btn-xs btn-danger"
+                                               onclick="return confirm('Hapus denda ini?')">
+                                                🗑️ Hapus
+                                            </a>
+                                        </div>
+                                        <form class="fine-edit-form" id="fine-form-{{ loan.id }}" 
+                                              action="{{ url_for('admin_edit_fine', id=loan.id) }}" method="POST">
+                                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                                <label style="font-size: 0.8rem;">Denda Baru:</label>
+                                                <input type="number" name="denda" value="{{ loan.denda }}" 
+                                                       class="fine-input" min="0" required>
+                                                <button type="submit" class="btn btn-xs btn-primary">💾 Simpan</button>
+                                                <button type="button" class="btn btn-xs btn-secondary" 
+                                                        onclick="toggleFineEdit({{ loan.id }})">❌ Batal</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                {% else %}
+                                    {% if loan.status == 'dipinjam' %}
+                                        <a href="{{ url_for('admin_calculate_fine', id=loan.id) }}" 
+                                           class="btn btn-xs btn-info"
+                                           onclick="return confirm('Hitung denda untuk peminjaman ini?')">
+                                            🧮 Hitung Denda
+                                        </a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                {% endif %}
+                            </td>                            <td>
+                                {% if loan.status == 'dipinjam' %}
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('admin_return_book', id=loan.id) }}" 
+                                           class="btn btn-sm btn-success"
+                                           onclick="return confirm('Proses pengembalian buku?')">
+                                            🔄 Kembalikan
+                                        </a>                                        {% set due_date = loan.tanggal_kembali_rencana.date() %}
+                                        {% if due_date <= today and loan.denda == 0 %}
+                                            <a href="{{ url_for('admin_calculate_fine', id=loan.id) }}" 
+                                               class="btn btn-sm btn-warning"
+                                               onclick="return confirm('Hitung denda terlambat?')">
+                                                💰 Hitung Denda
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                {% elif loan.status == 'dikembalikan' %}
+                                    <span class="text-muted">✅ Selesai</span>
+                                {% elif loan.status == 'menunggu_konfirmasi' %}
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('admin_approve_loan', id=loan.id) }}" 
+                                           class="btn btn-sm btn-primary"
+                                           onclick="return confirm('Konfirmasi peminjaman ini?')">
+                                            ✅ Konfirmasi
+                                        </a>
+                                        <a href="{{ url_for('admin_reject_loan', id=loan.id) }}" 
+                                           class="btn btn-sm btn-danger"
+                                           onclick="return confirm('Tolak peminjaman ini?')">
+                                            ❌ Tolak
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if not loans %}
+            <div class="no-data">
+                <div class="no-data-icon">📚</div>
+                <h3>Belum ada data peminjaman</h3>
+                <p>Mulai proses peminjaman buku untuk member.</p>
+                <a href="{{ url_for('admin_process_loan') }}" class="btn btn-primary">⚡ Proses Peminjaman Baru</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            setupSearch();
+            setupFilters();
+            highlightOverdueLoans();
+        });        // Update statistics
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            let dueTodayCount = 0;
+            let overdueCount = 0;
+
+            document.querySelectorAll('.loan-row').forEach(row => {
+                const status = row.dataset.status;
+                const dueDate = row.dataset.dueDate;
+                
+                if (status === 'dipinjam') {
+                    if (dueDate === today) {
+                        dueTodayCount++;
+                        row.classList.add('due-today');
+                    } else if (dueDate < today) {
+                        overdueCount++;
+                        row.classList.add('overdue');
+                    }
+                }
+            });
+
+            // Update main stats
+            document.getElementById('due-today-count').textContent = dueTodayCount;
+            document.getElementById('overdue-count').textContent = overdueCount;
+            
+            // Update filter count badges
+            document.getElementById('count-due-today').textContent = dueTodayCount;
+            document.getElementById('count-overdue').textContent = overdueCount;
+            
+            // Update count with animation
+            updateFilterCounts();
+        }
+
+        // Update filter count badges with animation
+        function updateFilterCounts() {
+            const allLoans = document.querySelectorAll('.loan-row');
+            const visibleLoans = document.querySelectorAll('.loan-row[style=""]');
+              // Count different statuses
+            let allCount = allLoans.length;
+            let dipinjamCount = 0;
+            let dikembalikanCount = 0;
+            let pendingCount = 0;
+            let dueTodayCount = 0;
+            let overdueCount = 0;
+            
+            const today = new Date().toISOString().split('T')[0];
+            
+            allLoans.forEach(row => {
+                const status = row.dataset.status;
+                const dueDate = row.dataset.dueDate;
+                
+                if (status === 'dipinjam') {
+                    dipinjamCount++;
+                    if (dueDate === today) {
+                        dueTodayCount++;
+                    } else if (dueDate < today) {
+                        overdueCount++;
+                    }
+                } else if (status === 'dikembalikan') {
+                    dikembalikanCount++;
+                } else if (status === 'menunggu_konfirmasi') {
+                    pendingCount++;
+                }
+            });
+            
+            // Update counts with animation
+            animateCountUpdate('count-all', allCount);
+            animateCountUpdate('count-dipinjam', dipinjamCount);
+            animateCountUpdate('count-dikembalikan', dikembalikanCount);
+            animateCountUpdate('count-pending', pendingCount);
+            animateCountUpdate('count-due-today', dueTodayCount);
+            animateCountUpdate('count-overdue', overdueCount);
+        }
+        
+        // Animate count update
+        function animateCountUpdate(elementId, newCount) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    element.textContent = newCount;
+                    element.style.transform = 'scale(1)';
+                }, 150);
+            }
+        }        // Setup search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                document.querySelectorAll('.loan-row').forEach(row => {
+                    const member = row.dataset.member;
+                    const book = row.dataset.book;
+                    const className = row.dataset.class;
+                    
+                    const matches = member.includes(searchTerm) || 
+                                  book.includes(searchTerm) || 
+                                  className.includes(searchTerm);
+                    
+                    row.style.display = matches ? '' : 'none';
+                });
+                
+                // Update filter counts after search
+                setTimeout(updateFilterCounts, 100);
+            });
+        }        // Setup filter functionality
+        function setupFilters() {
+            const filterButtons = document.querySelectorAll('.filter-btn-modern');
+            const today = new Date().toISOString().split('T')[0];
+            
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Add loading effect
+                    this.style.transform = 'scale(0.95)';
+                    
+                    setTimeout(() => {
+                        // Update active filter button
+                        filterButtons.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        const filter = this.dataset.filter;
+                        let visibleCount = 0;
+                        
+                        document.querySelectorAll('.loan-row').forEach(row => {
+                            const status = row.dataset.status;
+                            const dueDate = row.dataset.dueDate;
+                            let show = false;
+                            
+                            switch(filter) {
+                                case 'all':
+                                    show = true;
+                                    break;
+                                case 'dipinjam':
+                                    show = status === 'dipinjam';
+                                    break;
+                                case 'dikembalikan':
+                                    show = status === 'dikembalikan';
+                                    break;
+                                case 'pending':
+                                    show = status === 'menunggu_konfirmasi';
+                                    break;
+                                case 'due_today':
+                                    show = status === 'dipinjam' && dueDate === today;
+                                    break;
+                                case 'overdue':
+                                    show = status === 'dipinjam' && dueDate < today;
+                                    break;
+                            }
+                            
+                            if (show) {
+                                row.style.display = '';
+                                visibleCount++;
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        });
+                        
+                        // Reset transform and update counts
+                        this.style.transform = '';
+                        
+                        // Update filter counts after filtering
+                        setTimeout(updateFilterCounts, 100);
+                        
+                        // Show notification
+                        showFilterNotification(filter, visibleCount);
+                    }, 150);
+                });
+            });
+        }
+        
+        // Show filter notification
+        function showFilterNotification(filter, count) {
+            const filterNames = {
+                'all': 'Semua Peminjaman',
+                'dipinjam': 'Sedang Dipinjam',
+                'dikembalikan': 'Sudah Dikembalikan',
+                'pending': 'Menunggu Konfirmasi',
+                'due_today': 'Jatuh Tempo Hari Ini',
+                'overdue': 'Terlambat'
+            };
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'filter-notification';
+            notification.innerHTML = `
+                <span class="notification-icon">📊</span>
+                <span class="notification-text">Menampilkan ${count} ${filterNames[filter]}</span>
+            `;
+            
+            // Add notification styles
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-weight: 600;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Highlight overdue loans
+        function highlightOverdueLoans() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            document.querySelectorAll('.due-date').forEach(element => {
+                const dueDate = element.dataset.due;
+                if (dueDate < today) {
+                    element.classList.add('overdue-date');
+                } else if (dueDate === today) {
+                    element.classList.add('due-today-date');                }
+            });
+        }
+
+        // Toggle fine edit form
+        function toggleFineEdit(loanId) {
+            const form = document.getElementById('fine-form-' + loanId);
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+
+        // Update filter counts including pending loans
+        function updateFilterCounts() {
+            const allRows = document.querySelectorAll('.loan-row');
+            const pendingCount = Array.from(allRows).filter(row => row.dataset.status === 'menunggu_konfirmasi').length;
+            
+            const pendingElement = document.getElementById('count-pending');
+            if (pendingElement) {
+                pendingElement.textContent = pendingCount;
+            }
+        }
+    </script>
+{% endblock %}

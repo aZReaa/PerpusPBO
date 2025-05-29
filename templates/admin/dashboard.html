@@ -1,0 +1,84 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard Admin{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>📊 Dashboard Admin</h1>
+    <div class="header-actions">
+        <a href="{{ url_for('admin_process_loan') }}" class="btn btn-primary">⚡ Proses Peminjaman</a>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<!-- Key Statistics -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info">
+            <h3>{{ total_members }}</h3>
+            <p>Total Member</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-info">
+            <h3>{{ total_books }}</h3>
+            <p>Total Buku</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📖</div>
+        <div class="stat-info">
+            <h3>{{ total_peminjaman_aktif }}</h3>
+            <p>Sedang Dipinjam</p>
+        </div>
+    </div>
+    {% if overdue > 0 %}
+    <div class="stat-card stat-warning">
+        <div class="stat-icon">🚨</div>
+        <div class="stat-info">
+            <h3>{{ overdue }}</h3>
+            <p>Terlambat</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+    <h2>⚡ Menu Utama</h2>
+    <div class="action-grid">
+        <a href="{{ url_for('admin_loans') }}" class="action-card">
+            <div class="action-icon">📖</div>
+            <div class="action-content">
+                <h3>Kelola Peminjaman</h3>
+                <p>Lihat dan kelola semua peminjaman</p>
+            </div>
+        </a>
+        <a href="{{ url_for('admin_members') }}" class="action-card">
+            <div class="action-icon">👥</div>
+            <div class="action-content">
+                <h3>Kelola Member</h3>
+                <p>Daftar dan kelola member</p>
+            </div>
+        </a>
+        <a href="{{ url_for('admin_books') }}" class="action-card">
+            <div class="action-icon">📚</div>
+            <div class="action-content">
+                <h3>Kelola Buku</h3>
+                <p>Daftar dan kelola koleksi buku</p>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}

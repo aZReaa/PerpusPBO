@@ -1,0 +1,290 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Kelola Member{% endblock %}
+
+{% block content %}    <!-- Compact Header -->
+    <div class="content-header">
+        <h1>👥 Kelola Member</h1>
+        <div class="header-actions">
+            <a href="{{ url_for('admin_add_member') }}" class="btn btn-primary">
+                ➕ Tambah Member
+            </a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}    <!-- Compact Search and Filter -->
+    <div class="search-filter-section">
+        <div class="search-row">
+            <div class="search-input-modern">
+                <input type="text" 
+                       id="searchInput" 
+                       placeholder="🔍 Cari member berdasarkan nama, username, atau email..." 
+                       class="search-input">
+            </div>
+            
+            <select id="kelasFilter" class="filter-select">
+                <option value="">Semua Kelas</option>
+                {% for kelas in members|map(attribute='kelas')|unique|list %}
+                    {% if kelas %}
+                        <option value="{{ kelas }}">{{ kelas }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            
+            <select id="sortFilter" class="filter-select">
+                <option value="nama">Nama A-Z</option>
+                <option value="nama-desc">Nama Z-A</option>
+                <option value="terbaru">Terbaru</option>
+                <option value="terlama">Terlama</option>
+            </select>
+            
+            <button class="btn btn-secondary" onclick="clearSearch()">
+                Reset
+            </button>
+        </div>
+    </div>    <!-- Compact Members Table -->
+    <div class="table-container">
+        <table class="table" id="membersTable">
+            <thead>
+                <tr>
+                    <th>Member Info</th>
+                    <th>Email</th>
+                    <th>Kelas</th>
+                    <th>Terdaftar</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                <tr class="member-row" 
+                    data-nama="{{ member.nama_lengkap|lower }}" 
+                    data-username="{{ member.username|lower }}" 
+                    data-email="{{ member.email|lower }}"
+                    data-kelas="{{ member.kelas or '' }}">
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar-small">
+                                {{ member.nama_lengkap[0]|upper }}
+                            </div>
+                            <div class="user-details">
+                                <strong>{{ member.nama_lengkap }}</strong>
+                                <small>@{{ member.username }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ member.email }}</td>
+                    <td>
+                        {% if member.kelas %}
+                            <span class="badge badge-info">{{ member.kelas }}</span>
+                        {% else %}
+                            <span class="badge badge-secondary">-</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ member.created_at.strftime('%d/%m/%Y') }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('admin_edit_member', id=member.id) }}" 
+                               class="btn btn-sm btn-warning" 
+                               title="Edit Member">
+                                ✏️ Edit
+                            </a>
+                            <button class="btn btn-sm btn-danger delete-member-btn" 
+                                    data-member-id="{{ member.id }}" 
+                                    data-member-name="{{ member.nama_lengkap }}" 
+                                    title="Hapus Member">
+                                🗑️ Hapus
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if not members %}
+    <div class="no-data">
+        <h3>👥 Belum ada member terdaftar</h3>
+        <p>Member baru dapat mendaftar melalui halaman registrasi atau ditambahkan oleh admin.</p>
+        <a href="{{ url_for('admin_add_member') }}" class="btn btn-primary">➕ Tambah Member Pertama</a>
+    </div>
+    {% endif %}
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>⚠️ Konfirmasi Hapus</h3>
+            <p>Apakah Anda yakin ingin menghapus member <strong id="memberName"></strong>?</p>
+            <p class="warning-text">⚠️ Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data peminjaman member tersebut.</p>
+            <div class="modal-actions">
+                <button onclick="closeDeleteModal()" class="btn btn-secondary">Batal</button>
+                <button onclick="confirmDelete()" class="btn btn-danger">🗑️ Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.member-row');
+            
+            rows.forEach(row => {
+                const nama = row.getAttribute('data-nama');
+                const username = row.getAttribute('data-username');
+                const kelas = row.getAttribute('data-kelas');
+                
+                if (nama.includes(searchTerm) || username.includes(searchTerm) || kelas.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter functionality
+        document.getElementById('kelasFilter').addEventListener('change', function() {
+            const selectedKelas = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.member-row');
+            
+            rows.forEach(row => {
+                const kelas = row.getAttribute('data-kelas').toLowerCase();
+                
+                if (selectedKelas === '' || kelas === selectedKelas) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });        });
+
+        // Enhanced search and filter functionality
+        document.getElementById('searchInput').addEventListener('input', filterAndSortMembers);
+        document.getElementById('kelasFilter').addEventListener('change', filterAndSortMembers);
+        
+        // Add sort functionality
+        document.getElementById('sortFilter').addEventListener('change', filterAndSortMembers);
+        
+        function filterAndSortMembers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const selectedKelas = document.getElementById('kelasFilter').value;
+            const sortOption = document.getElementById('sortFilter').value;
+            const rows = document.querySelectorAll('.member-row');
+            
+            // Convert NodeList to Array for sorting
+            const rowsArray = Array.from(rows);
+            
+            // Filter rows
+            const filteredRows = rowsArray.filter(row => {
+                const nama = row.getAttribute('data-nama');
+                const username = row.getAttribute('data-username');
+                const email = row.getAttribute('data-email');
+                const kelas = row.getAttribute('data-kelas');
+                
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    nama.includes(searchTerm) || 
+                    username.includes(searchTerm) || 
+                    email.includes(searchTerm);
+                
+                // Kelas filter
+                const matchesKelas = !selectedKelas || kelas === selectedKelas;
+                
+                return matchesSearch && matchesKelas;
+            });
+            
+            // Sort filtered rows
+            filteredRows.sort((a, b) => {
+                switch(sortOption) {
+                    case 'nama':
+                        return a.getAttribute('data-nama').localeCompare(b.getAttribute('data-nama'));
+                    case 'nama-desc':
+                        return b.getAttribute('data-nama').localeCompare(a.getAttribute('data-nama'));
+                    case 'terbaru':
+                        return b.querySelector('td:nth-child(4)').textContent.localeCompare(
+                            a.querySelector('td:nth-child(4)').textContent
+                        );
+                    case 'terlama':
+                        return a.querySelector('td:nth-child(4)').textContent.localeCompare(
+                            b.querySelector('td:nth-child(4)').textContent
+                        );
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Hide all rows first
+            rows.forEach(row => {
+                row.style.display = 'none';
+            });
+            
+            // Show and reorder filtered rows
+            const tbody = document.querySelector('.members-table tbody');
+            filteredRows.forEach(row => {
+                row.style.display = '';
+                tbody.appendChild(row);
+            });
+            
+            // Update count
+            updateMemberCount(filteredRows.length);
+        }
+        
+        function updateMemberCount(count) {
+            const tableCount = document.querySelector('.table-count');
+            tableCount.textContent = `${count} member ditemukan`;
+        }
+        
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('kelasFilter').value = '';
+            document.getElementById('sortFilter').value = 'nama';
+            filterAndSortMembers();
+        }
+
+        // Delete member functionality
+        let memberToDelete = null;
+
+        // Add event listener for delete buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-member-btn');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const memberId = this.getAttribute('data-member-id');
+                    const memberName = this.getAttribute('data-member-name');
+                    deleteMember(memberId, memberName);
+                });
+            });
+        });
+
+        function deleteMember(memberId, memberName) {
+            memberToDelete = memberId;
+            document.getElementById('memberName').textContent = memberName;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            memberToDelete = null;
+        }
+
+        function confirmDelete() {
+            if (memberToDelete) {
+                window.location.href = `/admin/members/delete/${memberToDelete}`;
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+    </script>
+{% endblock %}

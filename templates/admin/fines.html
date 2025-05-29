@@ -1,0 +1,179 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Kelola Denda{% endblock %}
+
+{% block content %}
+    <div class="content-header">
+        <h1>💰 Kelola Denda</h1>
+        <a href="{{ url_for('admin_loans') }}" class="btn btn-secondary">← Kembali ke Peminjaman</a>
+    </div>
+
+    <!-- Fines Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💸</div>
+                    <div class="stat-info">
+                        <h3>Rp {{ "{:,}".format(total_fines) }}</h3>
+                        <p>Total Denda</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3>{{ total_cases }}</h3>
+                        <p>Kasus Denda</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <h3>{{ members_with_fines }}</h3>
+                        <p>Member Terdenda</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <h3>Rp {{ "{:,}".format(avg_fine|round|int) }}</h3>
+                        <p>Rata-rata Denda</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Form -->
+            <div class="search-container">
+                <form method="GET" class="search-form">
+                    <div class="search-row">
+                        <div class="search-group">
+                            <label for="search">Cari Member/Buku:</label>
+                            <input type="text" id="search" name="search" 
+                                   value="{{ search }}" 
+                                   placeholder="Nama member, username, atau judul buku...">
+                        </div>
+                        <div class="search-group">
+                            <button type="submit" class="btn btn-primary">🔍 Cari</button>
+                            <a href="{{ url_for('admin_fines') }}" class="btn btn-secondary">Reset</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Fines Table -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Member</th>
+                            <th>Buku</th>
+                            <th>Tgl Pinjam</th>
+                            <th>Batas Kembali</th>
+                            <th>Tgl Kembali</th>
+                            <th>Hari Terlambat</th>
+                            <th>Denda</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in fines %}
+                        {% set days_late = ((loan.tanggal_kembali_aktual or now) - loan.tanggal_kembali_rencana).days %}
+                        <tr>
+                            <td>{{ loan.id }}</td>
+                            <td>
+                                <div class="member-info">
+                                    <strong>{{ loan.user.nama_lengkap }}</strong><br>
+                                    <small>{{ loan.user.kelas }} - {{ loan.user.username }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="book-info">
+                                    <strong>{{ loan.buku.judul }}</strong><br>
+                                    <small>{{ loan.buku.pengarang }}</small>
+                                </div>
+                            </td>
+                            <td>{{ loan.tanggal_pinjam.strftime('%d/%m/%Y') }}</td>
+                            <td>{{ loan.tanggal_kembali_rencana.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                {% if loan.tanggal_kembali_aktual %}
+                                    {{ loan.tanggal_kembali_aktual.strftime('%d/%m/%Y') }}
+                                {% else %}
+                                    <span class="text-warning">Belum dikembalikan</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="days-late">{{ days_late }} hari</span>
+                            </td>
+                            <td>
+                                <span class="fine-amount">Rp {{ "{:,}".format(loan.denda) }}</span>
+                            </td>
+                            <td>
+                                {% if loan.status == 'dikembalikan' %}
+                                    <span class="status-returned">Selesai</span>
+                                {% else %}
+                                    <span class="status-overdue">Aktif</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if not fines %}
+            <div class="no-data">
+                <h3>🎉 Tidak Ada Denda</h3>
+                <p>Belum ada kasus keterlambatan yang menghasilkan denda.</p>
+                <div class="info-box">
+                    <h4>📋 Informasi Sistem Denda:</h4>
+                    <ul>
+                        <li>Denda dikenakan <strong>Rp 1.000 per hari</strong> keterlambatan</li>
+                        <li>Denda dihitung otomatis saat buku dikembalikan</li>
+                        <li>Member yang terlambat mengembalikan akan dikenakan denda</li>
+                        <li>Sistem mencatat semua riwayat denda untuk analisis</li>
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Export and Actions -->
+            {% if fines %}
+            <div class="fines-actions">
+                <h3>📊 Aksi Denda</h3>
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="exportFines()">📥 Export Laporan</button>
+                    <button class="btn btn-warning" onclick="sendReminders()">📧 Kirim Reminder</button>
+                    <a href="{{ url_for('admin_loans') }}?filter=overdue" class="btn btn-danger">🚨 Lihat Keterlambatan Aktif</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function exportFines() {
+            alert('Fitur export akan segera tersedia!');
+        }
+
+        function sendReminders() {
+                        alert('Fitur pengiriman reminder akan segera tersedia!');
+        }
+
+        // Auto-refresh badge count
+        setInterval(function() {
+            // Update fine statistics if needed
+        }, 30000);
+    </script>
+{% endblock %}

@@ -1,0 +1,182 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Kategori Buku{% endblock %}
+
+{% block content %}
+    <div class="content-header">
+        <h1>📚 Kategori Buku</h1>
+        <a href="{{ url_for('admin_add_book') }}" class="btn btn-primary">➕ Tambah Buku Baru</a>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Categories Overview -->
+            <div class="categories-overview">
+                <h2>📊 Statistik Kategori</h2>
+                <div class="categories-grid">
+                    {% for category, total_books, total_stock in categories %}
+                    <div class="category-card">
+                        <div class="category-header">
+                            <div class="category-icon">
+                                {% if category == 'Fiksi' %}📖
+                                {% elif category == 'Non-Fiksi' %}📋
+                                {% elif category == 'Sains' %}🔬
+                                {% elif category == 'Sejarah' %}📜
+                                {% elif category == 'Biografi' %}👤
+                                {% elif category == 'Teknologi' %}💻
+                                {% elif category == 'Pendidikan' %}🎓
+                                {% elif category == 'Agama' %}📿
+                                {% else %}📚
+                                {% endif %}
+                            </div>
+                            <div class="category-info">
+                                <h3>{{ category or 'Tidak Berkategori' }}</h3>
+                                <div class="category-stats">
+                                    <span class="stat-books">{{ total_books }} judul</span>
+                                    <span class="stat-stock">{{ total_stock }} eksemplar</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category-actions">
+                            <a href="{{ url_for('admin_books') }}?kategori={{ category }}" 
+                               class="btn btn-sm btn-outline">👁️ Lihat Buku</a>
+                            <a href="{{ url_for('admin_search_books') }}?kategori={{ category }}" 
+                               class="btn btn-sm btn-primary">🔍 Kelola</a>
+                        </div>
+                        
+                        <!-- Progress bar showing stock ratio -->
+                        <div class="category-progress">
+                            <div class="progress-label">Ketersediaan</div>
+                            <div class="progress-bar">
+                                {% set availability = (total_stock / (total_books * 3) * 100) if total_books > 0 else 0 %}
+                                <div class="progress-fill" style="width: {{ [availability, 100]|min }}%"></div>
+                            </div>
+                            <small>{{ "%.1f"|format(availability) }}% dari target ideal</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if not categories %}
+            <div class="no-data">
+                <h3>📚 Belum Ada Kategori</h3>
+                <p>Silakan tambah buku untuk membuat kategori otomatis.</p>
+                <div class="category-suggestions">
+                    <h4>💡 Saran Kategori Populer:</h4>
+                    <div class="suggestion-tags">
+                        <span class="tag">📖 Fiksi</span>
+                        <span class="tag">📋 Non-Fiksi</span>
+                        <span class="tag">🔬 Sains</span>
+                        <span class="tag">📜 Sejarah</span>
+                        <span class="tag">👤 Biografi</span>
+                        <span class="tag">💻 Teknologi</span>
+                        <span class="tag">🎓 Pendidikan</span>
+                        <span class="tag">📿 Agama</span>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <a href="{{ url_for('admin_add_book') }}" class="btn btn-primary">➕ Tambah Buku Pertama</a>
+                    <a href="{{ url_for('admin_books') }}" class="btn btn-secondary">📚 Lihat Semua Buku</a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Category Management Tools -->
+            {% if categories %}
+            <div class="category-tools">
+                <h2>🛠️ Alat Manajemen</h2>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon">📊</div>
+                        <div class="tool-info">
+                            <h3>Analisis Popularitas</h3>
+                            <p>Lihat kategori mana yang paling sering dipinjam</p>
+                            <button class="btn btn-primary" onclick="showPopularityAnalysis()">📈 Lihat Analisis</button>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">🔄</div>
+                        <div class="tool-info">
+                            <h3>Rebalancing Stok</h3>
+                            <p>Saran untuk menyeimbangkan koleksi buku</p>
+                            <button class="btn btn-secondary" onclick="showRebalancingSuggestions()">⚖️ Lihat Saran</button>
+                        </div>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">📋</div>
+                        <div class="tool-info">
+                            <h3>Laporan Kategori</h3>
+                            <p>Export data kategori untuk analisis lebih lanjut</p>
+                            <button class="btn btn-success" onclick="exportCategoryReport()">📥 Export Laporan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats Summary -->
+            <div class="quick-stats">
+                <h2>📋 Ringkasan Cepat</h2>
+                <div class="stats-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Total Kategori:</span>
+                        <span class="summary-value">{{ categories|length }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total Judul:</span>
+                        <span class="summary-value">{{ categories|sum(attribute=1) }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Total Eksemplar:</span>
+                        <span class="summary-value">{{ categories|sum(attribute=2) }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Kategori Terbesar:</span>
+                        <span class="summary-value">
+                            {% set max_category = categories|max(attribute=1) if categories %}
+                            {{ max_category[0] if max_category else '-' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function showPopularityAnalysis() {
+            alert('Fitur analisis popularitas akan segera tersedia!');
+        }
+
+        function showRebalancingSuggestions() {
+            alert('Fitur saran rebalancing akan segera tersedia!');
+        }
+
+        function exportCategoryReport() {
+            alert('Fitur export laporan kategori akan segera tersedia!');
+        }
+
+        // Animation for progress bars
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                                        bar.style.width = width;
+                    bar.style.transition = 'width 1s ease-in-out';
+                }, 100);
+            });
+        });
+    </script>
+{% endblock %}

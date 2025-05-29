@@ -1,0 +1,171 @@
+{% extends "member/base.html" %}
+
+{% block title %}Peminjaman Saya - Perpustakaan Sekolah{% endblock %}
+
+{% block extra_css %}
+<style>
+    .loans-header-member {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        background-color: var(--white-bg);
+        padding: 20px;
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--card-shadow);
+    }
+    .loans-header-member h1 {
+        color: var(--primary-blue);
+        font-size: 1.8rem;
+        margin: 0;
+    }
+
+    .loans-table-container-member {
+        background-color: var(--white-bg);
+        padding: 25px;
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--card-shadow);
+        overflow-x: auto; /* For responsive table */
+    }
+    .loans-list-table {
+        width: 100%;
+        min-width: 700px; /* Ensure table has some width before scrolling */
+        border-collapse: collapse;
+    }
+    .loans-list-table th, .loans-list-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #EAEAEA;
+        font-size: 0.95rem;
+    }
+    .loans-list-table thead th {
+        background-color: var(--light-blue-bg);
+        font-weight: 600;
+        color: var(--primary-blue);
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    .book-title-cell {
+        font-weight: 500;
+    }
+    .book-title-cell small {
+        display: block;
+        color: var(--text-light);
+        font-size: 0.85rem;
+    }
+    .loan-status-badge {
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+    .loan-status-badge.dipinjam {
+        background-color: #DEEBFF; /* Light blue */
+        color: #0747A6;
+    }
+    .loan-status-badge.dikembalikan {
+        background-color: #E6F7F0; /* Light green */
+        color: #00875A;
+    }
+    .fine-amount-loan {
+        color: #DE350B; /* Red for fines */
+        font-weight: 500;
+    }
+    .date-cell.overdue {
+        color: #DE350B;
+        font-weight: 500;
+    }
+    .date-cell.due-today {
+        color: #FF8B00; /* Orange for due today */
+        font-weight: 500;
+    }
+
+    .no-loans-message {
+        text-align: center;
+        padding: 40px 20px;
+        background-color: var(--white-bg);
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--card-shadow);
+    }
+    .no-loans-message .icon {
+        font-size: 3rem;
+        color: var(--text-light);
+        margin-bottom: 15px;
+    }
+    .no-loans-message h3 {
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="loans-header-member">
+    <h1>📖 Peminjaman Saya</h1>
+    <a href="{{ url_for('member_books') }}" class="btn-member">📚 Pinjam Buku Baru</a>
+</div>
+
+{% if loans %}
+<div class="loans-table-container-member">
+    <table class="loans-list-table">
+        <thead>
+            <tr>
+                <th>Buku</th>
+                <th>Tgl Pinjam</th>
+                <th>Batas Kembali</th>
+                <th>Tgl Kembali Aktual</th>
+                <th>Status</th>
+                <th>Denda</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+            <tr>
+                <td class="book-title-cell">
+                    {{ loan.buku.judul }}
+                    <small>{{ loan.buku.pengarang }}</small>
+                </td>
+                <td>{{ loan.tanggal_pinjam.strftime('%d %b %Y') }}</td>
+                <td class="date-cell 
+                    {% if loan.status == 'dipinjam' and loan.tanggal_kembali_rencana.date() < today %}overdue{% endif %}
+                    {% if loan.status == 'dipinjam' and loan.tanggal_kembali_rencana.date() == today %}due-today{% endif %}">
+                    {{ loan.tanggal_kembali_rencana.strftime('%d %b %Y') }}
+                </td>
+                <td>
+                    {% if loan.tanggal_kembali_aktual %}
+                        {{ loan.tanggal_kembali_aktual.strftime('%d %b %Y') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if loan.status == 'dipinjam' %}
+                        <span class="loan-status-badge dipinjam">Dipinjam</span>
+                    {% elif loan.status == 'dikembalikan' %}
+                        <span class="loan-status-badge dikembalikan">Dikembalikan</span>
+                    {% else %}
+                        <span class="loan-status-badge">{{ loan.status|capitalize }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if loan.denda > 0 %}
+                        <span class="fine-amount-loan">Rp {{ "{:,.0f}".format(loan.denda).replace(",", ".") }}</span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="no-loans-message">
+    <div class="icon">📂</div>
+    <h3>Belum Ada Riwayat Peminjaman</h3>
+    <p>Anda belum pernah meminjam buku. Mulai petualangan membaca Anda!</p>
+    <a href="{{ url_for('member_books') }}" class="btn-member">Lihat Daftar Buku</a>
+</div>
+{% endif %}
+{% endblock %}

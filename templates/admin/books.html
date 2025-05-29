@@ -1,0 +1,136 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Kelola Buku{% endblock %}
+
+{% block content %}
+    <div class="content-header">
+        <h1>📚 Kelola Buku</h1>
+        <a href="{{ url_for('admin_add_book') }}" class="btn btn-primary">➕ Tambah Buku</a>
+    </div>    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Filter Panel -->
+    <div class="filter-panel" style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <form method="GET" action="{{ url_for('admin_books') }}">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 15px; align-items: end;">
+                <div>
+                    <label for="search-input" style="display: block; margin-bottom: 5px; font-weight: 500;">Pencarian</label>
+                    <input type="text" id="search-input" name="search" placeholder="Cari judul, pengarang, penerbit, atau ISBN..." 
+                           value="{{ search or '' }}" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                <div>
+                    <label for="kategori-filter" style="display: block; margin-bottom: 5px; font-weight: 500;">Kategori</label>
+                    <select name="kategori" id="kategori-filter" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">Semua Kategori</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat }}" {% if cat == selected_kategori %}selected{% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="pengarang-filter" style="display: block; margin-bottom: 5px; font-weight: 500;">Pengarang</label>
+                    <select name="pengarang" id="pengarang-filter" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">Semua Pengarang</option>
+                        {% for pengarang in pengarang_list %}
+                        <option value="{{ pengarang }}" {% if pengarang == selected_pengarang %}selected{% endif %}>{{ pengarang }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="tahun-filter" style="display: block; margin-bottom: 5px; font-weight: 500;">Tahun Terbit</label>
+                    <select name="tahun" id="tahun-filter" style="width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">Semua Tahun</option>
+                        {% for tahun in tahun_list %}
+                        <option value="{{ tahun }}" {% if tahun|string == selected_tahun %}selected{% endif %}>{{ tahun }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary" style="height: 40px;">🔍 Filter</button>
+                </div>
+            </div>
+            {% if search or selected_kategori or selected_pengarang or selected_tahun %}
+            <div style="margin-top: 15px; padding: 10px; background-color: #f8f9fa; border-left: 3px solid #007bff; border-radius: 4px;">
+                <strong>Filter aktif:</strong>
+                {% if search %}<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.85em; margin-right: 5px;">Pencarian: "{{ search }}"</span>{% endif %}
+                {% if selected_kategori %}<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.85em; margin-right: 5px;">Kategori: {{ selected_kategori }}</span>{% endif %}
+                {% if selected_pengarang %}<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.85em; margin-right: 5px;">Pengarang: {{ selected_pengarang }}</span>{% endif %}
+                {% if selected_tahun %}<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.85em; margin-right: 5px;">Tahun: {{ selected_tahun }}</span>{% endif %}
+                <a href="{{ url_for('admin_books') }}" style="color: #007bff; font-weight: 500; margin-left: 10px;">Hapus semua filter</a>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>📖 Buku</th>
+                    <th>✍️ Pengarang</th>
+                    <th>🏢 Penerbit</th>
+                    <th>📅 Tahun</th>
+                    <th>📂 Kategori</th>
+                    <th>📦 Stok</th>
+                    <th>⚙️ Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr class="book-row">
+                    <td>{{ book.id }}</td>
+                    <td>
+                        <div class="book-info">
+                            <strong>{{ book.judul }}</strong>
+                        </div>
+                    </td>
+                    <td>{{ book.pengarang }}</td>
+                    <td>{{ book.penerbit }}</td>
+                    <td>{{ book.tahun_terbit }}</td>
+                    <td>
+                        <span class="badge">{{ book.kategori }}</span>
+                    </td>
+                    <td>
+                        <span class="stock-badge {% if book.stok > 0 %}stock-available{% else %}stock-empty{% endif %}">
+                            {{ book.stok }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('admin_edit_book', id=book.id) }}" class="btn btn-sm btn-warning">
+                                ✏️ Edit
+                            </a>
+                            <a href="{{ url_for('admin_delete_book', id=book.id) }}" 
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Yakin ingin menghapus buku {{ book.judul }}?')">
+                                🗑️ Hapus
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>    {% if not books %}
+    <div class="no-data">
+        <div class="no-data-icon">📚</div>
+        {% if search or selected_kategori or selected_pengarang or selected_tahun %}
+        <h3>Tidak ada buku ditemukan</h3>
+        <p>Tidak ada buku yang cocok dengan kriteria filter Anda. Coba ubah filter atau kata kunci pencarian.</p>
+        <a href="{{ url_for('admin_books') }}" class="btn btn-secondary">🔄 Tampilkan Semua Buku</a>
+        {% else %}
+        <h3>Belum ada buku</h3>
+        <p>Silakan tambah buku baru untuk memulai koleksi perpustakaan.</p>
+        <a href="{{ url_for('admin_add_book') }}" class="btn btn-primary">📚 Tambah Buku Pertama</a>
+        {% endif %}
+    </div>
+    {% endif %}
+{% endblock %}
