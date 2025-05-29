@@ -64,32 +64,30 @@
                 <a href="{{ url_for('admin_books') }}" style="color: #007bff; font-weight: 500; margin-left: 10px;">Hapus semua filter</a>
             </div>
             {% endif %}
-        </form>
-    </div>    <div class="table-container admin-book-table" style="overflow-x: scroll; -webkit-overflow-scrolling: touch; width: 100%; position: relative;">
-        <table class="table" style="min-width: 900px;">
-            <thead>
+        </form>    </div>    <div class="table-container admin-book-table">
+        <table class="table">            <thead>
                 <tr>
-                    <th style="width: 50px;">ID</th>
-                    <th style="width: 200px;">📖 Buku</th>
-                    <th style="width: 150px;">✍️ Pengarang</th>
-                    <th style="width: 150px;">🏢 Penerbit</th>
-                    <th style="width: 80px;">📅 Tahun</th>
-                    <th style="width: 120px;">📂 Kategori</th>
-                    <th style="width: 80px;">📦 Stok</th>
-                    <th style="width: 120px;">⚙️ Aksi</th>
+                    <th>ID</th>
+                    <th>📖 Buku</th>
+                    <th>✍️ Pengarang</th>
+                    <th>🏢 Penerbit</th>
+                    <th>📅 Tahun</th>
+                    <th>📂 Kategori</th>
+                    <th>📦 Stok</th>
+                    <th>⚙️ Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 {% for book in books %}                <tr class="book-row">
                     <td data-label="ID">{{ book.id }}</td>                    <td data-label="Buku">
-                        <div class="book-info" style="max-width: 200px; overflow: hidden;">
-                            <strong style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.judul }}</strong>
+                        <div class="book-info">
+                            <strong>{{ book.judul }}</strong>
                         </div>
                     </td>
                     <td data-label="Pengarang">{{ book.pengarang }}</td>
                     <td data-label="Penerbit">{{ book.penerbit }}</td>
                     <td data-label="Tahun">{{ book.tahun_terbit }}</td>                    <td data-label="Kategori">
-                        <span class="badge" style="display: inline-block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.kategori }}</span>
+                        <span class="badge">{{ book.kategori }}</span>
                     </td>
                     <td data-label="Stok">
                         <span class="stock-badge {% if book.stok > 0 %}stock-available{% else %}stock-empty{% endif %}">

@@ -1,0 +1,98 @@
+/* Special styles for admin book tables */
+
+/* Force horizontal scrolling on mobile */
+.admin-book-table {
+    position: relative;
+    width: 100%;
+    overflow-x: scroll !important;
+    display: block;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide scrollbars but keep functionality */
+.admin-book-table::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+}
+
+/* Ensure minimum width for table */
+.admin-book-table table {
+    min-width: 900px;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Handle column widths */
+.admin-book-table th:nth-child(1), .admin-book-table td:nth-child(1) { width: 50px; }  /* ID */
+.admin-book-table th:nth-child(2), .admin-book-table td:nth-child(2) { width: 200px; } /* Book */
+.admin-book-table th:nth-child(3), .admin-book-table td:nth-child(3) { width: 150px; } /* Author */
+.admin-book-table th:nth-child(4), .admin-book-table td:nth-child(4) { width: 150px; } /* Publisher */
+.admin-book-table th:nth-child(5), .admin-book-table td:nth-child(5) { width: 70px; }  /* Year */
+.admin-book-table th:nth-child(6), .admin-book-table td:nth-child(6) { width: 120px; } /* Category */
+.admin-book-table th:nth-child(7), .admin-book-table td:nth-child(7) { width: 70px; }  /* Stock */
+.admin-book-table th:nth-child(8), .admin-book-table td:nth-child(8) { width: 120px; } /* Actions */
+
+/* Ensure book info doesn't overflow */
+.book-info {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.book-info strong {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Add visual cue for scrollable content */
+.admin-book-table::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 30px;
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.7));
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Visual indicator at left when scrolled */
+.admin-book-table.scrolled-right::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 30px;
+    background: linear-gradient(to left, rgba(255,255,255,0), rgba(255,255,255,0.7));
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Force touch scrolling on mobile */
+@media (max-width: 768px) {
+    .admin-book-table {
+        overflow-x: scroll !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Add hint for users */
+    .admin-book-table::before {
+        content: "⟷";
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 16px;
+        color: #5D78FF;
+        animation: fadeInOut 2s infinite;
+    }
+    
+    @keyframes fadeInOut {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+}
