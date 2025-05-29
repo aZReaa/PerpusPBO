@@ -20,6 +20,9 @@ instance/
 *.sqlite
 *.sqlite3
 
+# Migration data
+migration/
+
 # IDE
 .vscode/
 .idea/

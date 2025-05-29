@@ -2226,8 +2226,36 @@
         margin-top: 1.5rem;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        /* Better scrolling indicators */
+        scrollbar-width: thin;
+        scrollbar-color: #667eea #f1f5f9;
+        display: block;
+        width: 100%;
+        position: relative;
+        max-width: 100%;
+        -ms-overflow-style: -ms-autohiding-scrollbar; /* Edge/IE support */
     }
     
+    /* WebKit scrollbar styling for better mobile experience */
+    .table-container::-webkit-scrollbar {
+        height: 8px;
+    }
+    
+    .table-container::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    
+    .table-container::-webkit-scrollbar-thumb {
+        background: #667eea;
+        border-radius: 4px;
+    }
+    
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: #5a67d8;
+    }
+
     .table {
         min-width: 700px; /* Ensure horizontal scroll on mobile */
         font-size: 0.9rem;

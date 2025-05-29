@@ -1,0 +1,181 @@
+/* Global mobile scrolling improvements */
+* {
+    box-sizing: border-box;
+}
+
+body, html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* Enhanced scrollable containers */
+.table-container,
+.loans-table-container-member,
+.table-wrapper-member {
+    overflow-x: scroll !important; /* Changed from auto to scroll to force scrollbar */
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: smooth !important;
+    width: 100% !important;
+    display: block !important;
+    max-width: 100% !important;
+    position: relative !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #667eea #f1f5f9 !important;
+    -ms-overflow-style: -ms-autohiding-scrollbar !important;
+    touch-action: pan-x !important; /* Enable horizontal touch panning */
+}
+
+/* Ensure tables in containers can scroll horizontally */
+.table-container table,
+.loans-table-container-member table,
+.table-wrapper-member table {
+    min-width: 700px !important;
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+/* WebKit scrollbar styling */
+.table-container::-webkit-scrollbar,
+.loans-table-container-member::-webkit-scrollbar,
+.table-wrapper-member::-webkit-scrollbar {
+    height: 8px !important;
+}
+
+.table-container::-webkit-scrollbar-track,
+.loans-table-container-member::-webkit-scrollbar-track,
+.table-wrapper-member::-webkit-scrollbar-track {
+    background: #f1f5f9 !important;
+    border-radius: 4px !important;
+}
+
+.table-container::-webkit-scrollbar-thumb,
+.loans-table-container-member::-webkit-scrollbar-thumb,
+.table-wrapper-member::-webkit-scrollbar-thumb {
+    background: #667eea !important;
+    border-radius: 4px !important;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover,
+.loans-table-container-member::-webkit-scrollbar-thumb:hover,
+.table-wrapper-member::-webkit-scrollbar-thumb:hover {
+    background: #5a67d8 !important;
+}
+
+/* Mobile table adjustments */
+@media (max-width: 768px) {
+    .table-container,
+    .loans-table-container-member,
+    .table-wrapper-member {
+        margin-left: -5px !important;
+        margin-right: -5px !important;
+        max-width: calc(100% + 10px) !important;
+        width: calc(100% + 10px) !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Force display of horizontal scroll indicator */
+    .table-container::after,
+    .loans-table-container-member::after,
+    .table-wrapper-member::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 30px;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.7));
+        pointer-events: none;
+    }
+      /* Enhanced fix for admin book table */
+    .admin-book-table {
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        display: block !important;
+        width: 100% !important;
+        -webkit-overflow-scrolling: touch !important;
+        max-width: 100% !important;
+    }
+    
+    .admin-book-table table {
+        table-layout: fixed !important;
+        min-width: 800px !important;
+    }
+    
+    /* Fix for book rows spreading across screen */
+    .book-row {
+        display: table-row !important;
+        width: auto !important;
+    }
+    
+    .book-row td {
+        display: table-cell !important;
+        white-space: normal !important;
+        padding: 10px 8px !important;
+    }
+    
+    /* Fix for long book titles */
+    .book-info strong {
+        max-width: 140px !important;
+        display: block !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+    
+    .admin-book-table table {
+        table-layout: fixed !important;
+        min-width: 800px !important;
+    }
+    
+    /* Fix for book rows spreading across screen */
+    .book-row {
+        display: table-row !important;
+        width: auto !important;
+    }
+    
+    .book-row td {
+        display: table-cell !important;
+        white-space: normal !important;
+    }
+        width: 100% !important;
+        min-width: 800px !important; /* Ensure minimum width for all columns */
+    }
+    
+    .admin-book-table th,
+    .admin-book-table td {
+        max-width: none !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Specific column widths */
+    .admin-book-table th:nth-child(1),
+    .admin-book-table td:nth-child(1) {
+        width: 50px !important; /* ID column */
+    }
+    
+    .admin-book-table th:nth-child(2),
+    .admin-book-table td:nth-child(2) {
+        width: 150px !important; /* Book title column */
+    }
+    
+    /* Fix for long book titles */
+    .book-info strong {
+        max-width: 140px !important;
+        display: block !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Fix specifically for spacing issues in the book row */
+    .book-row td {
+        padding: 10px 8px !important;
+    }
+}

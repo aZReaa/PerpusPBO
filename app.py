@@ -14,16 +14,20 @@ if os.environ.get('DATABASE_URL'):
     # Production configuration
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'fallback-secret-key')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+    # Log that we're in production mode
+    print("Running in PRODUCTION mode")
 else:
     # Development configuration
     app.config['SECRET_KEY'] = 'your-secret-key-here'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///perpustakaan.db'
+    # Log that we're in development mode
+    print("Running in DEVELOPMENT mode")
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # File upload configuration
-UPLOAD_FOLDER = 'static/uploads/books'
-PROFILE_FOLDER = 'static/uploads/profiles'
+UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'static/uploads/books')
+PROFILE_FOLDER = os.environ.get('PROFILE_FOLDER', 'static/uploads/profiles')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['PROFILE_FOLDER'] = PROFILE_FOLDER
@@ -987,16 +991,17 @@ def member_edit_profile():
 def create_admin():
     admin = User.query.filter_by(role='admin').first()
     if not admin:
+        admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
         admin_user = User(
             username='admin',
             email='admin@perpus.com',
-            password_hash=generate_password_hash('admin123'),
+            password_hash=generate_password_hash(admin_password),
             nama_lengkap='Administrator',
             role='admin'
         )
         db.session.add(admin_user)
         db.session.commit()
-        print("Admin user created: username=admin, password=admin123")
+        print(f"Admin user created: username=admin, password={'*' * len(admin_password)}")
 
 @app.route('/admin/loans/confirm', methods=['GET', 'POST'])
 @login_required

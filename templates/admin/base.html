@@ -2,10 +2,14 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Admin Dashboard{% endblock %} - Perpustakaan Sekolah</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">    <title>{% block title %}Admin Dashboard{% endblock %} - Perpustakaan Sekolah</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin-dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='table-scroll-fix.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-book-table.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -25,10 +29,11 @@
             </div>            <!-- Footer -->
             {% include 'admin/includes/footer.html' %}
         </div>
-    </div>
-
-    <script>
-        // Mobile Sidebar Toggle Functionality
+    </div>    <script src="{{ url_for('static', filename='js/touch-scroll.js') }}"></script>
+    {% if request.args.get('debug') == '1' %}
+    <script src="{{ url_for('static', filename='js/scroll-debug.js') }}"></script>
+    {% endif %}
+    <script>        // Mobile Sidebar Toggle Functionality
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
             const overlay = document.querySelector('.sidebar-overlay');
@@ -38,11 +43,18 @@
             overlay.classList.toggle('active');
             toggle.classList.toggle('active');
             
-            // Prevent body scroll when sidebar is open
-            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            // Prevent body scroll when sidebar is open on mobile
+            if (sidebar.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.width = '100%';
+            } else {
+                document.body.style.overflow = '';
+                document.body.style.position = '';
+                document.body.style.width = '';
+            }
         }
-        
-        function closeSidebar() {
+          function closeSidebar() {
             const sidebar = document.querySelector('.sidebar');
             const overlay = document.querySelector('.sidebar-overlay');
             const toggle = document.querySelector('.mobile-menu-toggle');
@@ -51,8 +63,10 @@
             overlay.classList.remove('active');
             toggle.classList.remove('active');
             
-            // Restore body scroll
+            // Restore body scroll and remove mobile constraints
             document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
         }
         
         // Close sidebar when clicking on a menu item (mobile)

@@ -14,12 +14,10 @@
                 {% endfor %}
             </div>
         {% endif %}
-    {% endwith %}
-
-    <!-- Filter Panel -->
-    <div class="filter-panel" style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    {% endwith %}    <!-- Filter Panel -->
+    <div class="filter-panel" style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden;">
         <form method="GET" action="{{ url_for('admin_books') }}">
-            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 15px; align-items: end;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
                 <div>
                     <label for="search-input" style="display: block; margin-bottom: 5px; font-weight: 500;">Pencarian</label>
                     <input type="text" id="search-input" name="search" placeholder="Cari judul, pengarang, penerbit, atau ISBN..." 
@@ -67,35 +65,31 @@
             </div>
             {% endif %}
         </form>
-    </div>
-
-    <div class="table-container">
-        <table class="table">
+    </div>    <div class="table-container admin-book-table" style="overflow-x: scroll; -webkit-overflow-scrolling: touch; width: 100%; position: relative;">
+        <table class="table" style="min-width: 900px;">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>📖 Buku</th>
-                    <th>✍️ Pengarang</th>
-                    <th>🏢 Penerbit</th>
-                    <th>📅 Tahun</th>
-                    <th>📂 Kategori</th>
-                    <th>📦 Stok</th>
-                    <th>⚙️ Aksi</th>
+                    <th style="width: 50px;">ID</th>
+                    <th style="width: 200px;">📖 Buku</th>
+                    <th style="width: 150px;">✍️ Pengarang</th>
+                    <th style="width: 150px;">🏢 Penerbit</th>
+                    <th style="width: 80px;">📅 Tahun</th>
+                    <th style="width: 120px;">📂 Kategori</th>
+                    <th style="width: 80px;">📦 Stok</th>
+                    <th style="width: 120px;">⚙️ Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 {% for book in books %}                <tr class="book-row">
-                    <td data-label="ID">{{ book.id }}</td>
-                    <td data-label="Buku">
-                        <div class="book-info">
-                            <strong>{{ book.judul }}</strong>
+                    <td data-label="ID">{{ book.id }}</td>                    <td data-label="Buku">
+                        <div class="book-info" style="max-width: 200px; overflow: hidden;">
+                            <strong style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.judul }}</strong>
                         </div>
                     </td>
                     <td data-label="Pengarang">{{ book.pengarang }}</td>
                     <td data-label="Penerbit">{{ book.penerbit }}</td>
-                    <td data-label="Tahun">{{ book.tahun_terbit }}</td>
-                    <td data-label="Kategori">
-                        <span class="badge">{{ book.kategori }}</span>
+                    <td data-label="Tahun">{{ book.tahun_terbit }}</td>                    <td data-label="Kategori">
+                        <span class="badge" style="display: inline-block; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.kategori }}</span>
                     </td>
                     <td data-label="Stok">
                         <span class="stock-badge {% if book.stok > 0 %}stock-available{% else %}stock-empty{% endif %}">

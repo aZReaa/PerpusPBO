@@ -2,8 +2,9 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{% block title %}Perpustakaan Sekolah{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='table-scroll-fix.css') }}">
     <style>
         /* Global Styles - Blue & White Theme */
         :root {
@@ -188,15 +189,30 @@
                 -webkit-tap-highlight-color: transparent;
             }
         }
-        
-        /* Smooth scrolling for better mobile experience */
+          /* Smooth scrolling for better mobile experience */
         html {
             scroll-behavior: smooth;
+            /* Prevent horizontal overflow issues */
+            overflow-x: hidden;
         }
         
-        /* Prevent horizontal scroll on mobile */
+        /* Prevent horizontal scroll on mobile and improve scrolling */
         body {
             overflow-x: hidden;
+            /* Better touch scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Improve mobile scrolling containers */
+        * {
+            /* Better box sizing for mobile */
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Ensure all containers respect mobile boundaries */
+        .container-member {
+            overflow-x: hidden;
+            position: relative;
         }
         
         /* Better focus indicators for accessibility */
@@ -227,8 +243,9 @@
         {% block content %}{% endblock %}
     </main>
 
-    {% include 'member/includes/footer.html' %}
-
-    {% block extra_js %}{% endblock %}
+    {% include 'member/includes/footer.html' %}    {% block extra_js %}{% endblock %}
+    
+    <!-- Touch scroll enhancement for tables -->
+    <script src="{{ url_for('static', filename='js/touch-scroll.js') }}"></script>
 </body>
 </html>

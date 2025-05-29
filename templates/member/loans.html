@@ -46,6 +46,34 @@
         border-radius: var(--border-radius-md);
         box-shadow: var(--card-shadow);
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        /* Better mobile scrolling */
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary-blue) var(--light-blue-bg);
+        width: 100%;
+        display: block;
+        position: relative;
+        max-width: 100%;
+    }
+    
+    /* WebKit scrollbar styling */
+    .loans-table-container-member::-webkit-scrollbar {
+        height: 8px;
+    }
+    
+    .loans-table-container-member::-webkit-scrollbar-track {
+        background: var(--light-blue-bg);
+        border-radius: 4px;
+    }
+    
+    .loans-table-container-member::-webkit-scrollbar-thumb {
+        background: var(--primary-blue);
+        border-radius: 4px;
+    }
+    
+    .loans-table-container-member::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-blue-dark);
     }
     
     /* Mobile table container */

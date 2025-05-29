@@ -1,0 +1,102 @@
+/* Admin-specific mobile fixes */
+
+/* Global mobile scrolling improvements for admin pages */
+* {
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    /* Enhanced scrollable containers for admin tables */
+    .admin-book-table {
+        overflow-x: scroll !important; /* Changed from auto to scroll to force scrollbar */
+        -webkit-overflow-scrolling: touch !important;
+        scroll-behavior: smooth !important;
+        width: 100% !important;
+        display: block !important;
+        max-width: 100% !important;
+        position: relative !important;
+        scrollbar-width: thin !important;
+        scrollbar-color: #667eea #f1f5f9 !important;
+        -ms-overflow-style: -ms-autohiding-scrollbar !important;
+        margin-bottom: 20px !important;
+        touch-action: pan-x pan-y !important; /* Enable touch panning */
+    }
+    
+    /* Ensure tables can scroll horizontally */
+    .admin-book-table table {
+        min-width: 800px !important;
+        width: 100% !important;
+        table-layout: fixed !important;
+    }
+    
+    /* Fix for book rows spreading across screen */
+    .book-row {
+        display: table-row !important;
+        width: 100% !important;
+    }
+    
+    .book-row td {
+        display: table-cell !important;
+        white-space: nowrap !important;
+        padding: 10px 8px !important;
+    }
+    
+    /* WebKit scrollbar styling */
+    .admin-book-table::-webkit-scrollbar {
+        height: 8px !important;
+    }
+    
+    .admin-book-table::-webkit-scrollbar-track {
+        background: #f1f5f9 !important;
+        border-radius: 4px !important;
+    }
+    
+    .admin-book-table::-webkit-scrollbar-thumb {
+        background: #667eea !important;
+        border-radius: 4px !important;
+    }
+    
+    .admin-book-table::-webkit-scrollbar-thumb:hover {
+        background: #5a67d8 !important;
+    }
+    
+    /* Force display of horizontal scroll indicator */
+    .admin-book-table::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 30px;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.7));
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    /* Fix for specific columns */
+    .admin-book-table th:nth-child(1),
+    .admin-book-table td:nth-child(1) {
+        width: 50px !important; /* ID column */
+    }
+    
+    .admin-book-table th:nth-child(2),
+    .admin-book-table td:nth-child(2) {
+        width: 200px !important; /* Book title column */
+    }
+    
+    /* Fix for book title display */
+    .book-info strong {
+        max-width: 180px !important;
+        display: block !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Make filter form scrollable on small screens */
+    .filter-panel form > div {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding-bottom: 10px !important;
+    }
+}
