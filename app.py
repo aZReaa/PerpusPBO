@@ -931,7 +931,8 @@ def member_loans():
     
     loans = Peminjaman.query.filter_by(user_id=current_user.id).order_by(Peminjaman.tanggal_pinjam.desc()).all()
     today = datetime.now().date()
-    return render_template('member/loans.html', loans=loans, today=today)
+    active_loans_count = current_user.active_loans_count()
+    return render_template('member/loans.html', loans=loans, today=today, active_loans_count=active_loans_count)
 
 @app.route('/member/profile')
 @login_required

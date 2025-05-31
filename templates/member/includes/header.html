@@ -1,99 +1,125 @@
-<style>    .main-header-member {
-        background: linear-gradient(90deg, var(--primary-blue, #5D78FF) 0%, var(--primary-purple, #7B5AFF) 100%);
-        color: var(--text-on-primary);
-        padding: 0 20px;
+<style>
+    /* Modern Dark Theme Header */
+    .main-header-member {
+        background: linear-gradient(135deg, var(--bg-secondary-dark) 0%, var(--bg-tertiary-dark) 100%);
+        border-bottom: 1px solid var(--border-color-dark);
+        color: var(--text-high-contrast);
+        padding: 0 var(--spacing-lg);
         display: flex;
         align-items: center;
         justify-content: space-between;
         min-height: 70px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--card-shadow-dark);
         position: sticky;
         top: 0;
         z-index: 1000;
-    }
-    
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }    
     /* Mobile header adjustments */
     @media (max-width: 768px) {
         .main-header-member {
-            padding: 0 15px;
+            padding: 0 var(--spacing-md);
             min-height: 60px;
         }
     }
     
     @media (max-width: 480px) {
         .main-header-member {
-            padding: 0 10px;
+            padding: 0 var(--spacing-sm);
             min-height: 56px;
         }
-    }    .header-logo-member a {
-        color: var(--text-on-primary);
-        font-size: 1.5rem;
-        font-weight: 600;
+    }
+
+    /* Modern logo styling */
+    .header-logo-member a {
+        color: var(--text-high-contrast);
+        font-size: var(--font-size-xl);
+        font-weight: 700;
         text-decoration: none;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        transition: var(--transition-fast);
     }
     
+    .header-logo-member a:hover {
+        color: var(--accent-primary);
+        transform: scale(1.02);
+    }    
     /* Mobile logo adjustments */
     @media (max-width: 768px) {
         .header-logo-member a {
-            font-size: 1.3rem;
+            font-size: var(--font-size-lg);
         }
     }
     
     @media (max-width: 480px) {
         .header-logo-member a {
-            font-size: 1.1rem;
+            font-size: var(--font-size-base);
         }
     }
 
+    /* Modern navigation styling */
     .header-nav-member ul {
         list-style: none;
         display: flex;
-        gap: 20px;
+        gap: var(--spacing-sm);
         margin: 0;
         padding: 0;
     }
 
     .header-nav-member ul li a {
-        color: var(--text-on-primary);
+        color: var(--text-medium-contrast);
         text-decoration: none;
-        padding: 10px 15px;
+        padding: var(--spacing-sm) var(--spacing-md);
         border-radius: var(--border-radius-md);
-        transition: background-color 0.2s ease, color 0.2s ease;
+        transition: var(--transition-fast);
         font-weight: 500;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: var(--spacing-xs);
+        position: relative;
     }
 
-    .header-nav-member ul li a:hover,
-    .header-nav-member ul li a.active {
-        background-color: rgba(255, 255, 255, 0.15);
-        color: var(--text-on-primary); /* Ensure text remains white */
+    .header-nav-member ul li a:hover {
+        background: rgba(127, 90, 240, 0.1);
+        color: var(--accent-primary);
+        transform: translateY(-1px);
     }
+    
     .header-nav-member ul li a.active {
-        background-color: rgba(255, 255, 255, 0.25); /* Slightly more prominent for active */
+        background: var(--accent-primary);
+        color: var(--text-on-accent);
         font-weight: 600;
-    }    .header-user-info-member {
+        box-shadow: 0 2px 8px rgba(127, 90, 240, 0.3);
+    }    /* Modern user info styling */
+    .header-user-info-member {
         display: flex;
         align-items: center;
-        gap: 15px;
-        font-size: 0.9rem;
+        gap: var(--spacing-md);
+        font-size: var(--font-size-sm);
     }
     
     .header-profile-photo {
-        width: 35px;
-        height: 35px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         overflow: hidden;
-        border: 2px solid rgba(255, 255, 255, 0.3);
+        border: 2px solid var(--accent-primary);
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(255, 255, 255, 0.2);
-        font-size: 1.2rem;
+        background: var(--accent-primary);
+        font-size: var(--font-size-lg);
+        font-weight: 600;
+        color: var(--text-on-accent);
+        transition: var(--transition-fast);
+    }
+    
+    .header-profile-photo:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(127, 90, 240, 0.4);
     }
     
     .header-profile-photo img {
@@ -103,32 +129,41 @@
     }
     
     .header-user-info-member span {
-        opacity: 0.9;
+        color: var(--text-medium-contrast);
+        font-weight: 500;
     }
 
+    /* Modern logout button */
     .logout-btn-member {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: var(--text-on-primary);
-        padding: 8px 15px;
+        background: var(--bg-tertiary-dark);
+        color: var(--text-high-contrast);
+        padding: var(--spacing-sm) var(--spacing-md);
         border-radius: var(--border-radius-md);
         text-decoration: none;
         font-weight: 500;
-        transition: background-color 0.2s ease;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: var(--transition-fast);
+        border: 1px solid var(--border-color-dark);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
     }
+    
     .logout-btn-member:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-        color: var(--text-on-primary);
-    }    .mobile-nav-toggle {
+        background: var(--accent-danger);
+        color: var(--text-on-accent);
+        border-color: var(--accent-danger);
+        transform: translateY(-1px);
+    }    /* Modern mobile navigation toggle */
+    .mobile-nav-toggle {
         display: none;
         background: none;
         border: none;
-        color: var(--text-on-primary);
-        font-size: 1.8rem;
+        color: var(--text-high-contrast);
+        font-size: var(--font-size-2xl);
         cursor: pointer;
-        padding: 8px;
-        border-radius: 4px;
-        transition: background-color 0.3s ease;
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        transition: var(--transition-fast);
         min-height: 44px;
         min-width: 44px;
         align-items: center;
@@ -136,94 +171,136 @@
     }
     
     .mobile-nav-toggle:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }    @media (max-width: 992px) {
+        background: rgba(127, 90, 240, 0.1);
+        color: var(--accent-primary);
+    }    /* Modern mobile navigation menu */
+    @media (max-width: 992px) {
         .header-nav-member {
             display: none;
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
-            background: linear-gradient(90deg, var(--primary-blue-dark, #4A60E0) 0%, var(--primary-purple, #7B5AFF) 100%);
+            background: var(--bg-secondary-dark);
+            border: 1px solid var(--border-color-dark);
+            border-top: none;
             flex-direction: column;
-            padding: 10px 0;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: var(--spacing-md) 0;
+            box-shadow: var(--card-shadow-dark);
             z-index: 1000;
+            backdrop-filter: blur(10px);
         }
+        
         .header-nav-member.active {
             display: flex;
+            animation: slideDown var(--transition-normal);
         }
+        
         .header-nav-member ul {
             flex-direction: column;
             width: 100%;
             gap: 0;
         }
+        
         .header-nav-member ul li a {
-            padding: 16px 20px;
+            padding: var(--spacing-md) var(--spacing-lg);
             width: 100%;
             border-radius: 0;
             justify-content: flex-start;
-            font-size: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: var(--font-size-base);
+            border-bottom: 1px solid var(--border-color-dark);
         }
+        
         .header-nav-member ul li:last-child a {
             border-bottom: none;
         }
-        .header-nav-member ul li a:hover,
-        .header-nav-member ul li a.active {
-            background-color: var(--primary-purple);
+        
+        .header-nav-member ul li a:hover {
+            background: var(--accent-primary);
+            color: var(--text-on-accent);
         }
+        
         .mobile-nav-toggle {
             display: flex;
         }
+        
         .header-user-info-member {
-            font-size: 0.85rem;
-            gap: 8px;
+            font-size: var(--font-size-xs);
+            gap: var(--spacing-sm);
         }
-    }
-    
+    }    
+    /* Additional mobile optimizations */
     @media (max-width: 768px) {
         .header-user-info-member {
-            gap: 6px;
+            gap: var(--spacing-xs);
         }
+        
         .header-user-info-member span:not(.logout-btn-member) {
             display: none;
         }
+        
         .logout-btn-member {
-            padding: 6px 12px;
-            font-size: 0.85rem;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            font-size: var(--font-size-xs);
+        }
+        
+        .header-profile-photo {
+            width: 32px;
+            height: 32px;
+            font-size: var(--font-size-base);
         }
     }
     
     @media (max-width: 480px) {
         .header-logo-member a {
-            font-size: 1rem;
+            font-size: var(--font-size-sm);
         }
+        
         .header-profile-photo {
-            width: 30px;
-            height: 30px;
-            font-size: 1rem;
+            width: 28px;
+            height: 28px;
+            font-size: var(--font-size-sm);
         }
+        
         .logout-btn-member {
             padding: 4px 8px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
     }
 </style>
 
 <header class="main-header-member">
     <div class="header-logo-member">
-        <a href="{{ url_for('member_dashboard') }}">📚 Perpustakaan Digital Sekolah</a>
+        <a href="{{ url_for('member_dashboard') }}">
+            <span>📚</span>
+            <span>LibraryHub</span>
+        </a>
     </div>
+    
     <button class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    
     <nav class="header-nav-member">
         <ul>
-            <li><a href="{{ url_for('member_dashboard') }}" class="{% if request.endpoint == 'member_dashboard' %}active{% endif %}">📊 Dashboard</a></li>
-            <li><a href="{{ url_for('member_books') }}" class="{% if request.endpoint in ['member_books', 'member_book_detail'] %}active{% endif %}">📚 Daftar Buku</a></li>
-            <li><a href="{{ url_for('member_loans') }}" class="{% if request.endpoint == 'member_loans' %}active{% endif %}">📖 Peminjaman Saya</a></li>
-            <li><a href="{{ url_for('member_profile') }}" class="{% if request.endpoint == 'member_profile' %}active{% endif %}">👤 Profil</a></li>
+            <li><a href="{{ url_for('member_dashboard') }}" class="{% if request.endpoint == 'member_dashboard' %}active{% endif %}">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a></li>
+            <li><a href="{{ url_for('member_books') }}" class="{% if request.endpoint in ['member_books', 'member_book_detail'] %}active{% endif %}">
+                <span>📚</span>
+                <span>Explore Books</span>
+            </a></li>
+            <li><a href="{{ url_for('member_loans') }}" class="{% if request.endpoint == 'member_loans' %}active{% endif %}">
+                <span>📖</span>
+                <span>My Loans</span>
+            </a></li>
+            <li><a href="{{ url_for('member_profile') }}" class="{% if request.endpoint == 'member_profile' %}active{% endif %}">
+                <span>👤</span>
+                <span>Profile</span>
+            </a></li>
         </ul>
-    </nav>    <div class="header-user-info-member">
+    </nav>
+
+    <div class="header-user-info-member">
         <div class="header-profile-photo">
             {% if current_user.profile_photo %}
                 <img src="{{ url_for('static', filename=current_user.profile_photo) }}" alt="Profile Photo">
@@ -231,9 +308,12 @@
                 {{ current_user.nama_lengkap[0].upper() }}
             {% endif %}
         </div>
-        <span>👋 Halo, {{ current_user.nama_lengkap }}</span>
-        <span>🎯 {{ current_user.kelas }}</span>
-        <a href="{{ url_for('logout') }}" class="logout-btn-member">🚪 Logout</a>
+        <span>{{ current_user.nama_lengkap.split()[0] }}</span>
+        <span>{{ current_user.kelas }}</span>
+        <a href="{{ url_for('logout') }}" class="logout-btn-member">
+            <span>🚪</span>
+            <span>Logout</span>
+        </a>
     </div>
 </header>
 

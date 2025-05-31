@@ -1,54 +1,541 @@
 {% extends "member/base.html" %}
 
-{% block title %}Peminjaman Saya - Perpustakaan Sekolah{% endblock %}
+{% block title %}Peminjaman Saya - LibraryHub{% endblock %}
 
 {% block extra_css %}
-<style>    .loans-header-member {
+<style>
+    .loans-hero {
+        background: var(--gradient-primary);
+        border-radius: var(--border-radius-lg);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        color: var(--text-on-dark);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .loans-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--pattern-overlay);
+        opacity: 0.1;
+        pointer-events: none;
+    }
+    
+    .loans-header-content {
+        position: relative;
+        z-index: 1;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 25px;
-        background-color: var(--white-bg);
-        padding: 20px;
-        border-radius: var(--border-radius-md);
-        box-shadow: var(--card-shadow);
         flex-wrap: wrap;
-        gap: 15px;
+        gap: 1rem;
     }
-    .loans-header-member h1 {
-        color: var(--primary-blue);
-        font-size: 1.8rem;
+    
+    .loans-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
         margin: 0;
     }
     
-    /* Mobile loans header */
+    .loans-title .icon {
+        font-size: 2rem;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    
+    .loans-title h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        background: linear-gradient(45deg, #ffffff, #e6f3ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .loans-stats {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .stat-chip {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--text-on-dark);
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+    
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-        .loans-header-member {
+        .loans-hero {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .loans-header-content {
             flex-direction: column;
             text-align: center;
-            padding: 15px;
         }
-        .loans-header-member h1 {
-            font-size: 1.5rem;
+        
+        .loans-title h1 {
+            font-size: 1.75rem;
+        }
+        
+        .loans-title .icon {
+            font-size: 1.75rem;
+        }
+        
+        .loans-stats {
+            justify-content: center;
         }
     }
     
     @media (max-width: 480px) {
-        .loans-header-member {
-            padding: 12px;
+        .loans-hero {
+            padding: 1.25rem;
+            border-radius: var(--border-radius-md);
         }
-        .loans-header-member h1 {
-            font-size: 1.3rem;
+        
+        .loans-title h1 {
+            font-size: 1.5rem;
         }
-    }    .loans-table-container-member {
-        background-color: var(--white-bg);
-        padding: 25px;
+        
+        .loans-title .icon {
+            font-size: 1.5rem;
+        }
+        
+        .stat-chip {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8rem;
+        }
+    }
+
+    /* Loans Table Section */
+    .loans-section {
+        background: var(--bg-secondary-dark);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--border-radius-lg);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .loans-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--gradient-primary);
+    }
+    
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-primary);
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .section-title .icon {
+        font-size: 1.5rem;
+        color: var(--accent-primary);
+    }
+    
+    .section-title h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-primary-dark);
+    }
+    
+    .filter-controls {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+    }
+    
+    .filter-select {
+        background: var(--bg-primary-dark);
+        border: 1px solid var(--border-primary);
         border-radius: var(--border-radius-md);
-        box-shadow: var(--card-shadow);
+        padding: 0.5rem 0.75rem;
+        color: var(--text-primary-dark);
+        font-size: 0.9rem;
+        min-width: 120px;
+    }
+    
+    .filter-select:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 2px rgba(127, 90, 240, 0.2);
+    }
+
+    /* Modern Table Styling */
+    .table-wrapper {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        scroll-behavior: smooth;
-        /* Better mobile scrolling */
+        border-radius: var(--border-radius-md);
+        border: 1px solid var(--border-primary);
+        background: var(--bg-primary-dark);
+    }
+    
+    .modern-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        min-width: 800px;
+        background: var(--bg-primary-dark);
+    }
+    
+    .modern-table th,
+    .modern-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-primary);
+        vertical-align: middle;
+    }
+    
+    .modern-table th {
+        background: var(--bg-secondary-dark);
+        font-weight: 600;
+        color: var(--text-primary-dark);
+        font-size: 0.85rem;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    
+    .modern-table td {
+        color: var(--text-secondary-dark);
+        transition: var(--transition-smooth);
+    }
+    
+    .modern-table tbody tr {
+        transition: var(--transition-smooth);
+    }
+    
+    .modern-table tbody tr:hover {
+        background: var(--bg-secondary-dark);
+    }
+    
+    .modern-table tbody tr:hover td {
+        color: var(--text-primary-dark);
+    }
+    
+    /* Book Title with Cover */
+    .book-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .book-cover-mini {
+        width: 40px;
+        height: 60px;
+        border-radius: 4px;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 1px solid var(--border-primary);
+    }
+    
+    .book-details h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+        color: var(--text-primary-dark);
+        line-height: 1.3;
+    }
+    
+    .book-details p {
+        font-size: 0.8rem;
+        color: var(--text-secondary-dark);
+        margin: 0;
+        opacity: 0.8;
+    }
+    
+    /* Status Badges */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.5rem 0.875rem;
+        border-radius: 2rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: var(--transition-smooth);
+    }
+    
+    .status-badge.returned {
+        background: rgba(34, 197, 94, 0.15);
+        color: var(--success-color);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    
+    .status-badge.active {
+        background: rgba(59, 130, 246, 0.15);
+        color: var(--info-color);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    .status-badge.late {
+        background: rgba(222, 53, 11, 0.15);
+        color: var(--danger-color);
+        border: 1px solid rgba(222, 53, 11, 0.3);
+    }
+    
+    .status-badge.overdue {
+        background: rgba(249, 115, 22, 0.15);
+        color: var(--warning-color);
+        border: 1px solid rgba(249, 115, 22, 0.3);
+    }
+    
+    /* Date Badge */
+    .date-badge {
+        background: var(--bg-secondary-dark);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--border-radius-sm);
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-secondary-dark);
+        font-family: 'Inter', monospace;
+    }
+    
+    /* Fine Amount */
+    .fine-amount {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-weight: 600;
+        color: var(--danger-color);
+        font-size: 0.9rem;
+    }
+    
+    .fine-amount.zero {
+        color: var(--text-secondary-dark);
+        opacity: 0.6;
+    }
+    
+    /* No Data State */
+    .no-data-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-secondary-dark);
+    }
+    
+    .no-data-state .icon {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.6;
+        display: block;
+    }
+    
+    .no-data-state h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0 0 0.75rem 0;
+        color: var(--text-primary-dark);
+    }
+    
+    .no-data-state p {
+        margin: 0 0 2rem 0;
+        font-size: 1.1rem;
+        opacity: 0.8;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--gradient-primary);
+        color: var(--text-on-dark);
+        padding: 1rem 2rem;
+        border-radius: var(--border-radius-md);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: var(--transition-smooth);
+        border: none;
+        cursor: pointer;
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(127, 90, 240, 0.4);
+        color: var(--text-on-dark);
+        text-decoration: none;
+    }
+    
+    /* Mobile Table Responsive */
+    @media (max-width: 768px) {
+        .loans-section {
+            padding: 1.5rem;
+        }
+        
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .modern-table {
+            font-size: 0.85rem;
+        }
+        
+        .modern-table th,
+        .modern-table td {
+            padding: 0.75rem 0.5rem;
+        }
+        
+        .modern-table th {
+            font-size: 0.8rem;
+        }
+        
+        /* Hide less important columns on mobile */
+        .modern-table th:nth-child(3),
+        .modern-table td:nth-child(3),
+        .modern-table th:nth-child(5),
+        .modern-table td:nth-child(5) {
+            display: none;
+        }
+        
+        .book-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .book-cover-mini {
+            width: 30px;
+            height: 45px;
+        }
+        
+        .no-data-state {
+            padding: 3rem 1rem;
+        }
+        
+        .no-data-state .icon {
+            font-size: 4rem;
+        }
+        
+        .no-data-state h3 {
+            font-size: 1.25rem;
+        }
+        
+        .no-data-state p {
+            font-size: 1rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .loans-section {
+            padding: 1.25rem;
+            border-radius: var(--border-radius-md);
+        }
+        
+        /* Stack table data vertically on very small screens */
+        .modern-table,
+        .modern-table thead,
+        .modern-table tbody,
+        .modern-table th,
+        .modern-table td,
+        .modern-table tr {
+            display: block;
+        }
+        
+        .modern-table thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+        
+        .modern-table tr {
+            border: 1px solid var(--border-primary);
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: var(--border-radius-md);
+            background: var(--bg-secondary-dark);
+        }
+        
+        .modern-table td {
+            border: none;
+            position: relative;
+            padding: 0.75rem 0.75rem 0.75rem 50%;
+            text-align: left;
+        }
+        
+        .modern-table td:before {
+            content: attr(data-label) ": ";
+            position: absolute;
+            left: 0.75rem;
+            width: 45%;
+            padding-right: 0.5rem;
+            white-space: nowrap;
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+        
+        .book-info {
+            flex-direction: row;
+            padding-left: 0 !important;
+        }
+        
+        .book-info:before {
+            display: none;
+        }
+        
+        .no-data-state {
+            padding: 2rem 1rem;
+        }
+        
+        .no-data-state .icon {
+            font-size: 3rem;
+        }
+        
+        .no-data-state h3 {
+            font-size: 1.1rem;
+        }
+        
+        .no-data-state p {
+            font-size: 0.9rem;
+        }
+        
+    .cta-button {
+            padding: 0.875rem 1.5rem;
+            font-size: 0.9rem;
+        }
+    }
+    
+    .loans-table-container-member {
         scrollbar-width: thin;
         scrollbar-color: var(--primary-blue) var(--light-blue-bg);
         width: 100%;
@@ -282,8 +769,7 @@
             padding: 20px 10px;
         }
         .no-loans-message .icon {
-            font-size: 2rem;
-        }
+            font-size: 2rem;        }
         .no-loans-message h3 {
             font-size: 1.1rem;
         }
@@ -292,70 +778,154 @@
 {% endblock %}
 
 {% block content %}
-<div class="loans-header-member">
-    <h1>📖 Peminjaman Saya</h1>
-    <a href="{{ url_for('member_books') }}" class="btn-member">📚 Pinjam Buku Baru</a>
+<div class="loans-hero">
+    <div class="loans-header-content">
+        <div class="loans-title">
+            <span class="icon">📖</span>
+            <h1>Riwayat Peminjaman</h1>
+        </div>
+        <div class="loans-stats">
+            <div class="stat-chip">
+                <span>📚</span>
+                <span>{{ loans|length }} Total</span>
+            </div>
+            {% if active_loans_count > 0 %}
+            <div class="stat-chip">
+                <span>📖</span>
+                <span>{{ active_loans_count }} Aktif</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
-{% if loans %}
-<div class="loans-table-container-member">
-    <table class="loans-list-table">
-        <thead>
-            <tr>
-                <th>Buku</th>
-                <th>Tgl Pinjam</th>
-                <th>Batas Kembali</th>
-                <th>Tgl Kembali Aktual</th>
-                <th>Status</th>
-                <th>Denda</th>
-            </tr>
-        </thead>
-        <tbody>            {% for loan in loans %}
-            <tr>
-                <td class="book-title-cell" data-label="Buku">
-                    {{ loan.buku.judul }}
-                    <small>{{ loan.buku.pengarang }}</small>
-                </td>
-                <td data-label="Tgl Pinjam">{{ loan.tanggal_pinjam.strftime('%d %b %Y') }}</td>
-                <td class="date-cell 
-                    {% if loan.status == 'dipinjam' and loan.tanggal_kembali_rencana.date() < today %}overdue{% endif %}
-                    {% if loan.status == 'dipinjam' and loan.tanggal_kembali_rencana.date() == today %}due-today{% endif %}" data-label="Batas Kembali">
-                    {{ loan.tanggal_kembali_rencana.strftime('%d %b %Y') }}
-                </td>
-                <td data-label="Tgl Kembali Aktual">
-                    {% if loan.tanggal_kembali_aktual %}
-                        {{ loan.tanggal_kembali_aktual.strftime('%d %b %Y') }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-                <td data-label="Status">
-                    {% if loan.status == 'dipinjam' %}
-                        <span class="loan-status-badge dipinjam">Dipinjam</span>
-                    {% elif loan.status == 'dikembalikan' %}
-                        <span class="loan-status-badge dikembalikan">Dikembalikan</span>
-                    {% else %}
-                        <span class="loan-status-badge">{{ loan.status|capitalize }}</span>
-                    {% endif %}
-                </td>
-                <td data-label="Denda">
-                    {% if loan.denda > 0 %}
-                        <span class="fine-amount-loan">Rp {{ "{:,.0f}".format(loan.denda).replace(",", ".") }}</span>
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="loans-section">
+    <div class="section-header">
+        <div class="section-title">
+            <span class="icon">📋</span>
+            <h2>Semua Peminjaman</h2>
+        </div>
+        <div class="filter-controls">
+            <select class="filter-select" id="statusFilter">
+                <option value="all">Semua Status</option>
+                <option value="dipinjam">Sedang Dipinjam</option>
+                <option value="dikembalikan">Dikembalikan</option>
+            </select>
+        </div>
+    </div>
+    
+    {% if loans %}
+    <div class="table-wrapper">
+        <table class="modern-table">
+            <thead>
+                <tr>
+                    <th>Buku</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Batas Kembali</th>
+                    <th>Tanggal Kembali</th>
+                    <th>Status</th>
+                    <th>Denda</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in loans %}
+                <tr data-status="{{ loan.status }}">
+                    <td data-label="Buku">
+                        <div class="book-info">
+                            {% if loan.buku.cover_image %}
+                                <img src="{{ url_for('static', filename='uploads/' + loan.buku.cover_image) }}" 
+                                     alt="{{ loan.buku.judul }}" class="book-cover-mini">
+                            {% else %}
+                                <div class="book-cover-mini" style="background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">📖</div>
+                            {% endif %}
+                            <div class="book-details">
+                                <h4>{{ loan.buku.judul }}</h4>
+                                <p>{{ loan.buku.pengarang }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td data-label="Tanggal Pinjam">
+                        <span class="date-badge">{{ loan.tanggal_pinjam.strftime('%d %b %Y') }}</span>
+                    </td>
+                    <td data-label="Batas Kembali">
+                        <span class="date-badge">{{ loan.tanggal_kembali_rencana.strftime('%d %b %Y') }}</span>
+                    </td>
+                    <td data-label="Tanggal Kembali">
+                        {% if loan.tanggal_kembali_aktual %}
+                            <span class="date-badge">{{ loan.tanggal_kembali_aktual.strftime('%d %b %Y') }}</span>
+                        {% else %}
+                            <span class="date-badge" style="opacity: 0.5;">-</span>
+                        {% endif %}
+                    </td>
+                    <td data-label="Status">
+                        {% if loan.status == 'dipinjam' %}
+                            {% if loan.tanggal_kembali_rencana.date() < today %}
+                                <span class="status-badge late">🚨 Terlambat</span>
+                            {% elif loan.tanggal_kembali_rencana.date() == today %}
+                                <span class="status-badge overdue">⏰ Jatuh Tempo</span>
+                            {% else %}
+                                <span class="status-badge active">📖 Dipinjam</span>
+                            {% endif %}
+                        {% elif loan.status == 'dikembalikan' %}
+                            <span class="status-badge returned">✅ Dikembalikan</span>
+                        {% else %}
+                            <span class="status-badge">{{ loan.status|capitalize }}</span>
+                        {% endif %}
+                    </td>
+                    <td data-label="Denda">
+                        {% if loan.denda > 0 %}
+                            <span class="fine-amount">💰 Rp {{ "{:,.0f}".format(loan.denda).replace(",", ".") }}</span>
+                        {% else %}
+                            <span class="fine-amount zero">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="no-data-state">
+        <span class="icon">📚</span>
+        <h3>Belum Ada Riwayat Peminjaman</h3>
+        <p>Anda belum pernah meminjam buku dari perpustakaan. Mulai petualangan membaca Anda sekarang!</p>
+        <a href="{{ url_for('member_books') }}" class="cta-button">
+            <span>🔍</span>
+            <span>Jelajahi Koleksi Buku</span>
+        </a>
+    </div>
+    {% endif %}
 </div>
-{% else %}
-<div class="no-loans-message">
-    <div class="icon">📂</div>
-    <h3>Belum Ada Riwayat Peminjaman</h3>
-    <p>Anda belum pernah meminjam buku. Mulai petualangan membaca Anda!</p>
-    <a href="{{ url_for('member_books') }}" class="btn-member">Lihat Daftar Buku</a>
-</div>
-{% endif %}
+
+<script>
+// Filter functionality
+document.getElementById('statusFilter')?.addEventListener('change', function() {
+    const filterValue = this.value;
+    const rows = document.querySelectorAll('.modern-table tbody tr');
+    
+    rows.forEach(row => {
+        const status = row.getAttribute('data-status');
+        if (filterValue === 'all' || status === filterValue) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+
+// Add loading animation to table
+document.addEventListener('DOMContentLoaded', function() {
+    const tableRows = document.querySelectorAll('.modern-table tbody tr');
+    tableRows.forEach((row, index) => {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            row.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+        }, index * 50);
+    });
+});
+</script>
+
 {% endblock %}

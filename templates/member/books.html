@@ -3,153 +3,200 @@
 {% block title %}Daftar Buku - Perpustakaan Sekolah{% endblock %}
 
 {% block extra_css %}
-<style>    .page-header-member {
-        background-color: var(--white-bg);
-        padding: 20px;
-        border-radius: var(--border-radius-md);
-        margin-bottom: 25px;
-        box-shadow: var(--card-shadow);
+<style>
+    /* Modern Dark Theme Book Listing */
+    .page-header-member {
+        background: var(--bg-card-dark);
+        border: 1px solid var(--border-color-dark);
+        padding: var(--spacing-xl);
+        border-radius: var(--border-radius-lg);
+        margin-bottom: var(--spacing-xl);
+        box-shadow: var(--card-shadow-dark);
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 15px;
-    }
-    .page-header-member h1 {
-        color: var(--primary-blue);
-        font-size: 1.8rem;
-        margin: 0;
-    }
-    .books-count-badge {
-        background-color: var(--primary-purple);
-        color: var(--text-on-primary);
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        font-weight: 500;
+        gap: var(--spacing-md);
     }
     
-    /* Mobile page header */
+    .page-header-member h1 {
+        color: var(--text-high-contrast);
+        font-size: var(--font-size-3xl);
+        margin: 0;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+    
+    .books-count-badge {
+        background: linear-gradient(135deg, var(--accent-primary) 0%, #9D4EDD 100%);
+        color: var(--text-on-accent);
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border-radius: var(--border-radius-xl);
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(127, 90, 240, 0.3);
+    }    
+    /* Mobile page header responsive */
     @media (max-width: 768px) {
         .page-header-member {
             flex-direction: column;
             text-align: center;
-            padding: 15px;
+            padding: var(--spacing-lg);
         }
+        
         .page-header-member h1 {
-            font-size: 1.5rem;
+            font-size: var(--font-size-2xl);
         }
     }
     
     @media (max-width: 480px) {
         .page-header-member {
-            padding: 12px;
+            padding: var(--spacing-md);
         }
+        
         .page-header-member h1 {
-            font-size: 1.3rem;
+            font-size: var(--font-size-xl);
         }
-    }    .book-filter-panel {
-        background-color: var(--white-bg);
-        padding: 25px;
-        border-radius: var(--border-radius-md);
-        margin-bottom: 25px;
-        box-shadow: var(--card-shadow);
     }
+
+    /* Modern filter panel */
+    .book-filter-panel {
+        background: var(--bg-card-dark);
+        border: 1px solid var(--border-color-dark);
+        padding: var(--spacing-xl);
+        border-radius: var(--border-radius-lg);
+        margin-bottom: var(--spacing-xl);
+        box-shadow: var(--card-shadow-dark);
+    }
+    
     .book-filter-panel form {
         display: flex;
         flex-direction: column;
-        gap: 20px;
-    }
-    
-    /* Mobile filter panel */
+        gap: var(--spacing-lg);
+    }    
+    /* Mobile filter panel responsive */
     @media (max-width: 768px) {
         .book-filter-panel {
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
         }
+        
         .book-filter-panel form {
-            gap: 15px;
+            gap: var(--spacing-md);
         }
     }
     
     @media (max-width: 480px) {
         .book-filter-panel {
-            padding: 15px;
+            padding: var(--spacing-md);
         }
     }
     
+    /* Modern search bar with dark theme */
     .search-bar-member {
         display: flex;
-        border: 2px solid #D1D5DB;
-        border-radius: 25px;
+        border: 2px solid var(--border-color-dark);
+        border-radius: var(--border-radius-xl);
         overflow: hidden;
-        transition: border-color 0.3s ease;
+        transition: var(--transition-fast);
+        background: var(--bg-secondary-dark);
     }
+    
     .search-bar-member:focus-within {
-        border-color: var(--primary-blue);
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 3px rgba(127, 90, 240, 0.1);
     }
+    
     .search-bar-member input[type="text"] {
         flex-grow: 1;
         border: none;
-        padding: 12px 20px;
-        font-size: 1rem;
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-size-base);
         outline: none;
         background: transparent;
-    }
-    .search-bar-member button {
-        background-color: var(--primary-blue);
-        color: var(--white-bg);
-        border: none;
-        padding: 0 25px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        transition: background-color 0.3s ease;
-        min-height: 44px;
-    }
-    .search-bar-member button:hover {
-        background-color: var(--primary-blue-dark);
+        color: var(--text-high-contrast);
     }
     
-    /* Mobile search bar */
+    .search-bar-member input[type="text"]::placeholder {
+        color: var(--text-low-contrast);
+    }
+    
+    .search-bar-member button {
+        background: var(--accent-primary);
+        color: var(--text-on-accent);
+        border: none;
+        padding: 0 var(--spacing-xl);
+        cursor: pointer;
+        font-size: var(--font-size-lg);
+        transition: var(--transition-fast);
+        min-height: 44px;
+        font-weight: 600;
+    }
+    
+    .search-bar-member button:hover {
+        background: #9D4EDD;
+        transform: scale(1.02);
+    }    
+    /* Mobile search bar responsive */
     @media (max-width: 480px) {
         .search-bar-member input[type="text"] {
-            padding: 10px 15px;
-            font-size: 16px; /* Prevent zoom on iOS */
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 16px; /* Prevent iOS zoom */
         }
+        
         .search-bar-member button {
-            padding: 0 20px;
-            font-size: 1rem;
+            padding: 0 var(--spacing-lg);
+            font-size: var(--font-size-base);
         }
-    }    .filter-dropdowns-member {
+    }
+
+    /* Modern filter dropdowns */
+    .filter-dropdowns-member {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
+        gap: var(--spacing-lg);
         align-items: flex-end;
     }
+    
     .filter-group-member label {
         display: block;
-        font-size: 0.9rem;
-        font-weight: 500;
-        margin-bottom: 8px;
-        color: var(--text-light);
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+        color: var(--text-medium-contrast);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
+    
     .filter-group-member select {
         width: 100%;
-        padding: 12px;
+        padding: var(--spacing-md);
         border-radius: var(--border-radius-md);
-        border: 2px solid #D1D5DB;
-        background-color: var(--white-bg);
-        font-size: 0.95rem;
+        border: 2px solid var(--border-color-dark);
+        background: var(--bg-secondary-dark);
+        color: var(--text-high-contrast);
+        font-size: var(--font-size-base);
         outline: none;
-        transition: border-color 0.3s ease;
+        transition: var(--transition-fast);
         min-height: 44px;
     }
+    
     .filter-group-member select:focus {
-        border-color: var(--primary-blue);
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 3px rgba(127, 90, 240, 0.1);
     }
+    
     .filter-dropdowns-member .btn-member {
         grid-column: span 1;
         height: 46px;
+        background: var(--accent-secondary);
+        font-weight: 600;
+    }
+    
+    .filter-dropdowns-member .btn-member:hover {
+        background: #22A78B;
     }
     
     /* Mobile filter dropdowns */
@@ -207,243 +254,436 @@
         margin-left: 10px;
         color: var(--primary-purple);
         font-weight: 500;
-    }    .book-grid-member {
+    }    /* Modern Book Grid with Dark Theme */
+    .book-grid-member {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 25px;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: var(--spacing-xl);
+        margin-top: var(--spacing-xl);
     }
     
     /* Mobile book grid */
+    @media (max-width: 1200px) {
+        .book-grid-member {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+        }
+    }
+    
     @media (max-width: 768px) {
         .book-grid-member {
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            gap: var(--spacing-md);
         }
     }
     
     @media (max-width: 600px) {
         .book-grid-member {
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: var(--spacing-md);
         }
     }
     
     @media (max-width: 480px) {
         .book-grid-member {
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: var(--spacing-sm);
         }
     }
     
     @media (max-width: 360px) {
         .book-grid-member {
             grid-template-columns: 1fr;
+            gap: var(--spacing-md);
         }
     }
     
+    /* Modern Dark Theme Book Card */
     .book-card-member {
-        background-color: var(--white-bg);
-        border-radius: var(--border-radius-md);
-        box-shadow: var(--card-shadow);
+        background: var(--bg-card-dark);
+        border: 1px solid var(--border-color-dark);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--card-shadow-dark);
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: var(--transition-smooth);
         position: relative;
+        backdrop-filter: blur(10px);
     }
+    
     .book-card-member:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+        border-color: var(--accent-primary);
     }
     
     /* Mobile book card adjustments */
+    @media (max-width: 768px) {
+        .book-card-member:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+    }
+    
     @media (max-width: 480px) {
         .book-card-member {
-            border-radius: 6px;
+            border-radius: var(--border-radius-md);
         }
-    }    .book-cover-member {
+    }    /* Modern Book Cover with Dark Theme */
+    .book-cover-member {
         width: 100%;
         aspect-ratio: 3 / 4;
-        background-color: #EAEAEA;
+        background: linear-gradient(135deg, var(--bg-secondary-dark) 0%, #1A1A1A 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         position: relative;
+        border-bottom: 1px solid var(--border-color-dark);
     }
+    
     .book-cover-member img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.3s ease;
+        transition: var(--transition-smooth);
+        filter: brightness(0.95) contrast(1.05);
     }
+    
     .book-cover-member .no-cover-icon {
-        font-size: 3rem;
-        color: #B0B0B0;
+        font-size: 3.5rem;
+        color: var(--text-low-contrast);
+        opacity: 0.6;
+    }
+    
+    /* Cover overlay gradient for better text readability */
+    .book-cover-member::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+        opacity: 0;
+        transition: var(--transition-fast);
+        pointer-events: none;
+    }
+    
+    .book-card-member:hover .book-cover-member::after {
+        opacity: 1;
     }
     
     /* Mobile book cover */
     @media (max-width: 480px) {
         .book-cover-member .no-cover-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
         }
     }
-    
+      /* Modern Book Info with Dark Theme */
     .book-info-member {
-        padding: 15px;
+        padding: var(--spacing-lg);
         flex-grow: 1; 
         display: flex;
         flex-direction: column;
+        background: var(--bg-card-dark);
     }
+    
     .book-info-member h3 {
-        font-size: 1.05rem;
-        margin-bottom: 8px;
-        color: var(--text-dark);
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--spacing-sm);
+        color: var(--text-high-contrast);
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;  
         overflow: hidden;
         text-overflow: ellipsis;
-        min-height: 2.5em;
-        font-weight: 600;
-        line-height: 1.3;
+        min-height: 3em;
+        font-weight: 700;
+        line-height: 1.4;
+        font-family: var(--font-family);
     }
+    
     .book-info-member .author {
-        font-size: 0.85rem;
-        color: var(--text-light);
-        margin-bottom: 8px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .book-info-member .stock-info {
-        font-size: 0.8rem;
+        font-size: var(--font-size-sm);
+        color: var(--text-medium-contrast);
+        margin-bottom: var(--spacing-sm);
         font-weight: 500;
-        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+    
+    .book-info-member .author::before {
+        content: '👤';
+        opacity: 0.7;
+    }
+    
+    .book-info-member .stock-info {
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        margin-top: auto;
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--border-radius-md);
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-xs);
     }
     
     /* Mobile book info */
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
         .book-info-member {
-            padding: 12px;
+            padding: var(--spacing-md);
         }
+        
         .book-info-member h3 {
-            font-size: 0.95rem;
-            margin-bottom: 6px;
-            min-height: 2.2em;
-        }
-        .book-info-member .author {
-            font-size: 0.8rem;
-            margin-bottom: 6px;
-        }
-        .book-info-member .stock-info {
-            font-size: 0.75rem;
-            margin-bottom: 8px;
+            font-size: var(--font-size-base);
+            min-height: 2.8em;
         }
     }
-    .stock-info .available { color: #28A745; }
-    .stock-info .unavailable { color: #DC3545; }
-
-    /* Overlay for actions on hover/focus */
+    
+    @media (max-width: 480px) {
+        .book-info-member {
+            padding: var(--spacing-sm);
+        }
+        
+        .book-info-member h3 {
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-xs);
+            min-height: 2.6em;
+        }
+        
+        .book-info-member .author {
+            font-size: var(--font-size-xs);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .book-info-member .stock-info {
+            font-size: var(--font-size-xs);
+            padding: var(--spacing-xs);
+        }
+    }
+    
+    /* Stock status styling with dark theme */
+    .stock-info .available { 
+        background: linear-gradient(135deg, var(--accent-secondary) 0%, #16A085 100%);
+        color: var(--text-on-accent);
+        border: 1px solid var(--accent-secondary);
+    }
+    
+    .stock-info .unavailable { 
+        background: linear-gradient(135deg, var(--accent-danger) 0%, #C0392B 100%);
+        color: var(--text-on-accent);
+        border: 1px solid var(--accent-danger);
+    }    /* Modern Dark Theme Overlay for actions on hover/focus */
     .book-card-overlay {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark overlay */
+        background: linear-gradient(135deg, rgba(18, 18, 18, 0.95) 0%, rgba(0, 0, 0, 0.9) 100%);
+        backdrop-filter: blur(8px);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 15px;
+        gap: var(--spacing-md);
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
-        padding: 20px;
-        border-radius: var(--border-radius-md); /* Match card radius if needed, but might not be visible */
-        pointer-events: none; /* Allow clicks to pass through if no buttons active */
+        transition: var(--transition-smooth);
+        padding: var(--spacing-lg);
+        border-radius: var(--border-radius-lg);
+        pointer-events: none;
     }
+    
     .book-card-member:hover .book-card-overlay,
-    .book-card-member:focus-within .book-card-overlay { /* focus-within for accessibility */
+    .book-card-member:focus-within .book-card-overlay {
         opacity: 1;
         visibility: visible;
-        pointer-events: auto; /* Enable pointer events when visible */
+        pointer-events: auto;
     }
+    
     .book-card-member:hover .book-cover-member img {
-        transform: scale(1.05); /* Slight zoom on cover image on hover */
+        transform: scale(1.1);
+        filter: brightness(0.8) contrast(1.1);
     }
 
+    /* Modern overlay buttons with dark theme */
     .book-card-overlay .btn-member-overlay {
-        display: inline-flex; /* Use inline-flex for icon alignment */
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        padding: 10px 20px;
-        border-radius: var(--border-radius-md);
-        font-weight: 500;
+        gap: var(--spacing-xs);
+        padding: var(--spacing-md) var(--spacing-lg);
+        border-radius: var(--border-radius-xl);
+        font-weight: 600;
         text-align: center;
-        border: none;
+        border: 2px solid transparent;
         cursor: pointer;
-        transition: background-color 0.2s ease, transform 0.2s ease;
-        width: 80%; /* Make buttons wide on overlay */
-        max-width: 180px;
-        text-decoration: none; /* For <a> tags */
-        font-size: 0.9rem;
+        transition: var(--transition-fast);
+        width: 85%;
+        max-width: 200px;
+        text-decoration: none;
+        font-size: var(--font-size-sm);
+        font-family: var(--font-family);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
+    
     .book-card-overlay .btn-member-overlay:hover {
-        transform: translateY(-2px);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
     }
 
+    /* Button variants with dark theme */
     .btn-detail-overlay {
-        background-color: var(--white-bg);
-        color: var(--primary-blue);
-        border: 1px solid var(--primary-blue);
+        background: linear-gradient(135deg, var(--bg-card-dark) 0%, var(--bg-secondary-dark) 100%);
+        color: var(--text-high-contrast);
+        border-color: var(--border-color-dark);
     }
+    
     .btn-detail-overlay:hover {
-        background-color: var(--light-blue-bg);
+        background: linear-gradient(135deg, var(--bg-secondary-dark) 0%, #2A2A2A 100%);
+        border-color: var(--accent-primary);
+        color: var(--accent-primary);
     }
+    
     .btn-pinjam-overlay {
-        background-color: var(--primary-blue);
-        color: var(--text-on-primary);
+        background: linear-gradient(135deg, var(--accent-primary) 0%, #9D4EDD 100%);
+        color: var(--text-on-accent);
+        border-color: var(--accent-primary);
     }
+    
     .btn-pinjam-overlay:hover {
-        background-color: var(--primary-blue-dark);
+        background: linear-gradient(135deg, #9D4EDD 0%, #B565F2 100%);
+        border-color: #B565F2;
     }
+    
     .btn-disabled-overlay {
-        background-color: #B0B0B0; /* Mid-gray for disabled */
-        color: #F0F0F0;
+        background: linear-gradient(135deg, var(--bg-disabled-dark) 0%, #2A2A2A 100%);
+        color: var(--text-disabled-dark);
         cursor: not-allowed;
+        border-color: var(--bg-disabled-dark);
     }
+    
     .btn-disabled-overlay:hover {
-        background-color: #B0B0B0;
         transform: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    .no-books-message {
-        text-align: center;
-        padding: 40px;
-        background-color: var(--white-bg);
-        border-radius: var(--border-radius-md);
-        box-shadow: var(--card-shadow);
-    }
-    .no-books-message .icon {
-        font-size: 3rem;
-        color: var(--text-light);
-        margin-bottom: 15px;
-    }
-
-    @media (max-width: 480px) {
-        .book-grid-member {
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
+    /* Mobile overlay adjustments */
+    @media (max-width: 768px) {
+        .book-card-overlay {
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
         }
-        .book-info-member h3 { font-size: 0.95rem; min-height: 2.4em;}
-        .book-info-member .author { font-size: 0.8rem;}
+        
         .book-card-overlay .btn-member-overlay {
             width: 90%;
-            padding: 8px 15px;
-            font-size: 0.85rem;
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-xs);
+        }
+    }    /* Modern Dark Theme No Books Message */
+    .no-books-message {
+        text-align: center;
+        padding: var(--spacing-3xl);
+        background: var(--bg-card-dark);
+        border: 1px solid var(--border-color-dark);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--card-shadow-dark);
+        margin: var(--spacing-xl) 0;
+    }
+    
+    .no-books-message .icon {
+        font-size: 4rem;
+        color: var(--text-low-contrast);
+        margin-bottom: var(--spacing-lg);
+        opacity: 0.8;
+    }
+    
+    .no-books-message h3 {
+        color: var(--text-high-contrast);
+        font-size: var(--font-size-xl);
+        margin-bottom: var(--spacing-md);
+        font-weight: 700;
+        font-family: var(--font-family);
+    }
+    
+    .no-books-message p {
+        color: var(--text-medium-contrast);
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-lg);
+        line-height: 1.6;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Active filters info with dark theme */
+    .active-filters-info {
+        margin-top: var(--spacing-lg);
+        padding: var(--spacing-md);
+        background: linear-gradient(135deg, var(--bg-secondary-dark) 0%, var(--bg-card-dark) 100%);
+        border: 1px solid var(--border-color-dark);
+        border-left: 4px solid var(--accent-primary);
+        border-radius: var(--border-radius-md);
+        font-size: var(--font-size-sm);
+        color: var(--text-medium-contrast);
+    }
+    
+    .active-filters-info .filter-tag-member {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--accent-primary) 0%, #9D4EDD 100%);
+        color: var(--text-on-accent);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--border-radius-xl);
+        margin-right: var(--spacing-sm);
+        margin-bottom: var(--spacing-xs);
+        font-size: var(--font-size-xs);
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(127, 90, 240, 0.3);
+    }
+    
+    .clear-filters-link {
+        margin-left: var(--spacing-sm);
+        color: var(--accent-secondary);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition-fast);
+    }
+    
+    .clear-filters-link:hover {
+        color: var(--text-high-contrast);
+        text-decoration: underline;
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 480px) {
+        .no-books-message {
+            padding: var(--spacing-xl);
+        }
+        
+        .no-books-message .icon {
+            font-size: 3rem;
+        }
+        
+        .no-books-message h3 {
+            font-size: var(--font-size-lg);
+        }
+        
+        .no-books-message p {
+            font-size: var(--font-size-sm);
+        }
+        
+        .active-filters-info {
+            padding: var(--spacing-sm);
+        }
+        
+        .filter-tag-member {
+            margin-bottom: var(--spacing-sm) !important;
         }
     }
 </style>
@@ -505,7 +745,7 @@
 {% if books %}
 <div class="book-grid-member">
     {% for book in books %}
-    <div class="book-card-member" tabindex="0"> <!-- Added tabindex for focus -->
+    <div class="book-card-member" tabindex="0">
         <div class="book-cover-member">
             {% if book.gambar %}
                 <img src="{{ url_for('static', filename=book.gambar) }}" alt="Cover {{ book.judul }}" loading="lazy">
@@ -516,27 +756,32 @@
         <div class="book-info-member">
             <h3>{{ book.judul }}</h3>
             <p class="author">{{ book.pengarang }}</p>
-            <p class="stock-info">
+            <div class="stock-info">
                 {% if book.stok > 0 %}
                     <span class="available">✅ {{ book.stok }} Tersedia</span>
                 {% else %}
                     <span class="unavailable">❌ Stok Habis</span>
                 {% endif %}
-            </p>
+            </div>
         </div>
-        <!-- Hover/Focus Overlay Actions -->
+        <!-- Modern Hover/Focus Overlay Actions -->
         <div class="book-card-overlay">
             <a href="{{ url_for('member_book_detail', id=book.id) }}" class="btn-member-overlay btn-detail-overlay">
-                👁️ <span class="btn-text-overlay">Detail</span>
+                <span>👁️</span>
+                <span class="btn-text-overlay">Detail Buku</span>
             </a>
             {% if book.stok > 0 %}
                 <a href="{{ url_for('member_borrow_book', id=book.id) }}" 
                    class="btn-member-overlay btn-pinjam-overlay"
-                   onclick="return confirm('Yakin ingin meminjam buku "{{ book.judul }}"?\n\nKetentuan:\n• Masa pinjam: 7 hari\n• Denda: Rp 1.000/hari\n• Maks: 3 buku/member')">
-                   📖 <span class="btn-text-overlay">Pinjam</span>
+                   onclick="return confirm('Yakin ingin meminjam buku \"{{ book.judul }}\"?\n\nKetentuan:\n• Masa pinjam: 7 hari\n• Denda: Rp 1.000/hari\n• Maks: 3 buku/member')">
+                   <span>📖</span>
+                   <span class="btn-text-overlay">Pinjam Sekarang</span>
                 </a>
             {% else %}
-                <button class="btn-member-overlay btn-disabled-overlay" disabled>📖 <span class="btn-text-overlay">Pinjam</span></button>
+                <button class="btn-member-overlay btn-disabled-overlay" disabled>
+                    <span>📖</span>
+                    <span class="btn-text-overlay">Stok Habis</span>
+                </button>
             {% endif %}
         </div>
     </div>
@@ -544,16 +789,17 @@
 </div>
 {% else %}
 <div class="no-books-message">
-    <div class="icon">🤷</div>
-    <h3>Tidak Ada Buku Ditemukan</h3>    <p>
+    <div class="icon">🔍</div>
+    <h3>Tidak Ada Buku Ditemukan</h3>
+    <p>
         {% if search or selected_kategori or selected_pengarang or selected_tahun %}
-        Tidak ada buku yang cocok dengan kriteria pencarian Anda. Coba ubah filter atau kata kunci pencarian.
+        Tidak ada buku yang cocok dengan kriteria pencarian Anda. Coba ubah filter atau kata kunci pencarian untuk menemukan buku yang diinginkan.
         {% else %}
-        Belum ada buku yang tersedia di perpustakaan saat ini.
+        Belum ada buku yang tersedia di perpustakaan saat ini. Silakan cek kembali nanti atau hubungi petugas perpustakaan.
         {% endif %}
     </p>
     {% if search or selected_kategori or selected_pengarang or selected_tahun %}
-        <a href="{{ url_for('member_books') }}" class="btn-member">Tampilkan Semua Buku</a>
+        <a href="{{ url_for('member_books') }}" class="btn-member">📚 Tampilkan Semua Buku</a>
     {% endif %}
 </div>
 {% endif %}

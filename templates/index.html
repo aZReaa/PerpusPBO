@@ -3,17 +3,557 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpustakaan Digital - Sekolah Modern</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+    <title>LibraryHub - Perpustakaan Digital Modern</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dark-theme.css') }}">
+    <style>
+        /* Dark Theme Homepage Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: var(--font-primary);
+            background: var(--bg-primary-dark);
+            color: var(--text-primary-dark);
+        }
+
+        /* Modern Navigation Bar */
+        .navbar-modern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container-modern {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-icon {
+            font-size: 1.75rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary-dark);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-nav-login {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(127, 90, 240, 0.3);
+        }
+
+        .btn-nav-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(127, 90, 240, 0.4);
+        }
+
+        /* Hero Section */
+        .hero-modern {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(135deg, var(--bg-primary-dark) 0%, var(--bg-secondary-dark) 100%);
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 30%, var(--accent-primary) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, var(--accent-secondary) 0%, transparent 50%);
+            opacity: 0.15;
+        }
+
+        .hero-pattern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 50px 50px;
+        }
+
+        .hero-content-modern {
+            text-align: center;
+            max-width: 800px;
+            position: relative;
+            z-index: 2;
+            animation: slideInUp 0.8s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 0.5rem 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary-dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .badge-icon {
+            font-size: 1rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0 0 1.5rem 0;
+            line-height: 1.1;
+            color: var(--text-primary-dark);
+        }
+
+        .hero-highlight {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: var(--text-secondary-dark);
+            margin: 0 0 3rem 0;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .btn-hero-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 12px 30px rgba(127, 90, 240, 0.4);
+        }
+
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(127, 90, 240, 0.5);
+        }
+
+        .btn-arrow {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-hero-primary:hover .btn-arrow {
+            transform: translateX(4px);
+        }
+
+        .hero-stats {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary-dark);
+            opacity: 0.8;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Features Section */
+        .features-modern {
+            padding: 6rem 2rem;
+            background: var(--bg-secondary-dark);
+        }
+
+        .container-modern {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 0.5rem 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary-dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+            color: var(--text-primary-dark);
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary-dark);
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .features-grid-modern {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card-modern {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card-modern:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card-modern:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-primary);
+        }
+
+        .feature-icon {
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-bg {
+            font-size: 2.5rem;
+            display: inline-block;
+            padding: 1rem;
+            background: rgba(127, 90, 240, 0.1);
+            border-radius: 16px;
+        }
+
+        .feature-content h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            color: var(--text-primary-dark);
+        }
+
+        .feature-content p {
+            color: var(--text-secondary-dark);
+            line-height: 1.6;
+            margin: 0 0 1.5rem 0;
+            opacity: 0.9;
+        }
+
+        .feature-highlights {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .highlight-item {
+            background: rgba(127, 90, 240, 0.1);
+            color: var(--accent-primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* CTA Section */
+        .cta-modern {
+            padding: 6rem 2rem;
+            position: relative;
+            background: var(--bg-primary-dark);
+        }
+
+        .cta-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .cta-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, var(--accent-primary) 0%, transparent 70%);
+            opacity: 0.1;
+        }
+
+        .cta-content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+            color: var(--text-primary-dark);
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary-dark);
+            margin: 0 0 2.5rem 0;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .btn-cta {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 12px 30px rgba(127, 90, 240, 0.4);
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(127, 90, 240, 0.5);
+        }
+
+        /* Footer */
+        .footer-modern {
+            background: var(--bg-secondary-dark);
+            padding: 3rem 2rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .footer-description {
+            color: var(--text-secondary-dark);
+            margin: 1rem 0 0 0;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            color: var(--text-secondary-dark);
+            margin: 0;
+            opacity: 0.7;
+        }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container-modern {
+                padding: 1rem;
+            }
+
+            .hero-modern {
+                padding: 6rem 1rem 3rem;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stat-divider {
+                display: none;
+            }
+
+            .features-modern {
+                padding: 4rem 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cta-modern {
+                padding: 4rem 1rem;
+            }
+
+            .cta-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .btn-hero-primary,
+            .btn-cta {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+
+            .feature-card-modern {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
-<body class="homepage">
+<body>
     <!-- Modern Navigation -->
-    <nav class="navbar-modern">
-        <div class="nav-container-modern">
+    <nav class="navbar-modern">        <div class="nav-container-modern">
             <div class="brand">
                 <div class="brand-icon">📚</div>
-                <span class="brand-text">Perpustakaan Digital</span>
+                <span class="brand-text">LibraryHub</span>
             </div>
             <div class="nav-actions">
                 <a href="{{ url_for('login') }}" class="btn-nav-login">
@@ -34,9 +574,8 @@
             <div class="hero-badge">
                 <span class="badge-icon">✨</span>
                 <span>Sistem Perpustakaan Terdepan</span>
-            </div>
-            <h1 class="hero-title">
-                Perpustakaan Digital
+            </div>            <h1 class="hero-title">
+                LibraryHub Digital
                 <span class="hero-highlight">Masa Depan</span>
             </h1>
             <p class="hero-description">
@@ -157,20 +696,21 @@
 
     <!-- Footer -->
     <footer class="footer-modern">
-        <div class="footer-content">
-            <div class="footer-brand">
+        <div class="footer-content">            <div class="footer-brand">
                 <div class="brand">
                     <div class="brand-icon">📚</div>
-                    <span class="brand-text">Perpustakaan Digital</span>
+                    <span class="brand-text">LibraryHub</span>
                 </div>
                 <p class="footer-description">
                     Sistem manajemen perpustakaan modern untuk institusi pendidikan masa depan
                 </p>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Perpustakaan Digital. Dibuat dengan ❤️ untuk pendidikan Indonesia.</p>
+                <p>&copy; 2025 LibraryHub. Dibuat dengan ❤️ untuk pendidikan Indonesia.</p>
             </div>
-        </div>
-    </footer>
+        </div>    </footer>
+    
+    <!-- Dark theme enhancements -->
+    <script src="{{ url_for('static', filename='js/dark-theme-enhancements.js') }}"></script>
 </body>
 </html>

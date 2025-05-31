@@ -3,55 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>{% block title %}Perpustakaan Sekolah{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='table-scroll-fix.css') }}">
+    <title>{% block title %}Perpustakaan Sekolah{% endblock %}</title>    <link rel="stylesheet" href="{{ url_for('static', filename='table-scroll-fix.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dark-theme.css') }}">
     <style>
-        /* Global Styles - Blue & White Theme */
-        :root {
-            --primary-blue: #5D78FF; /* A nice, modern blue, can be adjusted from screenshot */
-            --primary-blue-dark: #4A60E0;
-            --primary-purple: #7B5AFF; /* Accent purple from screenshot */
-            --light-blue-bg: #F0F4FF; /* Very light blue for page background */
-            --white-bg: #FFFFFF;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --border-radius-md: 8px;
-            --text-dark: #333333;
-            --text-light: #666666;
-            --text-on-primary: #FFFFFF;
-            --font-family-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        /* Dark Theme Override for Member Area */
         body {
-            font-family: var(--font-family-main);
-            background-color: var(--light-blue-bg);
-            color: var(--text-dark);
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(135deg, var(--bg-primary-dark) 0%, var(--bg-secondary-dark) 100%);
             min-height: 100vh;
-        }
-
-        a {
-            text-decoration: none;
-            color: var(--primary-blue);
-        }
-        a:hover {
-            color: var(--primary-blue-dark);
-        }        .container-member {
+        }        /* Container adjustments for dark theme */
+        .container-member {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             flex-grow: 1;
         }
-        
-        /* Mobile-first responsive design */
+          /* Mobile responsive container */
         @media (max-width: 768px) {
             .container-member {
                 padding: 15px;
@@ -62,168 +29,108 @@
             .container-member {
                 padding: 10px;
             }
-        }        /* Basic Button Style */
-        .btn-member {
-            display: inline-block;
-            padding: 12px 24px;
+        }
+        
+        /* Dark theme cards */
+        .card-member {
+            background: var(--bg-card-dark);
+            border: 1px solid var(--border-color-dark);
             border-radius: var(--border-radius-md);
-            background-color: var(--primary-blue);
-            color: var(--text-on-primary);
-            font-weight: 500;
-            text-align: center;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            text-decoration: none;
-            min-height: 44px; /* Touch-friendly minimum size */
-            display: flex;
+            box-shadow: var(--card-shadow-dark);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .card-member:hover {
+            border-color: var(--accent-primary);
+            box-shadow: var(--card-shadow-hover);
+            transition: var(--transition-normal);
+        }        /* Modern dark theme buttons */
+        .btn-member {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-        }
-        .btn-member:hover {
-            background-color: var(--primary-blue-dark);
-            color: var(--text-on-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(93, 120, 255, 0.3);
-        }
-        .btn-member-secondary {
-            background-color: var(--white-bg);
-            color: var(--primary-blue);
-            border: 2px solid var(--primary-blue);
-        }
-        .btn-member-secondary:hover {
-            background-color: var(--light-blue-bg);
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: none;
+            border-radius: var(--border-radius-md);
+            background: var(--accent-primary);
+            color: var(--text-on-accent);
+            font-weight: 500;
+            font-size: var(--font-size-base);
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition-fast);
+            min-height: 44px;
         }
         
-        /* Mobile button adjustments */
+        .btn-member:hover {
+            background: #9D4EDD;
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+        
+        .btn-member-secondary {
+            background: var(--bg-tertiary-dark);
+            color: var(--text-high-contrast);
+            border: 1px solid var(--border-color-dark);
+        }
+        
+        .btn-member-secondary:hover {
+            border-color: var(--accent-primary);
+        }        /* Dark theme flash messages */
+        .flash-messages-member {
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .flash-alert {
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-sm);
+            border-left: 4px solid;
+            font-weight: 500;
+            animation: slideIn var(--transition-normal);
+        }
+        
+        .alert-success {
+            background: rgba(44, 182, 125, 0.1);
+            border-color: var(--accent-secondary);
+            color: var(--accent-secondary);
+        }
+        
+        .alert-error {
+            background: rgba(255, 107, 107, 0.1);
+            border-color: var(--accent-danger);
+            color: var(--accent-danger);
+        }
+        
+        .alert-info {
+            background: rgba(127, 90, 240, 0.1);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }        /* Mobile responsive enhancements */
         @media (max-width: 768px) {
             .btn-member {
-                padding: 14px 20px;
-                font-size: 1rem;
                 width: 100%;
-                margin-bottom: 10px;
-            }
-        }
-          /* Basic Card Style */
-        .card-member {
-            background-color: var(--white-bg);
-            border-radius: var(--border-radius-md);
-            box-shadow: var(--card-shadow);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        /* Mobile card adjustments */
-        @media (max-width: 768px) {
-            .card-member {
-                padding: 15px;
-                margin-bottom: 15px;
+                margin-bottom: var(--spacing-sm);
             }
         }
         
-        @media (max-width: 480px) {
-            .card-member {
-                padding: 12px;
-                border-radius: 6px;
-            }
-        }        /* Flash Messages */
-        .flash-messages-member {
-            margin-bottom: 20px;
-        }
-        .flash-alert {
-            padding: 15px;
-            border-radius: var(--border-radius-md);
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-        }
-        .flash-alert.alert-success {
-            background-color: #E6F7F0; /* Light green */
-            color: #00875A; /* Dark green */
-            border: 1px solid #B3E6D4;
-        }
-        .flash-alert.alert-error {
-            background-color: #FFEBEB; /* Light red */
-            color: #DE350B; /* Dark red */
-            border: 1px solid #FFC5C5;
-        }
-        .flash-alert.alert-info {
-            background-color: #EBF5FF; /* Light blue */
-            color: #0052CC; /* Dark blue */
-            border: 1px solid #B3D4FF;
-        }
-        .flash-alert p { margin: 0; }
-
-        /* Touch-friendly enhancements */
+        /* Touch device optimizations */
         @media (hover: none) and (pointer: coarse) {
-            /* Remove hover effects on touch devices */
-            .btn-member:hover,
-            .card-member:hover {
+            .btn-member:hover {
                 transform: none;
             }
             
-            /* Increase touch targets */
-            .btn-member {
-                min-height: 44px;
-                -webkit-tap-highlight-color: transparent;
-            }
-            
-            /* Better touch feedback */
             .btn-member:active {
                 transform: scale(0.98);
                 opacity: 0.8;
             }
             
-            /* Improve form inputs for touch */
             input, select, textarea {
-                -webkit-appearance: none;
                 font-size: 16px; /* Prevent iOS zoom */
             }
-            
-            /* Touch-friendly links */
-            a {
-                min-height: 44px;
-                display: inline-flex;
-                align-items: center;
-                -webkit-tap-highlight-color: transparent;
-            }
         }
-          /* Smooth scrolling for better mobile experience */
-        html {
-            scroll-behavior: smooth;
-            /* Prevent horizontal overflow issues */
-            overflow-x: hidden;
-        }
-        
-        /* Prevent horizontal scroll on mobile and improve scrolling */
-        body {
-            overflow-x: hidden;
-            /* Better touch scrolling on iOS */
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        /* Improve mobile scrolling containers */
-        * {
-            /* Better box sizing for mobile */
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        /* Ensure all containers respect mobile boundaries */
-        .container-member {
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        /* Better focus indicators for accessibility */
-        .btn-member:focus,
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: 2px solid var(--primary-blue);
-            outline-offset: 2px;
-        }
-
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -243,9 +150,13 @@
         {% block content %}{% endblock %}
     </main>
 
-    {% include 'member/includes/footer.html' %}    {% block extra_js %}{% endblock %}
+    {% include 'member/includes/footer.html' %}
+    {% include 'member/includes/mobile_nav.html' %}    {% block extra_js %}{% endblock %}
     
     <!-- Touch scroll enhancement for tables -->
     <script src="{{ url_for('static', filename='js/touch-scroll.js') }}"></script>
+    
+    <!-- Dark theme enhancements -->
+    <script src="{{ url_for('static', filename='js/dark-theme-enhancements.js') }}"></script>
 </body>
 </html>

@@ -1,43 +1,71 @@
 {% extends "member/base.html" %}
 
-{% block title %}Edit Profil - Perpustakaan Sekolah{% endblock %}
+{% block title %}Edit Profil - LibraryHub{% endblock %}
 
 {% block extra_css %}
 <style>
-    .edit-profile-page {
-        max-width: 600px;
+    /* Edit Profile Container */
+    .edit-profile-container {
+        max-width: 800px;
         margin: 0 auto;
+        padding: 2rem;
     }
     
+    /* Profile Hero Header */
     .edit-profile-header {
-        background-color: var(--primary-blue);
-        color: var(--text-on-primary);
-        padding: 25px;
-        border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
-        text-align: center;
+        background: var(--gradient-primary);
+        border-radius: var(--border-radius-lg);
+        padding: 3rem 2.5rem 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border-primary);
+        flex-wrap: wrap;
     }
     
     .edit-profile-header h1 {
         margin: 0;
-        font-size: 1.8rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #ffffff, #e6f3ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 10px;
+        gap: 1rem;
     }
     
+    /* Form Section */
     .edit-profile-form {
-        background-color: var(--white-bg);
-        padding: 30px;
-        border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
-        box-shadow: var(--card-shadow);
+        background: var(--bg-secondary-dark);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--border-radius-lg);
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
     }
     
+    .edit-profile-form::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--gradient-primary);
+    }
+    
+    /* Profile Photo Section */
     .profile-photo-section {
         text-align: center;
-        margin-bottom: 30px;
-        padding: 20px;
-        background-color: var(--light-blue-bg);
+        margin-bottom: 2.5rem;
+        padding: 2rem;
+        background: var(--bg-primary-dark);
+        border: 1px solid var(--border-primary);
         border-radius: var(--border-radius-md);
     }
     
@@ -45,10 +73,236 @@
         width: 120px;
         height: 120px;
         border-radius: 50%;
-        margin: 0 auto 15px;
+        margin: 0 auto 1.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
+        background: rgba(127, 90, 240, 0.2);
+        border: 3px solid var(--accent-primary);
+        overflow: hidden;
+        position: relative;
+        transition: var(--transition-smooth);
+    }
+    
+    .current-photo:hover {
+        transform: scale(1.05);
+        border-color: var(--accent-secondary);
+    }
+    
+    .current-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .photo-placeholder {
+        font-size: 3rem;
+        color: var(--accent-primary);
+        opacity: 0.7;
+    }
+    
+    .photo-upload-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-primary-dark);
+        margin-bottom: 1rem;
+        display: block;
+    }
+    
+    /* Form Fields */
+    .form-group {
+        margin-bottom: 2rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        color: var(--text-primary-dark);
+        font-size: 1rem;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        border: 1px solid var(--border-primary);
+        border-radius: var(--border-radius-md);
+        background: var(--bg-primary-dark);
+        color: var(--text-primary-dark);
+        font-size: 1rem;
+        transition: var(--transition-smooth);
+        box-sizing: border-box;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 3px rgba(127, 90, 240, 0.2);
+        background: var(--bg-secondary-dark);
+    }
+    
+    .form-group input[type="file"] {
+        padding: 0.75rem;
+        border: 2px dashed var(--border-primary);
+        background: var(--bg-primary-dark);
+        cursor: pointer;
+    }
+    
+    .form-group input[type="file"]:hover {
+        border-color: var(--accent-primary);
+        background: var(--bg-secondary-dark);
+    }
+    
+    /* Action Buttons */
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .action-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--gradient-primary);
+        color: var(--text-on-dark);
+        padding: 1rem 2rem;
+        border-radius: var(--border-radius-md);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: var(--transition-smooth);
+        border: none;
+        cursor: pointer;
+        min-width: 150px;
+        justify-content: center;
+    }
+    
+    .action-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(127, 90, 240, 0.4);
+        color: var(--text-on-dark);
+        text-decoration: none;
+    }
+    
+    .action-button.secondary {
+        background: var(--bg-primary-dark);
+        border: 1px solid var(--border-primary);
+        color: var(--text-primary-dark);
+    }
+    
+    .action-button.secondary:hover {
+        background: var(--bg-secondary-dark);
+        border-color: var(--accent-primary);
+        color: var(--text-primary-dark);
+        box-shadow: 0 8px 25px rgba(127, 90, 240, 0.2);
+    }
+    
+    /* Alert Messages */
+    .alert {
+        padding: 1rem 1.25rem;
+        border-radius: var(--border-radius-md);
+        margin-bottom: 1.5rem;
+        border: 1px solid transparent;
+    }
+    
+    .alert-success {
+        background: rgba(76, 175, 80, 0.2);
+        color: #4CAF50;
+        border-color: rgba(76, 175, 80, 0.3);
+    }
+    
+    .alert-error {
+        background: rgba(244, 67, 54, 0.2);
+        color: #F44336;
+        border-color: rgba(244, 67, 54, 0.3);
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .edit-profile-container {
+            padding: 1rem;
+        }
+        
+        .edit-profile-header {
+            flex-direction: column;
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+        
+        .edit-profile-header h1 {
+            font-size: 2rem;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .edit-profile-form {
+            padding: 2rem;
+        }
+        
+        .profile-photo-section {
+            padding: 1.5rem;
+        }
+        
+        .current-photo {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .action-button {
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .edit-profile-header {
+            padding: 1.5rem 1.25rem;
+        }
+        
+        .edit-profile-header h1 {
+            font-size: 1.75rem;
+        }
+        
+        .edit-profile-form {
+            padding: 1.5rem;
+            border-radius: var(--border-radius-md);
+        }
+        
+        .profile-photo-section {
+            padding: 1.25rem;
+        }
+        
+        .current-photo {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .photo-placeholder {
+            font-size: 2rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.875rem 1rem;
+        }
+          .action-button {
+            padding: 0.875rem 1.5rem;
+            font-size: 0.9rem;
+        }
+    }
+    
+    /* Additional form styles */
+    .current-photo {
         font-size: 3.5rem;
         background-color: var(--primary-purple);
         color: var(--text-on-primary);
@@ -538,18 +792,26 @@
 {% endblock %}
 
 {% block content %}
-<div class="edit-profile-page">
+<div class="edit-profile-container">
+    <!-- Edit Profile Header -->
     <div class="edit-profile-header">
-        <h1>✏️ Edit Profil</h1>
+        <h1>
+            <i class="fas fa-user-edit"></i>
+            Edit Profil
+        </h1>
     </div>
     
+    <!-- Edit Profile Form -->
     <div class="edit-profile-form">
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="flash-messages" style="margin-bottom: 20px;">
+                <div class="flash-messages" style="margin-bottom: 2rem;">
                     {% for message in messages %}
-                        <div class="alert alert-error">{{ message }}</div>
+                        <div class="alert alert-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ message }}
+                        </div>
                     {% endfor %}
                 </div>
             {% endif %}
@@ -562,40 +824,90 @@
                     {% if current_user.profile_photo %}
                         <img src="{{ url_for('static', filename=current_user.profile_photo) }}" alt="Profile Photo">
                     {% else %}
-                        <span>{{ current_user.nama_lengkap[0]|upper if current_user.nama_lengkap else 'U' }}</span>
+                        <div class="photo-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
                     {% endif %}
                 </div>
-                <label for="profile_photo" class="photo-upload-label">
-                    📷 Ubah Foto Profil
-                </label>
-                <input type="file" id="profile_photo" name="profile_photo" class="photo-upload-input" accept="image/*">
-                <p style="margin-top: 10px; color: var(--text-light); font-size: 0.9rem;">
-                    Format: JPG, PNG, GIF (Max: 16MB)
+                <label class="photo-upload-label">Foto Profil</label>
+                <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="form-group">
+                <p style="margin-top: 1rem; color: var(--text-secondary-dark); font-size: 0.9rem; text-align: center;">
+                    <i class="fas fa-info-circle"></i>
+                    Format: JPG, PNG, GIF (Maksimal: 16MB)
                 </p>
             </div>
             
-            <!-- Basic Information -->
-            <div class="form-section">
-                <h3>👤 Informasi Dasar</h3>
-                  <div class="form-group-edit">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" value="{{ current_user.username }}" required 
-                           minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" 
-                           title="Username hanya boleh mengandung huruf, angka, dan underscore">
-                </div>
-                
-                <div class="form-group-edit">
-                    <label for="nama_lengkap">Nama Lengkap</label>
-                    <input type="text" id="nama_lengkap" name="nama_lengkap" value="{{ current_user.nama_lengkap }}" required 
-                           minlength="2" maxlength="100" 
-                           title="Nama lengkap minimal 2 karakter">
-                </div><div class="form-group-edit">
-                    <label for="kelas">Kelas</label>
-                    <select id="kelas" name="kelas">
-                        <option value="">Pilih Kelas</option>
-                        <optgroup label="Kelas X">
-                            <option value="X-IPA-1" {{ 'selected' if current_user.kelas == 'X-IPA-1' }}>X IPA 1</option>
-                            <option value="X-IPA-2" {{ 'selected' if current_user.kelas == 'X-IPA-2' }}>X IPA 2</option>
+            <!-- Form Fields -->
+            <div class="form-group">
+                <label for="username">
+                    <i class="fas fa-at"></i>
+                    Username
+                </label>
+                <input type="text" id="username" name="username" value="{{ current_user.username }}" required 
+                       minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+" 
+                       title="Username hanya boleh mengandung huruf, angka, dan underscore"
+                       placeholder="Masukkan username">
+            </div>
+            
+            <div class="form-group">
+                <label for="nama_lengkap">
+                    <i class="fas fa-user"></i>
+                    Nama Lengkap
+                </label>
+                <input type="text" id="nama_lengkap" name="nama_lengkap" value="{{ current_user.nama_lengkap }}" required 
+                       minlength="2" maxlength="100" 
+                       title="Nama lengkap minimal 2 karakter"
+                       placeholder="Masukkan nama lengkap">
+            </div>
+
+            <div class="form-group">
+                <label for="kelas">
+                    <i class="fas fa-graduation-cap"></i>
+                    Kelas
+                </label>
+                <select id="kelas" name="kelas" required>
+                    <option value="">Pilih Kelas</option>
+                    <optgroup label="Kelas X">
+                        <option value="X-IPA-1" {{ 'selected' if current_user.kelas == 'X-IPA-1' }}>X IPA 1</option>
+                        <option value="X-IPA-2" {{ 'selected' if current_user.kelas == 'X-IPA-2' }}>X IPA 2</option>
+                        <option value="X-IPA-3" {{ 'selected' if current_user.kelas == 'X-IPA-3' }}>X IPA 3</option>
+                        <option value="X-IPS-1" {{ 'selected' if current_user.kelas == 'X-IPS-1' }}>X IPS 1</option>
+                        <option value="X-IPS-2" {{ 'selected' if current_user.kelas == 'X-IPS-2' }}>X IPS 2</option>
+                        <option value="X-IPS-3" {{ 'selected' if current_user.kelas == 'X-IPS-3' }}>X IPS 3</option>
+                    </optgroup>
+                    <optgroup label="Kelas XI">
+                        <option value="XI-IPA-1" {{ 'selected' if current_user.kelas == 'XI-IPA-1' }}>XI IPA 1</option>
+                        <option value="XI-IPA-2" {{ 'selected' if current_user.kelas == 'XI-IPA-2' }}>XI IPA 2</option>
+                        <option value="XI-IPA-3" {{ 'selected' if current_user.kelas == 'XI-IPA-3' }}>XI IPA 3</option>
+                        <option value="XI-IPS-1" {{ 'selected' if current_user.kelas == 'XI-IPS-1' }}>XI IPS 1</option>
+                        <option value="XI-IPS-2" {{ 'selected' if current_user.kelas == 'XI-IPS-2' }}>XI IPS 2</option>
+                        <option value="XI-IPS-3" {{ 'selected' if current_user.kelas == 'XI-IPS-3' }}>XI IPS 3</option>
+                    </optgroup>
+                    <optgroup label="Kelas XII">
+                        <option value="XII-IPA-1" {{ 'selected' if current_user.kelas == 'XII-IPA-1' }}>XII IPA 1</option>
+                        <option value="XII-IPA-2" {{ 'selected' if current_user.kelas == 'XII-IPA-2' }}>XII IPA 2</option>
+                        <option value="XII-IPA-3" {{ 'selected' if current_user.kelas == 'XII-IPA-3' }}>XII IPA 3</option>
+                        <option value="XII-IPS-1" {{ 'selected' if current_user.kelas == 'XII-IPS-1' }}>XII IPS 1</option>
+                        <option value="XII-IPS-2" {{ 'selected' if current_user.kelas == 'XII-IPS-2' }}>XII IPS 2</option>
+                        <option value="XII-IPS-3" {{ 'selected' if current_user.kelas == 'XII-IPS-3' }}>XII IPS 3</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button type="submit" class="action-button">
+                    <i class="fas fa-save"></i>
+                    Simpan Perubahan
+                </button>
+                <a href="{{ url_for('member_profile') }}" class="action-button secondary">
+                    <i class="fas fa-times"></i>
+                    Batal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
                             <option value="X-IPA-3" {{ 'selected' if current_user.kelas == 'X-IPA-3' }}>X IPA 3</option>
                             <option value="X-IPS-1" {{ 'selected' if current_user.kelas == 'X-IPS-1' }}>X IPS 1</option>
                             <option value="X-IPS-2" {{ 'selected' if current_user.kelas == 'X-IPS-2' }}>X IPS 2</option>
@@ -643,9 +955,7 @@
                 </a>
                 <button type="submit" class="btn-save">
                     💾 Simpan Perubahan
-                </button>
-            </div>
-        </form>
+                </button>        </form>
     </div>
 </div>
 
@@ -678,11 +988,57 @@ document.getElementById('profile_photo').addEventListener('change', function(e) 
     }
 });
 
-// Form validation feedback
+// Enhanced form validation
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
-    const inputs = form.querySelectorAll('input[required], select[required]');
+    const inputs = form.querySelectorAll('input, select');
     
+    // Add real-time validation feedback
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.classList.contains('invalid')) {
+                validateField(this);
+            }
+        });
+    });
+    
+    function validateField(field) {
+        const isValid = field.checkValidity();
+        field.classList.toggle('invalid', !isValid);
+        
+        // Add visual feedback
+        if (isValid) {
+            field.style.borderColor = 'var(--accent-primary)';
+        } else {
+            field.style.borderColor = '#F44336';
+        }
+    }
+    
+    // Form submission with loading state
+    form.addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+        submitBtn.disabled = true;
+        
+        // Re-enable button after 5 seconds (in case of error)
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 5000);    });
+});
+
+// Enhanced form validation
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const inputs = form.querySelectorAll('input, select');
+    
+    // Add real-time validation feedback
     inputs.forEach(input => {
         input.addEventListener('blur', function() {
             validateField(this);

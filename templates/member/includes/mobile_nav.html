@@ -1,0 +1,159 @@
+<!-- Mobile Bottom Navigation -->
+<div class="mobile-nav-bottom">
+    <a href="{{ url_for('member_dashboard') }}" class="nav-item {{ 'active' if request.endpoint == 'member_dashboard' else '' }}">
+        <div class="nav-icon">🏠</div>
+        <span class="nav-label">Dashboard</span>
+    </a>
+    
+    <a href="{{ url_for('member_books') }}" class="nav-item {{ 'active' if request.endpoint == 'member_books' else '' }}">
+        <div class="nav-icon">📚</div>
+        <span class="nav-label">Katalog</span>
+    </a>
+    
+    <a href="{{ url_for('member_loans') }}" class="nav-item {{ 'active' if request.endpoint == 'member_loans' else '' }}">
+        <div class="nav-icon">📋</div>
+        <span class="nav-label">Pinjaman</span>
+    </a>
+    
+    <a href="{{ url_for('member_profile') }}" class="nav-item {{ 'active' if request.endpoint == 'member_profile' or request.endpoint == 'member_edit_profile' else '' }}">
+        <div class="nav-icon">👤</div>
+        <span class="nav-label">Profil</span>
+    </a>
+</div>
+
+<style>
+    /* Mobile Bottom Navigation Styles */
+    .mobile-nav-bottom {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(18, 18, 18, 0.95);
+        backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));
+        display: none;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .mobile-nav-bottom .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: var(--text-secondary-dark);
+        padding: 0.5rem 0.75rem;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: 60px;
+        position: relative;
+    }
+    
+    .mobile-nav-bottom .nav-item:hover {
+        color: var(--accent-primary);
+        background: rgba(127, 90, 240, 0.1);
+    }
+    
+    .mobile-nav-bottom .nav-item.active {
+        color: var(--accent-primary);
+        background: rgba(127, 90, 240, 0.15);
+    }
+    
+    .mobile-nav-bottom .nav-item.active::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 24px;
+        height: 3px;
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        border-radius: 0 0 3px 3px;
+    }
+    
+    .mobile-nav-bottom .nav-icon {
+        font-size: 1.3rem;
+        margin-bottom: 0.25rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .mobile-nav-bottom .nav-item:hover .nav-icon,
+    .mobile-nav-bottom .nav-item.active .nav-icon {
+        transform: scale(1.1);
+    }
+    
+    .mobile-nav-bottom .nav-label {
+        font-size: 0.7rem;
+        font-weight: 500;
+        text-align: center;
+        line-height: 1;
+    }
+    
+    /* Show only on mobile */
+    @media (max-width: 768px) {
+        .mobile-nav-bottom {
+            display: flex;
+        }
+        
+        /* Add bottom padding to body to prevent content overlap */
+        body {
+            padding-bottom: 80px;
+        }
+        
+        /* Adjust main content area */
+        .main-content {
+            padding-bottom: 80px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .mobile-nav-bottom {
+            padding: 0.4rem 0 calc(0.4rem + env(safe-area-inset-bottom));
+        }
+        
+        .mobile-nav-bottom .nav-item {
+            padding: 0.4rem 0.5rem;
+            min-width: 50px;
+        }
+        
+        .mobile-nav-bottom .nav-icon {
+            font-size: 1.2rem;
+        }
+        
+        .mobile-nav-bottom .nav-label {
+            font-size: 0.65rem;
+        }
+    }
+    
+    /* Animation for nav items */
+    .mobile-nav-bottom .nav-item {
+        animation: slideInUp 0.6s ease-out backwards;
+    }
+    
+    .mobile-nav-bottom .nav-item:nth-child(1) { animation-delay: 0.1s; }
+    .mobile-nav-bottom .nav-item:nth-child(2) { animation-delay: 0.2s; }
+    .mobile-nav-bottom .nav-item:nth-child(3) { animation-delay: 0.3s; }
+    .mobile-nav-bottom .nav-item:nth-child(4) { animation-delay: 0.4s; }
+    
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Haptic feedback simulation */
+    @media (hover: none) and (pointer: coarse) {
+        .mobile-nav-bottom .nav-item:active {
+            transform: scale(0.95);
+            transition: transform 0.1s ease;
+        }
+    }
+</style>
