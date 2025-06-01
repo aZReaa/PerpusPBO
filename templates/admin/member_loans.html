@@ -5,14 +5,12 @@
 {% block content %}
     <div class="content-header">
         <h1>📚 Riwayat Peminjaman</h1>
-        <a href="{{ url_for('admin_members') }}" class="btn btn-secondary">← Kembali ke Daftar Member</a>
-    </div>
-
-    <!-- Member Info -->
-    <div class="member-info-card">
-        <div class="member-details">
+        <a href="{{ url_for('admin_members') }}" class="btn btn-secondary">← Kembali ke Daftar Siswa</a>
+    </div>    <!-- Siswa Info -->
+    <div class="siswa-info-card">
+        <div class="siswa-details">
             <h2>👤 {{ member.nama_lengkap }}</h2>
-            <div class="member-meta">
+            <div class="siswa-meta">
                 <span class="badge">📧 {{ member.email }}</span>
                 <span class="badge">🎓 {{ member.kelas or 'Tidak ada kelas' }}</span>
                 <span class="badge">📅 Bergabung: {{ member.created_at.strftime('%d/%m/%Y') }}</span>
@@ -127,13 +125,12 @@
             <a href="{{ url_for('admin_process_loan') }}?user_id={{ member.id }}" class="btn btn-primary">
                 📖 Tambah Peminjaman Baru
             </a>            <a href="{{ url_for('admin_edit_member', id=member.id) }}" class="btn btn-warning">
-                ✏️ Edit Data Member
+                ✏️ Edit Data Siswa
             </a>
-            {% if loans|selectattr('status', 'equalto', 'dipinjam')|list|length == 0 %}
-            <button class="btn btn-danger delete-member-btn" 
+            {% if loans|selectattr('status', 'equalto', 'dipinjam')|list|length == 0 %}            <button class="btn btn-danger delete-member-btn" 
                     data-member-id="{{ member.id }}" 
                     data-member-name="{{ member.nama_lengkap }}">
-                🗑️ Hapus Member
+                🗑️ Hapus Siswa
             </button>
             {% endif %}
         </div>
@@ -143,7 +140,7 @@
     <!-- No Loans -->
     <div class="no-data">
         <h3>📚 Belum Ada Peminjaman</h3>
-        <p>Member ini belum pernah meminjam buku.</p>
+        <p>Siswa ini belum pernah meminjam buku.</p>
         <a href="{{ url_for('admin_process_loan') }}?user_id={{ member.id }}" class="btn btn-primary">
             📖 Buat Peminjaman Pertama
         </a>
@@ -152,10 +149,9 @@
 
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h3>⚠️ Konfirmasi Hapus Member</h3>
-            <p>Apakah Anda yakin ingin menghapus member <strong id="memberName"></strong>?</p>
-            <p class="warning-text">⚠️ Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data peminjaman member tersebut.</p>
+        <div class="modal-content">            <h3>⚠️ Konfirmasi Hapus Siswa</h3>
+            <p>Apakah Anda yakin ingin menghapus siswa <strong id="memberName"></strong>?</p>
+            <p class="warning-text">⚠️ Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data peminjaman siswa tersebut.</p>
             <div class="modal-actions">
                 <button onclick="closeDeleteModal()" class="btn btn-secondary">Batal</button>
                 <button onclick="confirmDelete()" class="btn btn-danger">🗑️ Hapus</button>

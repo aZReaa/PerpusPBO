@@ -284,14 +284,12 @@
             <li><a href="{{ url_for('member_dashboard') }}" class="{% if request.endpoint == 'member_dashboard' %}active{% endif %}">
                 <span>📊</span>
                 <span>Dashboard</span>
-            </a></li>
-            <li><a href="{{ url_for('member_books') }}" class="{% if request.endpoint in ['member_books', 'member_book_detail'] %}active{% endif %}">
+            </a></li>            <li><a href="{{ url_for('member_books') }}" class="{% if request.endpoint in ['member_books', 'member_book_detail'] %}active{% endif %}">
                 <span>📚</span>
-                <span>Explore Books</span>
-            </a></li>
-            <li><a href="{{ url_for('member_loans') }}" class="{% if request.endpoint == 'member_loans' %}active{% endif %}">
+                <span>Daftar Buku</span>
+            </a></li>            <li><a href="{{ url_for('member_loans') }}" class="{% if request.endpoint == 'member_loans' %}active{% endif %}">
                 <span>📖</span>
-                <span>My Loans</span>
+                <span>Pinjaman</span>
             </a></li>
             <li><a href="{{ url_for('member_profile') }}" class="{% if request.endpoint == 'member_profile' %}active{% endif %}">
                 <span>👤</span>

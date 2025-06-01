@@ -2,10 +2,8 @@
 
 {% block title %}Kategori Buku{% endblock %}
 
-{% block content %}
-    <div class="content-header">
+{% block content %}    <div class="content-header">
         <h1>📚 Kategori Buku</h1>
-        <a href="{{ url_for('admin_add_book') }}" class="btn btn-primary">➕ Tambah Buku Baru</a>
     </div>
 
     {% with messages = get_flashed_messages() %}
@@ -82,10 +80,8 @@
                         <span class="tag">🎓 Pendidikan</span>
                         <span class="tag">📿 Agama</span>
                     </div>
-                </div>
-                <div class="action-buttons">
-                    <a href="{{ url_for('admin_add_book') }}" class="btn btn-primary">➕ Tambah Buku Pertama</a>
-                    <a href="{{ url_for('admin_books') }}" class="btn btn-secondary">📚 Lihat Semua Buku</a>
+                </div>                <div class="action-buttons">
+                    <a href="{{ url_for('admin_books') }}" class="btn btn-primary">📚 Lihat Semua Buku</a>
                 </div>
             </div>
             {% endif %}

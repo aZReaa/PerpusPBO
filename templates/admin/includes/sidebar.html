@@ -1,20 +1,320 @@
+<style>
+    /* Modern Admin Sidebar Styling */
+    .sidebar {
+        background: linear-gradient(180deg, var(--bg-secondary-dark) 0%, var(--bg-tertiary-dark) 100%);
+        border-right: 1px solid var(--border-color-dark);
+        width: 280px;
+        min-height: calc(100vh - 70px);
+        position: fixed;
+        left: 0;
+        top: 70px;
+        transform: translateX(-100%);
+        transition: var(--transition-smooth);
+        z-index: 999;
+        overflow-y: auto;
+        box-shadow: var(--card-shadow-dark);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    /* Sidebar Header */
+    .sidebar-header {
+        padding: var(--spacing-lg) var(--spacing-md);
+        border-bottom: 1px solid var(--border-color-dark);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--bg-tertiary-dark);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .sidebar-header h3 {
+        color: var(--text-high-contrast);
+        font-size: var(--font-size-lg);
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+    
+    .sidebar-toggle-close {
+        background: none;
+        border: none;
+        color: var(--text-medium-contrast);
+        font-size: var(--font-size-xl);
+        cursor: pointer;
+        padding: var(--spacing-xs);
+        border-radius: var(--border-radius-md);
+        transition: var(--transition-fast);
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .sidebar-toggle-close:hover {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--danger-color);
+    }
+    
+    /* Sidebar Menu */
+    .sidebar-menu {
+        list-style: none;
+        padding: var(--spacing-md);
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .sidebar-menu li {
+        position: relative;
+    }
+    
+    .sidebar-menu li a {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md) var(--spacing-lg);
+        color: var(--text-medium-contrast);
+        text-decoration: none;
+        border-radius: var(--border-radius-lg);
+        transition: var(--transition-fast);
+        font-weight: 500;
+        font-size: var(--font-size-sm);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .sidebar-menu li a::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        background: var(--accent-primary);
+        transition: var(--transition-fast);
+        border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+    }
+    
+    .sidebar-menu li a:hover {
+        background: rgba(127, 90, 240, 0.1);
+        color: var(--text-high-contrast);
+        transform: translateX(4px);
+    }
+    
+    .sidebar-menu li a:hover::before {
+        width: 4px;
+    }
+    
+    .sidebar-menu li a.active {
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        color: var(--text-on-accent);
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(127, 90, 240, 0.3);
+    }
+    
+    .sidebar-menu li a.active::before {
+        width: 4px;
+        background: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Menu Icons */
+    .menu-icon {
+        font-size: var(--font-size-lg);
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .menu-text {
+        flex: 1;
+        font-weight: inherit;
+    }
+    
+    /* Menu Sections */
+    .menu-section {
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-lg);
+        border-top: 1px solid var(--border-color-dark);
+    }
+    
+    .menu-section-title {
+        color: var(--text-low-contrast);
+        font-size: var(--font-size-xs);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 0 var(--spacing-lg) var(--spacing-sm);
+        margin: 0;
+    }
+    
+    /* Stats in Sidebar */
+    .sidebar-stats {
+        margin: var(--spacing-lg) var(--spacing-md);
+        padding: var(--spacing-md);
+        background: var(--bg-primary-dark);
+        border: 1px solid var(--border-color-dark);
+        border-radius: var(--border-radius-lg);
+    }
+    
+    .sidebar-stats h4 {
+        color: var(--text-high-contrast);
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        margin: 0 0 var(--spacing-sm) 0;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+    
+    .sidebar-stat-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--spacing-xs) 0;
+        font-size: var(--font-size-xs);
+    }
+    
+    .sidebar-stat-label {
+        color: var(--text-medium-contrast);
+    }
+    
+    .sidebar-stat-value {
+        color: var(--accent-primary);
+        font-weight: 600;
+    }
+    
+    /* Mobile Sidebar Overlay */
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition-fast);
+        backdrop-filter: blur(2px);
+    }
+    
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    /* Desktop View */
+    @media (min-width: 769px) {
+        .sidebar {
+            position: relative;
+            transform: translateX(0);
+            top: 0;
+            min-height: auto;
+            box-shadow: none;
+            border-right: 1px solid var(--border-color-dark);
+        }
+        
+        .sidebar-header {
+            display: none;
+        }
+        
+        .sidebar-overlay {
+            display: none;
+        }
+        
+        .sidebar-menu {
+            padding-top: var(--spacing-lg);
+        }
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 280px;
+            min-height: 100vh;
+            top: 0;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            top: 0;
+            background: var(--bg-secondary-dark);
+            border-bottom: 1px solid var(--border-color-dark);
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .sidebar {
+            width: 100vw;
+            max-width: 320px;
+        }
+        
+        .sidebar-menu li a {
+            padding: var(--spacing-sm) var(--spacing-md);
+            gap: var(--spacing-sm);
+        }
+        
+        .menu-icon {
+            font-size: var(--font-size-base);
+        }
+        
+        .menu-text {
+            font-size: var(--font-size-sm);
+        }
+    }
+</style>
+
 <!-- Admin Sidebar Component -->
 <div class="sidebar">
     <div class="sidebar-header">
-        <h3>📋 Admin Panel</h3>
-        <button class="sidebar-toggle-close" onclick="toggleSidebar()">✕</button>
+        <h3>
+            <span>🛡️</span>
+            <span>Admin Panel</span>
+        </h3>
+        <button class="sidebar-toggle-close" onclick="closeSidebar()" aria-label="Close Menu">
+            <span>✕</span>
+        </button>
     </div>
+    
     <ul class="sidebar-menu">
+        <!-- Main Navigation -->
         <li>
             <a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
                 <span class="menu-icon">📊</span>
                 <span class="menu-text">Dashboard</span>
             </a>
         </li>
+        
+        <!-- Quick Actions Section -->
+        <li class="menu-section">
+            <h5 class="menu-section-title">Aksi Cepat</h5>
+        </li>
         <li>
-            <a href="{{ url_for('admin_members') }}" class="{% if request.endpoint in ['admin_members', 'admin_add_member', 'admin_edit_member'] %}active{% endif %}">
+            <a href="{{ url_for('admin_process_loan') }}" class="{% if request.endpoint == 'admin_process_loan' %}active{% endif %}">
+                <span class="menu-icon">⚡</span>
+                <span class="menu-text">Proses Peminjaman</span>
+            </a>
+        </li>
+        
+        <!-- Data Management Section -->
+        <li class="menu-section">
+            <h5 class="menu-section-title">Kelola Data</h5>
+        </li>        <li>
+            <a href="{{ url_for('admin_members') }}" class="{% if request.endpoint in ['admin_members', 'admin_add_member', 'admin_edit_member', 'admin_member_loans'] %}active{% endif %}">
                 <span class="menu-icon">👥</span>
-                <span class="menu-text">Kelola Member</span>
+                <span class="menu-text">Kelola Siswa</span>
             </a>
         </li>
         <li>
@@ -24,12 +324,53 @@
             </a>
         </li>
         <li>
-            <a href="{{ url_for('admin_loans') }}" class="{% if request.endpoint in ['admin_loans', 'admin_process_loan', 'admin_confirm_loan'] %}active{% endif %}">
+            <a href="{{ url_for('admin_loans') }}" class="{% if request.endpoint in ['admin_loans', 'admin_confirm_loan'] %}active{% endif %}">
                 <span class="menu-icon">📖</span>
                 <span class="menu-text">Kelola Peminjaman</span>
             </a>
         </li>
+        
+        <!-- Add New Section -->
+        <li class="menu-section">
+            <h5 class="menu-section-title">Tambah Data</h5>
+        </li>
+        <li>
+            <a href="{{ url_for('admin_add_book') }}" class="{% if request.endpoint == 'admin_add_book' %}active{% endif %}">
+                <span class="menu-icon">➕</span>
+                <span class="menu-text">Tambah Buku</span>
+            </a>
+        </li>        <li>
+            <a href="{{ url_for('admin_add_member') }}" class="{% if request.endpoint == 'admin_add_member' %}active{% endif %}">
+                <span class="menu-icon">👤</span>
+                <span class="menu-text">Tambah Siswa</span>
+            </a>
+        </li>
     </ul>
+    
+    <!-- Sidebar Stats -->
+    <div class="sidebar-stats">
+        <h4>
+            <span>📈</span>
+            <span>Statistik Hari Ini</span>
+        </h4>
+        <div class="sidebar-stat-item">
+            <span class="sidebar-stat-label">Peminjaman Aktif</span>
+            <span class="sidebar-stat-value">{{ total_peminjaman_aktif or 0 }}</span>
+        </div>        <div class="sidebar-stat-item">
+            <span class="sidebar-stat-label">Siswa Terdaftar</span>
+            <span class="sidebar-stat-value">{{ total_members or 0 }}</span>
+        </div>
+        <div class="sidebar-stat-item">
+            <span class="sidebar-stat-label">Total Buku</span>
+            <span class="sidebar-stat-value">{{ total_books or 0 }}</span>
+        </div>
+        {% if overdue > 0 %}
+        <div class="sidebar-stat-item">
+            <span class="sidebar-stat-label">Terlambat</span>
+            <span class="sidebar-stat-value" style="color: var(--danger-color);">{{ overdue }}</span>
+        </div>
+        {% endif %}
+    </div>
 </div>
 
 <!-- Mobile Sidebar Overlay -->

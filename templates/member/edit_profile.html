@@ -689,7 +689,7 @@
             gap: 5px;
         }
         
-        .edit-profile-form {
+        .edit-profile_form {
             padding: 20px 15px;
             border-radius: 0 0 8px 8px;
         }
@@ -894,6 +894,20 @@
                 </select>
             </div>
 
+            <!-- Security Section -->
+            <div class="form-section">
+                <h3>🔒 Keamanan</h3>
+                <div class="form-group-edit">
+                    <label for="password">Password Baru</label>
+                    <input type="password" id="password" name="password"
+                        placeholder="Kosongkan jika tidak ingin mengubah"
+                        minlength="6" maxlength="50"
+                        title="Password minimal 6 karakter">
+                    <div class="password-help">
+                        Kosongkan jika tidak ingin mengubah password. Minimal 6 karakter jika diisi.
+                    </div>
+                </div>
+            </div>
             <!-- Action Buttons -->
             <div class="form-actions">
                 <button type="submit" class="action-button">
@@ -908,191 +922,67 @@
         </form>
     </div>
 </div>
-                            <option value="X-IPA-3" {{ 'selected' if current_user.kelas == 'X-IPA-3' }}>X IPA 3</option>
-                            <option value="X-IPS-1" {{ 'selected' if current_user.kelas == 'X-IPS-1' }}>X IPS 1</option>
-                            <option value="X-IPS-2" {{ 'selected' if current_user.kelas == 'X-IPS-2' }}>X IPS 2</option>
-                            <option value="X-IPS-3" {{ 'selected' if current_user.kelas == 'X-IPS-3' }}>X IPS 3</option>
-                        </optgroup>
-                        <optgroup label="Kelas XI">
-                            <option value="XI-IPA-1" {{ 'selected' if current_user.kelas == 'XI-IPA-1' }}>XI IPA 1</option>
-                            <option value="XI-IPA-2" {{ 'selected' if current_user.kelas == 'XI-IPA-2' }}>XI IPA 2</option>
-                            <option value="XI-IPA-3" {{ 'selected' if current_user.kelas == 'XI-IPA-3' }}>XI IPA 3</option>
-                            <option value="XI-IPS-1" {{ 'selected' if current_user.kelas == 'XI-IPS-1' }}>XI IPS 1</option>
-                            <option value="XI-IPS-2" {{ 'selected' if current_user.kelas == 'XI-IPS-2' }}>XI IPS 2</option>
-                            <option value="XI-IPS-3" {{ 'selected' if current_user.kelas == 'XI-IPS-3' }}>XI IPS 3</option>
-                        </optgroup>
-                        <optgroup label="Kelas XII">
-                            <option value="XII-IPA-1" {{ 'selected' if current_user.kelas == 'XII-IPA-1' }}>XII IPA 1</option>
-                            <option value="XII-IPA-2" {{ 'selected' if current_user.kelas == 'XII-IPA-2' }}>XII IPA 2</option>
-                            <option value="XII-IPA-3" {{ 'selected' if current_user.kelas == 'XII-IPA-3' }}>XII IPA 3</option>
-                            <option value="XII-IPS-1" {{ 'selected' if current_user.kelas == 'XII-IPS-1' }}>XII IPS 1</option>
-                            <option value="XII-IPS-2" {{ 'selected' if current_user.kelas == 'XII-IPS-2' }}>XII IPS 2</option>
-                            <option value="XII-IPS-3" {{ 'selected' if current_user.kelas == 'XII-IPS-3' }}>XII IPS 3</option>
-                        </optgroup>
-                    </select>
-                </div>
-            </div>
-            
-            <!-- Security Section -->
-            <div class="form-section">
-                <h3>🔒 Keamanan</h3>
-                  <div class="form-group-edit">
-                    <label for="password">Password Baru</label>
-                    <input type="password" id="password" name="password" 
-                           placeholder="Kosongkan jika tidak ingin mengubah"
-                           minlength="6" maxlength="50"
-                           title="Password minimal 6 karakter">
-                    <div class="password-help">
-                        Kosongkan jika tidak ingin mengubah password. Minimal 6 karakter jika diisi.
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Form Actions -->
-            <div class="form-actions">
-                <a href="{{ url_for('member_profile') }}" class="btn-cancel">
-                    ↩️ Batal
-                </a>
-                <button type="submit" class="btn-save">
-                    💾 Simpan Perubahan
-                </button>        </form>
-    </div>
-</div>
 
 <script>
 // Preview uploaded photo
-document.getElementById('profile_photo').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        // Check file size (16MB limit)
-        if (file.size > 16 * 1024 * 1024) {
-            alert('Ukuran file terlalu besar! Maksimal 16MB.');
-            this.value = '';
-            return;
+const photoInput = document.getElementById('profile_photo');
+if (photoInput) {
+    photoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 16 * 1024 * 1024) {
+                alert('Ukuran file terlalu besar! Maksimal 16MB.');
+                this.value = '';
+                return;
+            }
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Format file tidak didukung! Gunakan JPG, PNG, atau GIF.');
+                this.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const currentPhoto = document.querySelector('.current-photo');
+                if (currentPhoto) {
+                    currentPhoto.innerHTML = `<img src="${e.target.result}" alt="Profile Photo Preview">`;
+                }
+            };
+            reader.readAsDataURL(file);
         }
-        
-        // Check file type
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-        if (!allowedTypes.includes(file.type)) {
-            alert('Format file tidak didukung! Gunakan JPG, PNG, atau GIF.');
-            this.value = '';
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const currentPhoto = document.querySelector('.current-photo');
-            currentPhoto.innerHTML = `<img src="${e.target.result}" alt="Profile Photo Preview">`;
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-// Enhanced form validation
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
+    });
+}
+// Form validation
+const form = document.querySelector('form');
+if (form) {
     const inputs = form.querySelectorAll('input, select');
-    
-    // Add real-time validation feedback
     inputs.forEach(input => {
         input.addEventListener('blur', function() {
             validateField(this);
         });
-        
         input.addEventListener('input', function() {
-            if (this.classList.contains('invalid')) {
-                validateField(this);
-            }
+            validateField(this);
         });
     });
-    
     function validateField(field) {
         const isValid = field.checkValidity();
         field.classList.toggle('invalid', !isValid);
-        
-        // Add visual feedback
         if (isValid) {
             field.style.borderColor = 'var(--accent-primary)';
         } else {
             field.style.borderColor = '#F44336';
         }
     }
-    
-    // Form submission with loading state
     form.addEventListener('submit', function(e) {
-        const submitBtn = this.querySelector('button[type="submit"]');
+        const submitBtn = form.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
-        
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
         submitBtn.disabled = true;
-        
-        // Re-enable button after 5 seconds (in case of error)
         setTimeout(() => {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-        }, 5000);    });
-});
-
-// Enhanced form validation
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    const inputs = form.querySelectorAll('input, select');
-    
-    // Add real-time validation feedback
-    inputs.forEach(input => {
-        input.addEventListener('blur', function() {
-            validateField(this);
-        });
-        
-        input.addEventListener('input', function() {
-            if (this.value.length > 0) {
-                validateField(this);
-            }
-        });
+        }, 5000);
     });
-    
-    function validateField(field) {
-        const formGroup = field.closest('.form-group-edit');
-        let errorMsg = formGroup.querySelector('.error-message');
-        
-        if (field.checkValidity()) {
-            field.style.borderColor = '#28A745';
-            if (errorMsg) errorMsg.remove();
-        } else {
-            field.style.borderColor = '#DC3545';
-            
-            if (!errorMsg) {
-                errorMsg = document.createElement('div');
-                errorMsg.className = 'error-message';
-                errorMsg.style.cssText = `
-                    color: #DC3545;
-                    font-size: 0.85rem;
-                    margin-top: 5px;
-                    display: flex;
-                    align-items: center;
-                    gap: 5px;
-                `;
-                formGroup.appendChild(errorMsg);
-            }
-            
-            errorMsg.innerHTML = `⚠️ ${field.validationMessage}`;
-        }
-    }
-    
-    // Form submission with loading state
-    form.addEventListener('submit', function(e) {
-        const submitBtn = form.querySelector('.btn-save');
-        const originalText = submitBtn.innerHTML;
-        
-        submitBtn.innerHTML = '⏳ Menyimpan...';
-        submitBtn.disabled = true;
-        
-        // Re-enable button after 3 seconds as fallback
-        setTimeout(() => {
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }, 3000);
-    });
-});
+}
 </script>
 {% endblock %}

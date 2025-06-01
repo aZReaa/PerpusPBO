@@ -157,6 +157,7 @@ class Peminjaman(db.Model):
     tanggal_kembali_aktual = db.Column(db.DateTime)
     status = db.Column(db.String(20), default='dipinjam')  # 'dipinjam', 'dikembalikan'
     denda = db.Column(db.Integer, default=0)
+    status_denda = db.Column(db.String(20), default='Belum Lunas')  # 'Belum Lunas', 'Lunas', 'Dihapuskan/Gratis'
     
     user = db.relationship('User', backref='peminjaman')
     buku = db.relationship('Buku', backref='peminjaman')
@@ -499,7 +500,7 @@ def admin_add_member():
         
         db.session.add(user)
         db.session.commit()
-        flash('Member berhasil ditambahkan!')
+        flash('Siswa berhasil ditambahkan!')
         return redirect(url_for('admin_members'))
     
     return render_template('admin/add_member.html')
@@ -547,7 +548,7 @@ def admin_edit_member(id):
             member.password_hash = generate_password_hash(password)
         
         db.session.commit()
-        flash('Member berhasil diperbarui!')
+        flash('Siswa berhasil diperbarui!')
         return redirect(url_for('admin_members'))
     
     return render_template('admin/edit_member.html', member=member)
@@ -568,7 +569,7 @@ def admin_delete_member(id):
     # Check if member has active loans
     active_loans = Peminjaman.query.filter_by(user_id=member.id, status='dipinjam').count()
     if active_loans > 0:
-        flash(f'Tidak dapat menghapus member karena masih memiliki {active_loans} peminjaman aktif!')
+        flash(f'Tidak dapat menghapus siswa karena masih memiliki {active_loans} peminjaman aktif!')
         return redirect(url_for('admin_members'))
     
     # Delete all loan history for this member
@@ -578,7 +579,7 @@ def admin_delete_member(id):
     db.session.delete(member)
     db.session.commit()
     
-    flash('Member berhasil dihapus!')
+    flash('Siswa berhasil dihapus!')
     return redirect(url_for('admin_members'))
 
 @app.route('/admin/members/<int:id>/loans')
@@ -1110,16 +1111,33 @@ def admin_edit_fine(id):
     loan = Peminjaman.query.get_or_404(id)
     
     try:
-        new_fine = int(request.form['denda'])
+        # Sanitize denda input to handle thousands separators
+        denda_raw = request.form['denda'].strip()
+        if not denda_raw:
+            flash('Jumlah denda tidak boleh kosong!')
+            return redirect(url_for('admin_loans'))
+        
+        # Remove common thousands separators (dots and commas)
+        denda_cleaned = denda_raw.replace('.', '').replace(',', '')
+        
+        # Validate that the cleaned string contains only digits
+        if not denda_cleaned.isdigit():
+            flash('Format denda tidak valid! Masukkan hanya angka.')
+            return redirect(url_for('admin_loans'))
+        
+        new_fine = int(denda_cleaned)
+        
         if new_fine < 0:
             flash('Denda tidak boleh negatif!')
             return redirect(url_for('admin_loans'))
-        
+
         loan.denda = new_fine
         db.session.commit()
         flash(f'Denda berhasil diubah menjadi Rp {new_fine:,}!')
-    except ValueError:
-        flash('Format denda tidak valid!')
+    except ValueError as e:
+        flash(f'Format denda tidak valid: {str(e)}')
+    except Exception as e:
+        flash(f'Terjadi kesalahan: {str(e)}')
     
     return redirect(url_for('admin_loans'))
 
@@ -1194,6 +1212,79 @@ def admin_calculate_all_fines():
         }
     except Exception as e:
         return {'error': str(e)}, 500
+
+@app.route('/admin/loans/manage_fine', methods=['POST'])
+@login_required
+def admin_manage_fine():
+    """Route baru untuk mengelola denda melalui modal Kelola Denda"""
+    if current_user.role != 'admin':
+        flash('Akses ditolak!')
+        return redirect(url_for('index'))
+    
+    try:
+        loan_id = int(request.form['loan_id'])
+        
+        # Sanitize denda input to handle thousands separators
+        denda_raw = request.form['denda'].strip()
+        if not denda_raw:
+            raise ValueError("Jumlah denda tidak boleh kosong")
+        
+        # Remove common thousands separators (dots and commas)
+        denda_cleaned = denda_raw.replace('.', '').replace(',', '')
+        
+        # Validate that the cleaned string contains only digits
+        if not denda_cleaned.isdigit():
+            raise ValueError("Format denda tidak valid. Masukkan hanya angka.")
+        
+        denda = int(denda_cleaned)
+        
+        # Additional validation
+        if denda < 0:
+            raise ValueError("Denda tidak boleh negatif")
+        
+        status_denda = request.form.get('status_denda', 'Belum Lunas')
+        kembalikan_buku_juga = request.form.get('kembalikan_buku_juga') == 'on'
+        
+        loan = Peminjaman.query.get_or_404(loan_id)
+        
+        # Update denda
+        loan.denda = denda
+        
+        # Jika checkbox dikembalikan juga dicentang
+        if kembalikan_buku_juga and loan.status == 'dipinjam':
+            loan.status = 'dikembalikan'
+            loan.tanggal_kembali_aktual = datetime.utcnow()
+            
+            # Update stok buku
+            buku = Buku.query.get(loan.buku_id)
+            if buku:
+                buku.stok += 1
+            
+            if status_denda == 'Lunas':
+                loan.denda = 0
+                flash(f'Buku berhasil dikembalikan dan denda Rp {denda:,} telah lunas!')
+            elif status_denda == 'Dihapuskan/Gratis':
+                loan.denda = 0
+                flash(f'Buku berhasil dikembalikan dan denda Rp {denda:,} dihapuskan!')
+            else:
+                flash(f'Buku berhasil dikembalikan dengan denda Rp {denda:,} yang belum lunas!')
+        else:
+            # Hanya update denda
+            if status_denda == 'Lunas':
+                loan.denda = 0
+                flash(f'Denda Rp {denda:,} telah lunas!')
+            elif status_denda == 'Dihapuskan/Gratis':
+                loan.denda = 0
+                flash(f'Denda Rp {denda:,} dihapuskan!')
+            else:
+                flash(f'Denda diperbarui menjadi Rp {denda:,}!')
+        
+        db.session.commit()
+        
+    except Exception as e:
+        flash(f'Terjadi kesalahan: {str(e)}')
+    
+    return redirect(url_for('admin_loans'))
 
 if __name__ == '__main__':
     with app.app_context():

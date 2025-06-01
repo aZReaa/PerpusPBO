@@ -5,20 +5,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* Global CSS Variables */
-:root {
-    /* Dark Background Colors */
+:root {    /* Dark Background Colors */
     --bg-primary-dark: #121212;
     --bg-secondary-dark: #1E1E1E;
     --bg-tertiary-dark: #242424;
     --bg-card-dark: #1A1A1A;
+    --card-bg: #1A1A1A;
     
-    /* Accent Colors */
+    /* Additional color variables for consistency */
+    --success-color: #2CB67D;
+    --warning-color: #FFD93D;
+    --danger-color: #FF6B6B;
+    --border-color-dark: #383838;
+      /* Accent Colors */
     --accent-primary: #7F5AF0;
+    --accent-color: #7F5AF0;
     --accent-secondary: #2CB67D;
     --accent-danger: #FF6B6B;
     --accent-warning: #FFD93D;
-    
-    /* Text Colors */
+      /* Text Colors */
+    --text-color: #E0E0E0;
+    --text-color-light: #FFFFFF;
+    --text-color-secondary: #A0A0A0;
+    --text-color-muted: #757575;
     --text-high-contrast: #E0E0E0;
     --text-medium-contrast: #A0A0A0;
     --text-low-contrast: #666666;
@@ -291,15 +300,19 @@ input::placeholder, textarea::placeholder {
 /* Table Styles */
 .table {
     width: 100%;
-    border-collapse: collapse;
-    background: var(--bg-secondary-dark);
+    border-collapse: separate; /* Use separate for better border-radius handling on cells if needed */
+    border-spacing: 0;
+    background-color: var(--bg-card-dark); /* Base background for the table */
     border-radius: var(--border-radius-lg);
-    overflow: hidden;
+    overflow: hidden; 
     box-shadow: var(--card-shadow-dark);
+    color: var(--text-medium-contrast); /* Default text color for table content */
+    border: 1px solid var(--border-color-dark); /* Border for the table itself */
 }
 
-.table th {
-    background: var(--bg-tertiary-dark);
+.table thead th,
+.table th { /* General header style */
+    background-color: var(--bg-tertiary-dark);
     color: var(--text-high-contrast);
     padding: var(--spacing-md);
     text-align: left;
@@ -307,14 +320,122 @@ input::placeholder, textarea::placeholder {
     border-bottom: 1px solid var(--border-color-dark);
 }
 
-.table td {
-    padding: var(--spacing-md);
-    border-bottom: 1px solid var(--border-color-dark);
+.table tbody tr {
+    background-color: var(--bg-card-dark); /* Default row background */
     color: var(--text-medium-contrast);
+    border-bottom: 1px solid var(--border-color-dark); /* Row separator */
+}
+
+.table tbody tr:last-child {
+    border-bottom: none; /* No bottom border for the last row if table has its own border */
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: var(--bg-secondary-dark); /* Stripe effect for even rows */
 }
 
 .table tbody tr:hover {
-    background: rgba(127, 90, 240, 0.05);
+    background-color: rgba(127, 90, 240, 0.1); /* Accent color with alpha for hover */
+    color: var(--text-high-contrast);
+}
+
+.table td {
+    padding: var(--spacing-md);
+    vertical-align: middle;
+    /* Background is inherited from tr, color can be inherited or set if different */
+}
+
+/* Override Bootstrap's default striped table if .table-striped is used */
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: var(--bg-card-dark) !important; 
+    color: var(--text-medium-contrast) !important;
+}
+.table-striped > tbody > tr:nth-of-type(even) {
+    background-color: var(--bg-secondary-dark) !important;
+    color: var(--text-medium-contrast) !important;
+}
+
+/* Override Bootstrap's default hover table if .table-hover is used */
+.table-hover > tbody > tr:hover {
+    background-color: rgba(127, 90, 240, 0.15) !important; 
+    color: var(--text-high-contrast) !important;
+}
+
+/* Critical: Override .table-light if it's being used on dark theme pages */
+.table-light,
+.table-light > th,
+.table-light > td,
+.table .table-light th, /* For cases where .table-light might be on a th/td */
+.table .table-light td {
+    --bs-table-bg: var(--bg-card-dark);
+    --bs-table-striped-bg: var(--bg-secondary-dark);
+    --bs-table-hover-bg: rgba(127, 90, 240, 0.15);
+    --bs-table-color: var(--text-medium-contrast);
+    --bs-table-border-color: var(--border-color-dark);
+    --bs-table-hover-color: var(--text-high-contrast);
+    --bs-table-striped-color: var(--text-medium-contrast);
+    color: var(--text-medium-contrast) !important;
+    background-color: var(--bg-card-dark) !important;
+    border-color: var(--border-color-dark) !important;
+}
+.table-light th,
+.table .table-light th { /* Header specific override for .table-light */
+    color: var(--text-high-contrast) !important;
+    background-color: var(--bg-tertiary-dark) !important;
+}
+
+
+/* Filter Panel Styling */
+.filter-panel {
+    background-color: var(--bg-card-dark);
+    color: var(--text-high-contrast);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color-dark);
+    margin-bottom: var(--spacing-lg);
+}
+
+.filter-panel label {
+    color: var(--text-high-contrast);
+    margin-bottom: var(--spacing-sm);
+    display: block; 
+}
+
+.filter-panel select,
+.filter-panel input[type="text"],
+.filter-panel input[type="search"],
+.filter-panel input[type="date"],
+.filter-panel input[type="number"],
+.filter-panel .form-control { /* Target Bootstrap's .form-control as well */
+    background-color: var(--bg-secondary-dark) !important; /* Use !important to override Bootstrap if needed */
+    color: var(--text-high-contrast) !important;
+    border: 1px solid var(--border-color-dark) !important;
+    border-radius: var(--border-radius-sm) !important;
+    padding: var(--spacing-sm) var(--spacing-md);
+    width: 100%; 
+    margin-bottom: var(--spacing-md); 
+}
+
+.filter-panel select:focus,
+.filter-panel input:focus,
+.filter-panel .form-control:focus {
+    border-color: var(--accent-primary) !important;
+    box-shadow: 0 0 0 3px rgba(127, 90, 240, 0.25) !important; 
+    outline: none;
+}
+
+.filter-panel .btn {
+    background-color: var(--accent-primary);
+    color: var(--text-on-accent);
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.filter-panel .btn:hover {
+    background-color: #9D4EDD; /* Darker shade of accent-primary */
 }
 
 /* Loading and Animation Utilities */

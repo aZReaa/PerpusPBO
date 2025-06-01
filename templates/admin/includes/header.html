@@ -1,20 +1,429 @@
+<style>
+    /* Modern Admin Header Styling */
+    .admin-main-header {
+        background: linear-gradient(135deg, var(--bg-secondary-dark) 0%, var(--bg-tertiary-dark) 100%);
+        border-bottom: 1px solid var(--border-color-dark);
+        color: var(--text-high-contrast);
+        padding: 0 var(--spacing-lg);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 70px;
+        box-shadow: var(--card-shadow-dark);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    /* Header Left Section */
+    .admin-header-left {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+    }
+    
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-md);
+        transition: var(--transition-fast);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .mobile-menu-toggle:hover {
+        background: rgba(127, 90, 240, 0.1);
+    }
+    
+    .hamburger-line {
+        width: 20px;
+        height: 2px;
+        background: var(--text-high-contrast);
+        margin: 2px 0;
+        transition: var(--transition-fast);
+        border-radius: 1px;
+    }
+    
+    .mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+    }
+    
+    /* Admin Logo/Title */
+    .admin-header-title {
+        color: var(--text-high-contrast);
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        transition: var(--transition-fast);
+        margin: 0;
+    }
+    
+    .admin-header-title:hover {
+        color: var(--accent-primary);
+        transform: scale(1.02);
+    }
+    
+    .admin-header-title .title-icon {
+        font-size: 1.5rem;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    
+    /* Navigation Links (Desktop) */
+    .admin-header-nav {
+        display: flex;
+        gap: var(--spacing-sm);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .admin-header-nav li a {
+        color: var(--text-medium-contrast);
+        text-decoration: none;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius-md);
+        transition: var(--transition-fast);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        position: relative;
+    }
+    
+    .admin-header-nav li a:hover {
+        background: rgba(127, 90, 240, 0.1);
+        color: var(--accent-primary);
+        transform: translateY(-1px);
+    }
+    
+    .admin-header-nav li a.active {
+        background: var(--accent-primary);
+        color: var(--text-on-accent);
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(127, 90, 240, 0.3);
+    }
+    
+    /* Header Right Section */
+    .admin-header-right {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+    }
+    
+    /* Admin User Info */
+    .admin-user-info {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        font-size: var(--font-size-sm);
+        background: var(--bg-tertiary-dark);
+        border: 1px solid var(--border-color-dark);
+        border-radius: var(--border-radius-lg);
+        padding: var(--spacing-sm) var(--spacing-md);
+        transition: var(--transition-fast);
+    }
+    
+    .admin-user-info:hover {
+        border-color: var(--accent-primary);
+        box-shadow: 0 4px 12px rgba(127, 90, 240, 0.2);
+    }
+    
+    /* Admin Profile Photo */
+    .admin-profile-photo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid var(--accent-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        font-size: var(--font-size-lg);
+        font-weight: 600;
+        color: var(--text-on-accent);
+        transition: var(--transition-fast);
+        flex-shrink: 0;
+    }
+    
+    .admin-profile-photo:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(127, 90, 240, 0.4);
+    }
+    
+    .admin-profile-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    /* Admin Info Text */
+    .admin-info-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    
+    .admin-greeting {
+        color: var(--text-high-contrast);
+        font-weight: 600;
+        font-size: var(--font-size-sm);
+    }
+    
+    .admin-role {
+        color: var(--accent-primary);
+        font-weight: 500;
+        font-size: var(--font-size-xs);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+    
+    /* Quick Actions */
+    .admin-quick-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+    }
+    
+    .quick-action-btn {
+        background: var(--bg-tertiary-dark);
+        color: var(--text-high-contrast);
+        border: 1px solid var(--border-color-dark);
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-md);
+        cursor: pointer;
+        transition: var(--transition-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        font-size: var(--font-size-lg);
+        text-decoration: none;
+    }
+    
+    .quick-action-btn:hover {
+        background: var(--accent-primary);
+        color: var(--text-on-accent);
+        border-color: var(--accent-primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(127, 90, 240, 0.3);
+    }
+    
+    /* Logout Button */
+    .admin-logout-btn {
+        background: var(--bg-tertiary-dark);
+        color: var(--text-high-contrast);
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius-md);
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition-fast);
+        border: 1px solid var(--border-color-dark);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        font-size: var(--font-size-sm);
+    }
+    
+    .admin-logout-btn:hover {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        border-color: #dc3545;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        text-decoration: none;
+    }
+    
+    /* Notification Badge */
+    .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--danger-color);
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: var(--font-size-xs);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .admin-main-header {
+            padding: 0 var(--spacing-md);
+            min-height: 60px;
+        }
+        
+        .mobile-menu-toggle {
+            display: flex;
+        }
+        
+        .admin-header-nav {
+            display: none;
+        }
+        
+        .admin-header-title {
+            font-size: var(--font-size-lg);
+        }
+        
+        .admin-user-info {
+            gap: var(--spacing-sm);
+            padding: var(--spacing-xs) var(--spacing-sm);
+        }
+        
+        .admin-info-text {
+            display: none;
+        }
+        
+        .admin-quick-actions {
+            display: none;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .admin-main-header {
+            padding: 0 var(--spacing-sm);
+            min-height: 56px;
+        }
+        
+        .admin-header-title {
+            font-size: var(--font-size-base);
+        }
+        
+        .admin-header-title .title-text {
+            display: none;
+        }
+        
+        .admin-profile-photo {
+            width: 32px;
+            height: 32px;
+            font-size: var(--font-size-base);
+        }
+        
+        .admin-logout-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            font-size: var(--font-size-xs);
+        }
+        
+        .admin-logout-btn .logout-text {
+            display: none;
+        }
+    }
+</style>
+
 <!-- Admin Header Component -->
-<nav class="navbar">
-    <div class="nav-container">
-        <div class="nav-left">
-            <button class="mobile-menu-toggle" onclick="toggleSidebar()">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
-            <h2>🛠️ Dashboard Admin</h2>
-        </div>
-        <div class="nav-links">
-            <div class="admin-user-info">
-                <span class="admin-greeting">👋 Halo, {{ current_user.nama_lengkap }}</span>
-                <span class="admin-role">⚡ Administrator</span>
-            </div>
-            <a href="{{ url_for('logout') }}" class="logout-btn">🚪 Logout</a>
-        </div>
+<header class="admin-main-header">
+    <div class="admin-header-left">
+        <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Toggle Menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>
+        
+        <h1 class="admin-header-title">
+            <span class="title-icon">🛡️</span>
+            <span class="title-text">Admin Dashboard</span>
+        </h1>
+        
+        <!-- Desktop Navigation -->
+        <ul class="admin-header-nav">
+            <li>
+                <a href="{{ url_for('admin_dashboard') }}" class="{% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                    <span>📊</span>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_members') }}" class="{% if request.endpoint in ['admin_members', 'admin_add_member', 'admin_edit_member'] %}active{% endif %}">
+                    <span>👥</span>
+                    <span>Member</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_books') }}" class="{% if request.endpoint in ['admin_books', 'admin_add_book', 'admin_edit_book'] %}active{% endif %}">
+                    <span>📚</span>
+                    <span>Buku</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_loans') }}" class="{% if request.endpoint in ['admin_loans', 'admin_process_loan'] %}active{% endif %}">
+                    <span>📖</span>
+                    <span>Peminjaman</span>
+                </a>
+            </li>
+        </ul>
     </div>
-</nav>
+
+    <div class="admin-header-right">
+        <!-- Quick Actions -->
+        <div class="admin-quick-actions">
+            <a href="{{ url_for('admin_process_loan') }}" class="quick-action-btn" title="Proses Peminjaman">
+                <span>⚡</span>
+                {% set pending_loans = 0 %}
+                {% if pending_loans > 0 %}
+                <span class="notification-badge">{{ pending_loans }}</span>
+                {% endif %}
+            </a>
+            
+            <a href="{{ url_for('admin_add_book') }}" class="quick-action-btn" title="Tambah Buku">
+                <span>➕</span>
+            </a>
+        </div>
+        
+        <!-- User Info -->
+        <div class="admin-user-info">
+            <div class="admin-profile-photo">
+                {% if current_user.profile_photo %}
+                    <img src="{{ url_for('static', filename=current_user.profile_photo) }}" alt="Admin Photo">
+                {% else %}
+                    {{ current_user.nama_lengkap[0].upper() }}
+                {% endif %}
+            </div>
+            
+            <div class="admin-info-text">
+                <span class="admin-greeting">{{ current_user.nama_lengkap.split()[0] }}</span>
+                <span class="admin-role">
+                    <span>⚡</span>
+                    <span>Administrator</span>
+                </span>
+            </div>
+        </div>
+        
+        <!-- Logout Button -->
+        <a href="{{ url_for('logout') }}" class="admin-logout-btn">
+            <span>🚪</span>
+            <span class="logout-text">Logout</span>
+        </a>
+    </div>
+</header>

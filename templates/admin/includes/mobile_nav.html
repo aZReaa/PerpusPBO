@@ -1,27 +1,28 @@
-<!-- Mobile Bottom Navigation -->
+<!-- Mobile Bottom Navigation for Admin -->
 <div class="mobile-nav-bottom">
-    <a href="{{ url_for('member_dashboard') }}" class="nav-item {{ 'active' if request.endpoint == 'member_dashboard' else '' }}">
+    <a href="{{ url_for('admin_dashboard') }}" class="nav-item {{ 'active' if request.endpoint == 'admin_dashboard' else '' }}">
         <div class="nav-icon">🏠</div>
         <span class="nav-label">Dashboard</span>
     </a>
-      <a href="{{ url_for('member_books') }}" class="nav-item {{ 'active' if request.endpoint == 'member_books' else '' }}">
+    
+    <a href="{{ url_for('admin_members') }}" class="nav-item {{ 'active' if request.endpoint in ['admin_members', 'admin_add_member', 'admin_edit_member', 'admin_member_loans'] else '' }}">
+        <div class="nav-icon">👥</div>
+        <span class="nav-label">Kelola Siswa</span>
+    </a>
+    
+    <a href="{{ url_for('admin_books') }}" class="nav-item {{ 'active' if request.endpoint in ['admin_books', 'admin_add_book', 'admin_edit_book'] else '' }}">
         <div class="nav-icon">📚</div>
-        <span class="nav-label">Daftar Buku</span>
+        <span class="nav-label">Kelola Buku</span>
     </a>
     
-    <a href="{{ url_for('member_loans') }}" class="nav-item {{ 'active' if request.endpoint == 'member_loans' else '' }}">
+    <a href="{{ url_for('admin_loans') }}" class="nav-item {{ 'active' if request.endpoint in ['admin_loans', 'admin_confirm_loan', 'admin_process_loan'] else '' }}">
         <div class="nav-icon">📋</div>
-        <span class="nav-label">Pinjaman</span>
-    </a>
-    
-    <a href="{{ url_for('member_profile') }}" class="nav-item {{ 'active' if request.endpoint == 'member_profile' or request.endpoint == 'member_edit_profile' else '' }}">
-        <div class="nav-icon">👤</div>
-        <span class="nav-label">Profil</span>
+        <span class="nav-label">Kelola Peminjaman</span>
     </a>
 </div>
 
 <style>
-    /* Mobile Bottom Navigation Styles */
+    /* Mobile Bottom Navigation Styles for Admin */
     .mobile-nav-bottom {
         position: fixed;
         bottom: 0;
@@ -97,12 +98,7 @@
             display: flex;
         }
         
-        /* Add bottom padding to body to prevent content overlap */
-        body {
-            padding-bottom: 80px;
-        }
-        
-        /* Adjust main content area */
+        /* Add bottom padding to main content to prevent overlap */
         .main-content {
             padding-bottom: 80px;
         }
