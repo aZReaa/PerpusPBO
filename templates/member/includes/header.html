@@ -1,6 +1,6 @@
 <style>
-    /* Modern Dark Theme Header */
-    .main-header-member {
+    /* Modern Member Header Styling */
+    .member-main-header {
         background: linear-gradient(135deg, var(--bg-secondary-dark) 0%, var(--bg-tertiary-dark) 100%);
         border-bottom: 1px solid var(--border-color-dark);
         color: var(--text-high-contrast);
@@ -15,24 +15,58 @@
         z-index: 1000;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-    }    
-    /* Mobile header adjustments */
-    @media (max-width: 768px) {
-        .main-header-member {
-            padding: 0 var(--spacing-md);
-            min-height: 60px;
-        }
     }
     
-    @media (max-width: 480px) {
-        .main-header-member {
-            padding: 0 var(--spacing-sm);
-            min-height: 56px;
-        }
+    /* Header Left Section */
+    .member-header-left {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
     }
-
-    /* Modern logo styling */
-    .header-logo-member a {
+    
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-md);
+        transition: var(--transition-fast);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .mobile-menu-toggle:hover {
+        background: rgba(127, 90, 240, 0.1);
+    }
+    
+    .hamburger-line {
+        width: 20px;
+        height: 2px;
+        background: var(--text-high-contrast);
+        margin: 2px 0;
+        transition: var(--transition-fast);
+        border-radius: 1px;
+    }
+    
+    .mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+    }
+    
+    /* Member Logo/Title */
+    .member-header-title {
         color: var(--text-high-contrast);
         font-size: var(--font-size-xl);
         font-weight: 700;
@@ -41,35 +75,29 @@
         align-items: center;
         gap: var(--spacing-xs);
         transition: var(--transition-fast);
+        margin: 0;
     }
     
-    .header-logo-member a:hover {
+    .member-header-title:hover {
         color: var(--accent-primary);
         transform: scale(1.02);
-    }    
-    /* Mobile logo adjustments */
-    @media (max-width: 768px) {
-        .header-logo-member a {
-            font-size: var(--font-size-lg);
-        }
     }
     
-    @media (max-width: 480px) {
-        .header-logo-member a {
-            font-size: var(--font-size-base);
-        }
+    .member-header-title .title-icon {
+        font-size: 1.5rem;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     }
-
-    /* Modern navigation styling */
-    .header-nav-member ul {
-        list-style: none;
+    
+    /* Navigation Links (Desktop) */
+    .member-header-nav {
         display: flex;
         gap: var(--spacing-sm);
+        list-style: none;
         margin: 0;
         padding: 0;
     }
-
-    .header-nav-member ul li a {
+    
+    .member-header-nav li a {
         color: var(--text-medium-contrast);
         text-decoration: none;
         padding: var(--spacing-sm) var(--spacing-md);
@@ -81,27 +109,47 @@
         gap: var(--spacing-xs);
         position: relative;
     }
-
-    .header-nav-member ul li a:hover {
+    
+    .member-header-nav li a:hover {
         background: rgba(127, 90, 240, 0.1);
         color: var(--accent-primary);
         transform: translateY(-1px);
     }
     
-    .header-nav-member ul li a.active {
+    .member-header-nav li a.active {
         background: var(--accent-primary);
         color: var(--text-on-accent);
         font-weight: 600;
         box-shadow: 0 2px 8px rgba(127, 90, 240, 0.3);
-    }    /* Modern user info styling */
-    .header-user-info-member {
+    }
+    
+    /* Header Right Section */
+    .member-header-right {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+    }
+    
+    /* Member User Info */
+    .member-user-info {
         display: flex;
         align-items: center;
         gap: var(--spacing-md);
         font-size: var(--font-size-sm);
+        background: var(--bg-tertiary-dark);
+        border: 1px solid var(--border-color-dark);
+        border-radius: var(--border-radius-lg);
+        padding: var(--spacing-sm) var(--spacing-md);
+        transition: var(--transition-fast);
     }
     
-    .header-profile-photo {
+    .member-user-info:hover {
+        border-color: var(--accent-primary);
+        box-shadow: 0 4px 12px rgba(127, 90, 240, 0.2);
+    }
+    
+    /* Member Profile Photo */
+    .member-profile-photo {
         width: 40px;
         height: 40px;
         border-radius: 50%;
@@ -110,31 +158,49 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: var(--accent-primary);
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
         font-size: var(--font-size-lg);
         font-weight: 600;
         color: var(--text-on-accent);
         transition: var(--transition-fast);
+        flex-shrink: 0;
     }
     
-    .header-profile-photo:hover {
+    .member-profile-photo:hover {
         transform: scale(1.05);
         box-shadow: 0 4px 12px rgba(127, 90, 240, 0.4);
     }
     
-    .header-profile-photo img {
+    .member-profile-photo img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
     
-    .header-user-info-member span {
-        color: var(--text-medium-contrast);
-        font-weight: 500;
+    /* Member Info Text */
+    .member-info-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
     }
-
-    /* Modern logout button */
-    .logout-btn-member {
+    
+    .member-greeting {
+        color: var(--text-high-contrast);
+        font-weight: 600;
+        font-size: var(--font-size-sm);
+    }
+    
+    .member-class {
+        color: var(--accent-primary);
+        font-weight: 500;
+        font-size: var(--font-size-xs);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+    
+    /* Logout Button */
+    .member-logout-btn {
         background: var(--bg-tertiary-dark);
         color: var(--text-high-contrast);
         padding: var(--spacing-sm) var(--spacing-md);
@@ -146,189 +212,142 @@
         display: flex;
         align-items: center;
         gap: var(--spacing-xs);
+        font-size: var(--font-size-sm);
     }
     
-    .logout-btn-member:hover {
-        background: var(--accent-danger);
-        color: var(--text-on-accent);
-        border-color: var(--accent-danger);
+    .member-logout-btn:hover {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        border-color: #dc3545;
         transform: translateY(-1px);
-    }    /* Modern mobile navigation toggle */
-    .mobile-nav-toggle {
-        display: none;
-        background: none;
-        border: none;
-        color: var(--text-high-contrast);
-        font-size: var(--font-size-2xl);
-        cursor: pointer;
-        padding: var(--spacing-sm);
-        border-radius: var(--border-radius-sm);
-        transition: var(--transition-fast);
-        min-height: 44px;
-        min-width: 44px;
-        align-items: center;
-        justify-content: center;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        text-decoration: none;
     }
     
-    .mobile-nav-toggle:hover {
-        background: rgba(127, 90, 240, 0.1);
-        color: var(--accent-primary);
-    }    /* Modern mobile navigation menu */
-    @media (max-width: 992px) {
-        .header-nav-member {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: var(--bg-secondary-dark);
-            border: 1px solid var(--border-color-dark);
-            border-top: none;
-            flex-direction: column;
-            padding: var(--spacing-md) 0;
-            box-shadow: var(--card-shadow-dark);
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-        
-        .header-nav-member.active {
-            display: flex;
-            animation: slideDown var(--transition-normal);
-        }
-        
-        .header-nav-member ul {
-            flex-direction: column;
-            width: 100%;
-            gap: 0;
-        }
-        
-        .header-nav-member ul li a {
-            padding: var(--spacing-md) var(--spacing-lg);
-            width: 100%;
-            border-radius: 0;
-            justify-content: flex-start;
-            font-size: var(--font-size-base);
-            border-bottom: 1px solid var(--border-color-dark);
-        }
-        
-        .header-nav-member ul li:last-child a {
-            border-bottom: none;
-        }
-        
-        .header-nav-member ul li a:hover {
-            background: var(--accent-primary);
-            color: var(--text-on-accent);
-        }
-        
-        .mobile-nav-toggle {
-            display: flex;
-        }
-        
-        .header-user-info-member {
-            font-size: var(--font-size-xs);
-            gap: var(--spacing-sm);
-        }
-    }    
-    /* Additional mobile optimizations */
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-        .header-user-info-member {
-            gap: var(--spacing-xs);
+        .member-main-header {
+            padding: 0 var(--spacing-md);
+            min-height: 60px;
         }
         
-        .header-user-info-member span:not(.logout-btn-member) {
+        .mobile-menu-toggle {
+            display: flex;
+        }
+        
+        .member-header-nav {
             display: none;
         }
         
-        .logout-btn-member {
-            padding: var(--spacing-xs) var(--spacing-sm);
-            font-size: var(--font-size-xs);
+        .member-header-title {
+            font-size: var(--font-size-lg);
         }
         
-        .header-profile-photo {
-            width: 32px;
-            height: 32px;
-            font-size: var(--font-size-base);
+        .member-user-info {
+            gap: var(--spacing-sm);
+            padding: var(--spacing-xs) var(--spacing-sm);
+        }
+        
+        .member-info-text {
+            display: none;
         }
     }
     
     @media (max-width: 480px) {
-        .header-logo-member a {
-            font-size: var(--font-size-sm);
+        .member-main-header {
+            padding: 0 var(--spacing-sm);
+            min-height: 56px;
         }
         
-        .header-profile-photo {
-            width: 28px;
-            height: 28px;
-            font-size: var(--font-size-sm);
+        .member-header-title {
+            font-size: var(--font-size-base);
         }
         
-        .logout-btn-member {
-            padding: 4px 8px;
-            font-size: 0.7rem;
+        .member-header-title .title-text {
+            display: none;
+        }
+        
+        .member-profile-photo {
+            width: 32px;
+            height: 32px;
+            font-size: var(--font-size-base);
+        }
+        
+        .member-logout-btn {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            font-size: var(--font-size-xs);
+        }
+        
+        .member-logout-btn .logout-text {
+            display: none;
         }
     }
 </style>
 
-<header class="main-header-member">
-    <div class="header-logo-member">
-        <a href="{{ url_for('member_dashboard') }}">
-            <span>📚</span>
-            <span>LibraryHub</span>
-        </a>
-    </div>
-    
-    <button class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-    
-    <nav class="header-nav-member">
-        <ul>
-            <li><a href="{{ url_for('member_dashboard') }}" class="{% if request.endpoint == 'member_dashboard' %}active{% endif %}">
-                <span>📊</span>
-                <span>Dashboard</span>
-            </a></li>            <li><a href="{{ url_for('member_books') }}" class="{% if request.endpoint in ['member_books', 'member_book_detail'] %}active{% endif %}">
-                <span>📚</span>
-                <span>Daftar Buku</span>
-            </a></li>            <li><a href="{{ url_for('member_loans') }}" class="{% if request.endpoint == 'member_loans' %}active{% endif %}">
-                <span>📖</span>
-                <span>Pinjaman</span>
-            </a></li>
-            <li><a href="{{ url_for('member_profile') }}" class="{% if request.endpoint == 'member_profile' %}active{% endif %}">
-                <span>👤</span>
-                <span>Profile</span>
-            </a></li>
+<!-- Member Header Component -->
+<header class="member-main-header">
+    <div class="member-header-left">
+        <button class="mobile-menu-toggle" onclick="toggleSidebar()" aria-label="Toggle Menu">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </button>        <h1 class="member-header-title">
+            <span class="title-icon">📚</span>
+            <span class="title-text">Dashboard Siswa</span>
+        </h1>
+        
+        <!-- Desktop Navigation -->
+        <ul class="member-header-nav">
+            <li>
+                <a href="{{ url_for('member_dashboard') }}" class="{% if request.endpoint == 'member_dashboard' %}active{% endif %}">
+                    <span>📊</span>
+                    <span>Dashboard</span>
+                </a>
+            </li>            <li>
+                <a href="{{ url_for('member_loans') }}" class="{% if request.endpoint == 'member_loans' %}active{% endif %}">
+                    <span>📖</span>
+                    <span>Pinjaman</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('member_books') }}" class="{% if request.endpoint == 'member_books' %}active{% endif %}">
+                    <span>📚</span>
+                    <span>Daftar Buku</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('member_profile') }}" class="{% if request.endpoint in ['member_profile', 'member_edit_profile'] %}active{% endif %}">
+                    <span>👤</span>
+                    <span>Profil</span>
+                </a>
+            </li>
         </ul>
-    </nav>
+    </div>
 
-    <div class="header-user-info-member">
-        <div class="header-profile-photo">
-            {% if current_user.profile_photo %}
-                <img src="{{ url_for('static', filename=current_user.profile_photo) }}" alt="Profile Photo">
-            {% else %}
-                {{ current_user.nama_lengkap[0].upper() }}
-            {% endif %}
+    <div class="member-header-right">
+        <!-- User Info -->
+        <div class="member-user-info">
+            <div class="member-profile-photo">
+                {% if current_user.profile_photo %}
+                    <img src="{{ url_for('static', filename=current_user.profile_photo) }}" alt="Profile Photo">
+                {% else %}
+                    {{ current_user.nama_lengkap[0].upper() }}
+                {% endif %}
+            </div>
+            
+            <div class="member-info-text">
+                <span class="member-greeting">{{ current_user.nama_lengkap.split()[0] }}</span>
+                <span class="member-class">
+                    <span>🎓</span>
+                    <span>{{ current_user.kelas }}</span>
+                </span>
+            </div>
         </div>
-        <span>{{ current_user.nama_lengkap.split()[0] }}</span>
-        <span>{{ current_user.kelas }}</span>
-        <a href="{{ url_for('logout') }}" class="logout-btn-member">
+        
+        <!-- Logout Button -->
+        <a href="{{ url_for('logout') }}" class="member-logout-btn">
             <span>🚪</span>
-            <span>Logout</span>
+            <span class="logout-text">Logout</span>
         </a>
     </div>
 </header>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const toggleButton = document.querySelector('.mobile-nav-toggle');
-    const nav = document.querySelector('.header-nav-member');
-    if (toggleButton && nav) {
-        toggleButton.addEventListener('click', function() {
-            const isExpanded = nav.classList.toggle('active');
-            toggleButton.setAttribute('aria-expanded', isExpanded);
-            if (isExpanded) {
-                toggleButton.innerHTML = '✕'; // Change to close icon
-            } else {
-                toggleButton.innerHTML = '☰'; // Change back to hamburger
-            }
-        });
-    }
-});
-</script>

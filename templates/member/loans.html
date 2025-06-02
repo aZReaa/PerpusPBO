@@ -830,10 +830,9 @@
             <tbody>
                 {% for loan in loans %}
                 <tr data-status="{{ loan.status }}">
-                    <td data-label="Buku">
-                        <div class="book-info">
-                            {% if loan.buku.cover_image %}
-                                <img src="{{ url_for('static', filename='uploads/' + loan.buku.cover_image) }}" 
+                    <td data-label="Buku">                        <div class="book-info">
+                            {% if loan.buku.gambar %}
+                                <img src="{{ url_for('static', filename=loan.buku.gambar) }}" 
                                      alt="{{ loan.buku.judul }}" class="book-cover-mini">
                             {% else %}
                                 <div class="book-cover-mini" style="background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem;">📖</div>

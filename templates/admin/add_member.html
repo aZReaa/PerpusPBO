@@ -1,11 +1,10 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Tambah Member{% endblock %}
+{% block title %}Tambah Siswa{% endblock %}
 
 {% block content %}
-    <div class="content-header">
-        <h1>➕ Tambah Member Baru</h1>
-        <a href="{{ url_for('admin_members') }}" class="btn btn-secondary">← Kembali ke Daftar Member</a>
+    <div class="content-header">        <h1>➕ Tambah Siswa Baru</h1>
+        <a href="{{ url_for('admin_members') }}" class="btn btn-secondary">← Kembali ke Daftar Siswa</a>
     </div>
 
     {% with messages = get_flashed_messages() %}
@@ -104,7 +103,7 @@
 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
-                                ✅ Tambah Member
+                                ✅ Tambah Siswa
                             </button>
                             <a href="{{ url_for('admin_members') }}" class="btn btn-secondary">
                                 ❌ Batal

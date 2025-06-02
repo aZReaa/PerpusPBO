@@ -363,45 +363,25 @@
                     <span>📊</span>
                     <span>Dashboard</span>
                 </a>
-            </li>
-            <li>
+            </li>            <li>
                 <a href="{{ url_for('admin_members') }}" class="{% if request.endpoint in ['admin_members', 'admin_add_member', 'admin_edit_member'] %}active{% endif %}">
                     <span>👥</span>
-                    <span>Member</span>
+                    <span>Siswa</span>
                 </a>
-            </li>
-            <li>
+            </li>            <li>
                 <a href="{{ url_for('admin_books') }}" class="{% if request.endpoint in ['admin_books', 'admin_add_book', 'admin_edit_book'] %}active{% endif %}">
                     <span>📚</span>
                     <span>Buku</span>
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('admin_loans') }}" class="{% if request.endpoint in ['admin_loans', 'admin_process_loan'] %}active{% endif %}">
+                <a href="{{ url_for('admin_loans') }}" class="{% if request.endpoint in ['admin_loans'] %}active{% endif %}">
                     <span>📖</span>
                     <span>Peminjaman</span>
                 </a>
             </li>
         </ul>
-    </div>
-
-    <div class="admin-header-right">
-        <!-- Quick Actions -->
-        <div class="admin-quick-actions">
-            <a href="{{ url_for('admin_process_loan') }}" class="quick-action-btn" title="Proses Peminjaman">
-                <span>⚡</span>
-                {% set pending_loans = 0 %}
-                {% if pending_loans > 0 %}
-                <span class="notification-badge">{{ pending_loans }}</span>
-                {% endif %}
-            </a>
-            
-            <a href="{{ url_for('admin_add_book') }}" class="quick-action-btn" title="Tambah Buku">
-                <span>➕</span>
-            </a>
-        </div>
-        
-        <!-- User Info -->
+    </div>    <div class="admin-header-right">        <!-- User Info -->
         <div class="admin-user-info">
             <div class="admin-profile-photo">
                 {% if current_user.profile_photo %}

@@ -1,13 +1,12 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Kelola Member{% endblock %}
+{% block title %}Kelola Siswa{% endblock %}
 
 {% block content %}    <!-- Compact Header -->
     <div class="content-header">
-        <h1>👥 Kelola Member</h1>
-        <div class="header-actions">
-            <a href="{{ url_for('admin_add_member') }}" class="btn btn-primary">
-                ➕ Tambah Member
+        <h1>👥 Kelola Siswa</h1>
+        <div class="header-actions">            <a href="{{ url_for('admin_add_member') }}" class="btn btn-primary">
+                ➕ Tambah Siswa
             </a>
         </div>
     </div>
@@ -26,7 +25,7 @@
             <div class="search-input-modern">
                 <input type="text" 
                        id="searchInput" 
-                       placeholder="🔍 Cari member berdasarkan nama, username, atau email..." 
+                       placeholder="🔍 Cari Siswa berdasarkan nama, username, atau email..." 
                        class="search-input">
             </div>
             
@@ -55,7 +54,7 @@
         <table class="table" id="membersTable">
             <thead>
                 <tr>
-                    <th>Member Info</th>
+                    <th>Siswa Info</th>
                     <th>Email</th>
                     <th>Kelas</th>
                     <th>Terdaftar</th>
@@ -92,13 +91,13 @@
                         <div class="action-buttons">
                             <a href="{{ url_for('admin_edit_member', id=member.id) }}" 
                                class="btn btn-sm btn-warning" 
-                               title="Edit Member">
+                               title="Edit Siswa">
                                 ✏️ Edit
                             </a>
                             <button class="btn btn-sm btn-danger delete-member-btn" 
                                     data-member-id="{{ member.id }}" 
                                     data-member-name="{{ member.nama_lengkap }}" 
-                                    title="Hapus Member">
+                                    title="Hapus Siswa">
                                 🗑️ Hapus
                             </button>
                         </div>
@@ -113,7 +112,7 @@
     <div class="no-data">
         <h3>👥 Belum ada member terdaftar</h3>
         <p>Member baru dapat mendaftar melalui halaman registrasi atau ditambahkan oleh admin.</p>
-        <a href="{{ url_for('admin_add_member') }}" class="btn btn-primary">➕ Tambah Member Pertama</a>
+        <a href="{{ url_for('admin_add_member') }}" class="btn btn-primary">➕ Tambah Siswa Pertama</a>
     </div>
     {% endif %}
 
@@ -121,7 +120,7 @@
     <div id="deleteModal" class="modal" style="display: none;">
         <div class="modal-content">
             <h3>⚠️ Konfirmasi Hapus</h3>
-            <p>Apakah Anda yakin ingin menghapus member <strong id="memberName"></strong>?</p>
+            <p>Apakah Anda yakin ingin menghapus siswa <strong id="memberName"></strong>?</p>
             <p class="warning-text">⚠️ Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data peminjaman member tersebut.</p>
             <div class="modal-actions">
                 <button onclick="closeDeleteModal()" class="btn btn-secondary">Batal</button>
@@ -283,53 +282,6 @@
         document.getElementById('deleteModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeDeleteModal();
-            }
-        });
+            }        });
     </script>
-    <style>
-        /* Dark theme overrides for table and filter panel */
-        body.dark-theme .table,
-        body.dark-theme .table thead th,
-        body.dark-theme .table tbody tr,
-        body.dark-theme .table tbody td {
-            background-color: var(--dark-bg-color, #1a1a1a) !important;
-            color: var(--dark-text-color, #e0e0e0) !important;
-            border-color: var(--dark-border-color, #333) !important;
-        }
-
-        body.dark-theme .table tbody tr:nth-child(odd) td {
-            background-color: var(--dark-bg-alt-color, #222) !important; /* Slightly different for odd rows if desired */
-        }
-        body.dark-theme .table tbody tr:hover td {
-            background-color: var(--dark-hover-bg-color, #303030) !important;
-            color: var(--dark-hover-text-color, #ffffff) !important;
-        }
-
-        body.dark-theme .filter-panel {
-            background-color: var(--dark-bg-color, #1a1a1a) !important;
-            color: var(--dark-text-color, #e0e0e0) !important;
-            border: 1px solid var(--dark-border-color, #333) !important;
-        }
-
-        body.dark-theme .filter-panel label,
-        body.dark-theme .filter-panel .form-control,
-        body.dark-theme .filter-panel .btn {
-            background-color: var(--dark-input-bg-color, #252525) !important;
-            color: var(--dark-text-color, #e0e0e0) !important;
-            border-color: var(--dark-border-color, #333) !important;
-        }
-        body.dark-theme .filter-panel .form-control::placeholder {
-            color: var(--dark-placeholder-color, #888) !important;
-        }
-        body.dark-theme .filter-panel .btn-primary {
-            background-color: var(--primary-color, #007bff) !important;
-            border-color: var(--primary-color, #007bff) !important;
-            color: #fff !important;
-        }
-        body.dark-theme .filter-panel .btn-secondary {
-            background-color: var(--secondary-color, #6c757d) !important;
-            border-color: var(--secondary-color, #6c757d) !important;
-            color: #fff !important;
-        }
-    </style>
 {% endblock %}

@@ -385,57 +385,104 @@ input::placeholder, textarea::placeholder {
 }
 
 
-/* Filter Panel Styling */
+/* Specific table styling overrides for admin tables */
+.table-container .table,
+.admin-book-table,
+.table-container table,
+table.table {
+    background-color: var(--bg-card-dark) !important;
+    color: var(--text-medium-contrast) !important;
+    border: 1px solid var(--border-color-dark) !important;
+}
+
+.table-container .table thead th,
+.admin-book-table thead th,
+.table-container table thead th,
+table.table thead th {
+    background-color: var(--bg-tertiary-dark) !important;
+    color: var(--text-high-contrast) !important;
+    border-bottom: 1px solid var(--border-color-dark) !important;
+}
+
+.table-container .table tbody tr,
+.admin-book-table tbody tr,
+.table-container table tbody tr,
+table.table tbody tr,
+.member-row,
+.book-row {
+    background-color: var(--bg-card-dark) !important;
+    color: var(--text-medium-contrast) !important;
+    border-bottom: 1px solid var(--border-color-dark) !important;
+}
+
+.table-container .table tbody tr:nth-child(even),
+.admin-book-table tbody tr:nth-child(even),
+.table-container table tbody tr:nth-child(even),
+table.table tbody tr:nth-child(even) {
+    background-color: var(--bg-secondary-dark) !important;
+    color: var(--text-medium-contrast) !important;
+}
+
+.table-container .table tbody tr:hover,
+.admin-book-table tbody tr:hover,
+.table-container table tbody tr:hover,
+table.table tbody tr:hover,
+.member-row:hover,
+.book-row:hover {
+    background-color: rgba(127, 90, 240, 0.15) !important;
+    color: var(--text-high-contrast) !important;
+}
+
+.table-container .table td,
+.admin-book-table td,
+.table-container table td,
+table.table td {
+    background-color: inherit !important;
+    color: inherit !important;
+    border-bottom: 1px solid var(--border-color-dark) !important;
+}
+
+/* Ensure all nested elements in table cells inherit the correct colors */
+.table td *,
+.table-container td *,
+.admin-book-table td * {
+    color: inherit !important;
+}
+
+/* Search and filter section styling */
+.search-filter-section,
 .filter-panel {
-    background-color: var(--bg-card-dark);
-    color: var(--text-high-contrast);
-    padding: var(--spacing-lg);
+    background-color: var(--bg-card-dark) !important;
+    color: var(--text-high-contrast) !important;
+    border: 1px solid var(--border-color-dark) !important;
     border-radius: var(--border-radius-md);
-    border: 1px solid var(--border-color-dark);
+    padding: var(--spacing-lg);
     margin-bottom: var(--spacing-lg);
 }
 
-.filter-panel label {
-    color: var(--text-high-contrast);
-    margin-bottom: var(--spacing-sm);
-    display: block; 
+.search-row {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.filter-panel select,
-.filter-panel input[type="text"],
-.filter-panel input[type="search"],
-.filter-panel input[type="date"],
-.filter-panel input[type="number"],
-.filter-panel .form-control { /* Target Bootstrap's .form-control as well */
-    background-color: var(--bg-secondary-dark) !important; /* Use !important to override Bootstrap if needed */
+.search-input,
+.filter-select {
+    background-color: var(--bg-secondary-dark) !important;
     color: var(--text-high-contrast) !important;
     border: 1px solid var(--border-color-dark) !important;
-    border-radius: var(--border-radius-sm) !important;
+    border-radius: var(--border-radius-sm);
     padding: var(--spacing-sm) var(--spacing-md);
-    width: 100%; 
-    margin-bottom: var(--spacing-md); 
+    flex: 1;
+    min-width: 200px;
 }
 
-.filter-panel select:focus,
-.filter-panel input:focus,
-.filter-panel .form-control:focus {
+.search-input:focus,
+.filter-select:focus {
     border-color: var(--accent-primary) !important;
-    box-shadow: 0 0 0 3px rgba(127, 90, 240, 0.25) !important; 
+    box-shadow: 0 0 0 3px rgba(127, 90, 240, 0.25) !important;
     outline: none;
-}
-
-.filter-panel .btn {
-    background-color: var(--accent-primary);
-    color: var(--text-on-accent);
-    border: none;
-    padding: var(--spacing-sm) var(--spacing-lg);
-    border-radius: var(--border-radius-md);
-    cursor: pointer;
-    transition: background-color var(--transition-fast);
-}
-
-.filter-panel .btn:hover {
-    background-color: #9D4EDD; /* Darker shade of accent-primary */
 }
 
 /* Loading and Animation Utilities */
@@ -476,6 +523,24 @@ input::placeholder, textarea::placeholder {
         --spacing-xl: 1.5rem;
     }
     
+    /* Force dark background on mobile devices */
+    html {
+        background: var(--bg-primary-dark) !important;
+        background-color: var(--bg-primary-dark) !important;
+    }
+    
+    body {
+        background: var(--bg-primary-dark) !important;
+        background-color: var(--bg-primary-dark) !important;
+        min-height: 100vh !important;
+    }
+    
+    /* Ensure all main containers have dark background */
+    main, .container, .container-fluid, .container-member {
+        background: var(--bg-primary-dark) !important;
+        background-color: var(--bg-primary-dark) !important;
+    }
+    
     .btn {
         min-height: 48px;
         font-size: var(--font-size-base);
@@ -484,5 +549,17 @@ input::placeholder, textarea::placeholder {
     input, select, textarea {
         min-height: 48px;
         font-size: 16px; /* Prevent iOS zoom */
+    }
+}
+
+/* Additional mobile overrides for smaller screens */
+@media (max-width: 480px) {
+    html, body {
+        background: var(--bg-primary-dark) !important;
+        background-color: var(--bg-primary-dark) !important;
+    }
+    
+    * {
+        -webkit-tap-highlight-color: transparent;
     }
 }

@@ -7,36 +7,41 @@
     
     <a href="{{ url_for('admin_members') }}" class="nav-item {{ 'active' if request.endpoint in ['admin_members', 'admin_add_member', 'admin_edit_member', 'admin_member_loans'] else '' }}">
         <div class="nav-icon">👥</div>
-        <span class="nav-label">Kelola Siswa</span>
+        <span class="nav-label">Siswa</span>
     </a>
     
     <a href="{{ url_for('admin_books') }}" class="nav-item {{ 'active' if request.endpoint in ['admin_books', 'admin_add_book', 'admin_edit_book'] else '' }}">
         <div class="nav-icon">📚</div>
-        <span class="nav-label">Kelola Buku</span>
+        <span class="nav-label">Buku</span>
     </a>
     
-    <a href="{{ url_for('admin_loans') }}" class="nav-item {{ 'active' if request.endpoint in ['admin_loans', 'admin_confirm_loan', 'admin_process_loan'] else '' }}">
+    <a href="{{ url_for('admin_loans') }}" class="nav-item {{ 'active' if request.endpoint in ['admin_loans', 'admin_confirm_loan'] else '' }}">
         <div class="nav-icon">📋</div>
-        <span class="nav-label">Kelola Peminjaman</span>
+        <span class="nav-label">Peminjaman</span>
+    </a>
+    
+    <a href="{{ url_for('logout') }}" class="nav-item logout-item">
+        <div class="nav-icon">🚪</div>
+        <span class="nav-label">Logout</span>
     </a>
 </div>
 
-<style>
-    /* Mobile Bottom Navigation Styles for Admin */
+<style>    /* Mobile Bottom Navigation Styles for Admin */
     .mobile-nav-bottom {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        background: rgba(18, 18, 18, 0.95);
+        background: rgba(18, 18, 18, 0.98);
         backdrop-filter: blur(20px);
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));
         display: none;
         justify-content: space-around;
         align-items: center;
-        z-index: 1000;
-        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
+        z-index: 9999;
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+        min-height: 65px;
     }
     
     .mobile-nav-bottom .nav-item {
@@ -61,8 +66,7 @@
         color: var(--accent-primary);
         background: rgba(127, 90, 240, 0.15);
     }
-    
-    .mobile-nav-bottom .nav-item.active::before {
+      .mobile-nav-bottom .nav-item.active::before {
         content: '';
         position: absolute;
         top: -1px;
@@ -72,6 +76,16 @@
         height: 3px;
         background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
         border-radius: 0 0 3px 3px;
+    }
+    
+    /* Special styling for logout item */
+    .mobile-nav-bottom .nav-item.logout-item {
+        color: #ff6b6b;
+    }
+    
+    .mobile-nav-bottom .nav-item.logout-item:hover {
+        color: #ff5252;
+        background: rgba(255, 107, 107, 0.1);
     }
     
     .mobile-nav-bottom .nav-icon {
@@ -127,11 +141,11 @@
     .mobile-nav-bottom .nav-item {
         animation: slideInUp 0.6s ease-out backwards;
     }
-    
-    .mobile-nav-bottom .nav-item:nth-child(1) { animation-delay: 0.1s; }
+      .mobile-nav-bottom .nav-item:nth-child(1) { animation-delay: 0.1s; }
     .mobile-nav-bottom .nav-item:nth-child(2) { animation-delay: 0.2s; }
     .mobile-nav-bottom .nav-item:nth-child(3) { animation-delay: 0.3s; }
     .mobile-nav-bottom .nav-item:nth-child(4) { animation-delay: 0.4s; }
+    .mobile-nav-bottom .nav-item:nth-child(5) { animation-delay: 0.5s; }
     
     @keyframes slideInUp {
         from {

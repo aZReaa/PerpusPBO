@@ -119,53 +119,5 @@
         <p>Silakan tambah buku baru untuk memulai koleksi perpustakaan.</p>
         <a href="{{ url_for('admin_add_book') }}" class="btn btn-primary">📚 Tambah Buku Pertama</a>
         {% endif %}
-    </div>
-    {% endif %}
+    </div>    {% endif %}
 {% endblock %}
-
-<style>
-    /* Dark theme overrides for table and filter panel */
-    body.dark-theme .table,
-    body.dark-theme .table thead th,
-    body.dark-theme .table tbody tr,
-    body.dark-theme .table tbody td {
-        background-color: var(--dark-bg-color, #1a1a1a) !important;
-        color: var(--dark-text-color, #e0e0e0) !important;
-        border-color: var(--dark-border-color, #333) !important;
-    }
-
-    body.dark-theme .table tbody tr:nth-child(odd) td {
-        background-color: var(--dark-bg-alt-color, #222) !important; /* Slightly different for odd rows if desired */
-    }
-    body.dark-theme .table tbody tr:hover td {
-        background-color: var(--dark-hover-bg-color, #303030) !important;
-        color: var(--dark-hover-text-color, #ffffff) !important;
-    }
-
-    body.dark-theme .filter-panel {
-        background-color: var(--dark-bg-color, #1a1a1a) !important;
-        color: var(--dark-text-color, #e0e0e0) !important;
-        border: 1px solid var(--dark-border-color, #333) !important;
-    }
-
-    body.dark-theme .filter-panel label,
-    body.dark-theme .filter-panel .form-control,
-    body.dark-theme .filter-panel .btn {
-        background-color: var(--dark-input-bg-color, #252525) !important;
-        color: var(--dark-text-color, #e0e0e0) !important;
-        border-color: var(--dark-border-color, #333) !important;
-    }
-    body.dark-theme .filter-panel .form-control::placeholder {
-        color: var(--dark-placeholder-color, #888) !important;
-    }
-    body.dark-theme .filter-panel .btn-primary {
-        background-color: var(--primary-color, #007bff) !important;
-        border-color: var(--primary-color, #007bff) !important;
-        color: #fff !important;
-    }
-    body.dark-theme .filter-panel .btn-secondary {
-        background-color: var(--secondary-color, #6c757d) !important;
-        border-color: var(--secondary-color, #6c757d) !important;
-        color: #fff !important;
-    }
-</style>
